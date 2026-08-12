@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'app_config.dart';
 
 void main() {
+  AppConfig.instance = const AppConfig(
+    environment: AppEnvironment.dev,
+    apiBaseUrl: 'https://dev-api.example.com',
+  );
   runApp(const MyApp());
 }
 

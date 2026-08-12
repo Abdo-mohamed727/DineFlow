@@ -33,6 +33,33 @@ android {
         }
     }
 }
+    flavorDimensions += "environment"
+
+productFlavors {
+    create("dev") {
+        dimension = "environment"
+        applicationIdSuffix = ".dev"
+        versionNameSuffix = "-dev"
+         resValue(
+                type = "string",
+                name = "app_name",
+                value = "DineFlow Dev")
+    }
+
+    create("staging") {
+        dimension = "environment"
+        applicationIdSuffix = ".staging"
+        versionNameSuffix = "-staging"
+    }
+    create("production") {
+        dimension = "environment"
+         resValue(
+                type = "string",
+                name = "app_name",
+                value = "DineFlow prod")
+                 applicationIdSuffix = ".production"
+    }
+}
 
 kotlin {
     compilerOptions {
