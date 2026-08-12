@@ -1,70 +1,50 @@
 import 'package:flutter/material.dart';
 import 'app_config.dart';
+import 'core/router/app_router.dart';
+import 'core/router/route_guard.dart';
 
 void main() {
   AppConfig.instance = const AppConfig(
     environment: AppEnvironment.production,
-    apiBaseUrl: 'https://dev-api.example.com',
+    apiBaseUrl: 'https://api.dineflow.example.com',
   );
-  runApp(const MyApp());
+  runApp(const DineFlowApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DineFlowApp extends StatefulWidget {
+  const DineFlowApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  State<DineFlowApp> createState() => _DineFlowAppState();
+}
+
+class _DineFlowAppState extends State<DineFlowApp> {
+   late final RouterNotifier _routerNotifier;
+  late final router = createRouter(notifier: _routerNotifier);
+
+  @override
+  void initState() {
+    super.initState();
+    _routerNotifier = RouterNotifier();
+    _routerNotifier.updateStatus(AuthStatus.unauthenticated);
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void dispose() {
+    _routerNotifier.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+    return MaterialApp.router(
+      title: 'DineFlow',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xFFE85D04),
+        useMaterial3: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      routerConfig: router,
     );
   }
 }

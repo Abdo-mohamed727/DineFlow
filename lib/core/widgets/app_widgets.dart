@@ -1,6 +1,7 @@
 export '../enums/order_status.dart';
 export '../enums/order_type.dart';
 export 'app_buttons.dart';
+export 'app_scaffold.dart';
 export 'app_text_form_field.dart';
 export 'app_skeletonizer.dart';
 export 'app_loading_indicator.dart';

@@ -51,7 +51,8 @@ flutter:
     - assets/splash_screen_under_12.png 
     - assets/splash_screen_12.png 
     - assets/dine_icon.png 
-   
+    - assets/Background Image with Dark Overlay.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
