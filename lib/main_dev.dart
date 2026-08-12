@@ -1,3 +1,5 @@
+import 'package:dineflow/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'app_config.dart';
 import 'core/router/app_router.dart';
@@ -8,6 +10,8 @@ void main() {
     environment: AppEnvironment.dev,
     apiBaseUrl: 'https://dev-api.example.com',
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const DineFlowApp());
 }
 
@@ -19,7 +23,6 @@ class DineFlowApp extends StatefulWidget {
 }
 
 class _DineFlowAppState extends State<DineFlowApp> {
- 
   late final RouterNotifier _routerNotifier;
   late final router = createRouter(notifier: _routerNotifier);
 
@@ -27,7 +30,7 @@ class _DineFlowAppState extends State<DineFlowApp> {
   void initState() {
     super.initState();
     _routerNotifier = RouterNotifier();
-    
+
     _routerNotifier.updateStatus(AuthStatus.unauthenticated);
   }
 
@@ -41,7 +44,7 @@ class _DineFlowAppState extends State<DineFlowApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'DineFlow',
-      debugShowCheckedModeBanner: true, 
+      debugShowCheckedModeBanner: true,
       theme: ThemeData(
         colorSchemeSeed: const Color(0xFFE85D04),
         useMaterial3: true,
