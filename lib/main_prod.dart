@@ -3,7 +3,7 @@ import 'app_config.dart';
 
 void main() {
   AppConfig.instance = const AppConfig(
-    environment: AppEnvironment.dev,
+    environment: AppEnvironment.production,
     apiBaseUrl: 'https://dev-api.example.com',
   );
   runApp(const MyApp());
