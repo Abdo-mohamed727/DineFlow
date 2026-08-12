@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
-/// Reusable primary CTA button for DineFlow.
-class AppPrimaryButton extends StatelessWidget {
+ class AppPrimaryButton extends StatelessWidget {
   const AppPrimaryButton({
     super.key,
     required this.text,
