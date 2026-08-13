@@ -1,7 +1,4 @@
-/// Central registry of every named route path in DineFlow.
-///
-/// Always navigate by name (e.g. `context.goNamed(AppRoutes.login)`)
-/// so refactoring a path string never silently breaks call-sites.
+ 
 abstract final class AppRoutes {
   // ── Auth ────────────────────────────────────────────────────────────────
   static const String splash = 'splash';

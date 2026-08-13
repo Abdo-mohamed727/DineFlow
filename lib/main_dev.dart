@@ -6,14 +6,15 @@ import 'app_config.dart';
 import 'core/router/app_router.dart';
 import 'core/router/route_guard.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   AppConfig.instance = const AppConfig(
     environment: AppEnvironment.dev,
     apiBaseUrl: 'https://dev-api.example.com',
   );
-  WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    configureDependencies();
+
+  configureDependencies();
   runApp(const DineFlowApp());
 }
 
@@ -31,9 +32,7 @@ class _DineFlowAppState extends State<DineFlowApp> {
   @override
   void initState() {
     super.initState();
-    _routerNotifier = RouterNotifier();
-
-    _routerNotifier.updateStatus(AuthStatus.unauthenticated);
+    _routerNotifier = sl<RouterNotifier>();
   }
 
   @override
