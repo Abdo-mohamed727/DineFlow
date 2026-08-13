@@ -25,7 +25,7 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    // Dispatch session check after the first frame so context is fully mounted
+    // Dispatch after first frame so context is fully mounted
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<AuthCubit>().getCurrentUserData();
@@ -46,6 +46,7 @@ class _SplashViewState extends State<SplashView> {
                 UserRole.waiter => AuthStatus.waiter,
                 UserRole.kitchen => AuthStatus.kitchen,
               };
+              // Update RouterNotifier → GoRouter redirect fires automatically
               sl<RouterNotifier>().updateStatus(status);
             },
             unauthenticated: () {
@@ -66,6 +67,8 @@ class _SplashViewState extends State<SplashView> {
 }
 
 /// Isolated widget that owns its own animation lifecycle safely.
+/// Keeping animations in a separate widget ensures [initState] always
+/// completes before [build] runs — preventing LateInitializationError.
 class _SplashContent extends StatefulWidget {
   const _SplashContent();
 
