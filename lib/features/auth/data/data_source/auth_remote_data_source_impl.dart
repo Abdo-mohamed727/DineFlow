@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dineflow/core/error/exception.dart';
-import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source.dart';
+import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart';
 import 'package:dineflow/features/auth/data/models/user_model.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';

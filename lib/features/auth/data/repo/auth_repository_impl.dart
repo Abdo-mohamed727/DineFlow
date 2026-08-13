@@ -1,7 +1,7 @@
 import 'package:dineflow/core/error/exception.dart';
 import 'package:dineflow/core/error/failure.dart';
 import 'package:dineflow/core/usecases/result.dart';
-import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source.dart';
+import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:dineflow/features/auth/domain/repo/auth_repository_interface.dart';
 import 'package:injectable/injectable.dart';

@@ -11,7 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:dineflow/core/di/firebase_module.dart' as _i297;
-import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source.dart'
+import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart'
     as _i831;
 import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_impl.dart'
     as _i784;
