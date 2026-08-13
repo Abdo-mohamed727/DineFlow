@@ -8,10 +8,11 @@ abstract final class AppRoutes {
   // ── Customer shell ───────────────────────────────────────────────────────
   static const String customerShell = 'customer-shell';
   static const String customerMenu = 'customer-menu';
-  static const String customerCart = 'customer-cart';
-  static const String customerTables = 'customer-tables';
+  static const String customerOrders = 'customer-orders';
   static const String customerOrderTracking = 'customer-order-tracking';
+  static const String customerFavourites = 'customer-favourites';
   static const String customerProfile = 'customer-profile';
+  static const String customerEditProfile = 'customer-edit-profile';
 
   // ── Waiter shell ─────────────────────────────────────────────────────────
   static const String waiterShell = 'waiter-shell';
@@ -37,10 +38,11 @@ abstract final class AppPaths {
   // Customer
   static const String customerShell = '/customer';
   static const String customerMenu = 'menu';
-  static const String customerCart = 'cart';
-  static const String customerTables = 'tables';
+  static const String customerOrders = 'orders';
   static const String customerOrderTracking = 'order/:orderId';
+  static const String customerFavourites = 'favourites';
   static const String customerProfile = 'profile';
+  static const String customerEditProfile = 'edit';
 
   // Waiter
   static const String waiterShell = '/waiter';
