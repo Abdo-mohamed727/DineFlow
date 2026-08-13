@@ -31,6 +31,20 @@ import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart'
     as _i1;
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart'
     as _i87;
+import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
+    as _i485;
+import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart'
+    as _i752;
+import 'package:dineflow/features/profile/data/repo/profile_repository_impl.dart'
+    as _i491;
+import 'package:dineflow/features/profile/domain/repo/profile_repository_interface.dart'
+    as _i995;
+import 'package:dineflow/features/profile/domain/usecase/get_profile_usecase.dart'
+    as _i831;
+import 'package:dineflow/features/profile/domain/usecase/update_profile_usecase.dart'
+    as _i922;
+import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
+    as _i87;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -53,6 +67,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i974.FirebaseFirestore>(),
       ),
     );
+    gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
+      () => _i485.ProfileRemoteDataSourceImpl(
+        gh<_i59.FirebaseAuth>(),
+        gh<_i974.FirebaseFirestore>(),
+      ),
+    );
+    gh.lazySingleton<_i995.ProfileRepositoryInterface>(
+      () => _i491.ProfileRepositoryImpl(
+        gh<_i752.ProfileRemoteDataSourceInterface>(),
+      ),
+    );
     gh.lazySingleton<_i821.AuthRepositoryInterface>(
       () => _i764.AuthRepositoryImpl(gh<_i207.AuthRemoteDataSource>()),
     );
@@ -68,6 +93,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1.RegisterUseCase>(
       () => _i1.RegisterUseCase(gh<_i821.AuthRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i831.GetProfileUseCase>(
+      () => _i831.GetProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i922.UpdateProfileUseCase>(
+      () => _i922.UpdateProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
+    );
+    gh.factory<_i87.ProfileCubit>(
+      () => _i87.ProfileCubit(
+        gh<_i831.GetProfileUseCase>(),
+        gh<_i922.UpdateProfileUseCase>(),
+      ),
     );
     gh.factory<_i87.AuthCubit>(
       () => _i87.AuthCubit(

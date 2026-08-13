@@ -60,7 +60,7 @@ lib/
 | :--- | :--- | :--- | :--- |
 | **Entity** | `<entity>_entity.dart` | `<Entity>Entity` | `user_entity.dart` → `UserEntity` |
 | **Enum** | Defined in entity file or `<enum_name>.dart` | `<EnumName>` | `UserRole` (`customer`, `waiter`, `kitchen`) |
-| **Repository Interface** | `<feature>_repository_interface.dart` | `<Feature>RepositoryInterface` | `auth_repository_interface.dart` → `AuthRepositoryInterface` |
+| **Repository Interface** | `<feature>_repository_interface.dart` | `<Feature>RepositoryInterface` | `profile_repository_interface.dart` → `ProfileRepositoryInterface` |
 | **Use Case** | `<action>_usecase.dart` | `<Action>UseCase` | `login_usecase.dart` → `LoginUseCase` |
 | **Use Case Params** | Defined inside the use case file | `<Action>Params` | `LoginParams({required email, required password})` |
 
@@ -69,9 +69,9 @@ lib/
 | Component | File Naming Convention | Class Naming Convention | Example |
 | :--- | :--- | :--- | :--- |
 | **Data Model** | `<entity>_model.dart` | `<Entity>Model` | `user_model.dart` → `UserModel` |
-| **Data Source Interface** | `<feature>_<type>_data_source_interface.dart` | `<Feature><Type>DataSource` | `auth_remote_data_source_interface.dart` → `AuthRemoteDataSource` |
-| **Data Source Implementation**| `<feature>_<type>_data_source_impl.dart` | `<Feature><Type>DataSourceImpl` | `auth_remote_data_source_impl.dart` → `AuthRemoteDataSourceImpl` |
-| **Repository Implementation** | `<feature>_repository_impl.dart` | `<Feature>RepositoryImpl` | `auth_repository_impl.dart` → `AuthRepositoryImpl` |
+| **Data Source Interface** | `<feature>_<type>_data_source_interface.dart` | `<Feature><Type>DataSourceInterface` | `profile_remote_data_source_interface.dart` → `ProfileRemoteDataSourceInterface` |
+| **Data Source Implementation**| `<feature>_<type>_data_source_impl.dart` | `<Feature><Type>DataSourceImpl` | `profile_remote_data_source_impl.dart` → `ProfileRemoteDataSourceImpl` |
+| **Repository Implementation** | `<feature>_repository_impl.dart` | `<Feature>RepositoryImpl` | `profile_repository_impl.dart` → `ProfileRepositoryImpl` |
 
 ---
 
@@ -81,6 +81,21 @@ lib/
 2. **`RepositoryImpl`**: Calls Data Source, converts `UserModel.toEntity()` to `UserEntity`, catches exceptions and returns `Result<UserEntity>` (`Success` or `FailureResult`).
 3. **`UseCase`**: Takes `<Action>Params` or `NoParams`, calls `RepositoryInterface`, and returns `Future<Result<T>>`.
 4. **`BLoC / Cubit`**: Executes `UseCase`, inspects `Result` (`Success` vs `FailureResult`), and updates UI states accordingly.
+
+---
+
+## 🔌 Interface Naming Rule
+
+All abstract contracts **must** end with the `Interface` suffix:
+
+| Layer | Interface class | Implementation class |
+| :--- | :--- | :--- |
+| **Data source** | `ProfileRemoteDataSourceInterface` | `ProfileRemoteDataSourceImpl` |
+| **Repository** | `ProfileRepositoryInterface` | `ProfileRepositoryImpl` |
+
+- Interface file: `<name>_interface.dart`
+- Implementation file: `<name>_impl.dart`
+- DI binding: `@LazySingleton(as: ProfileRemoteDataSourceInterface)`
 
 ---
 

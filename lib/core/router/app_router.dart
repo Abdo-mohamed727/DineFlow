@@ -1,9 +1,14 @@
 import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:dineflow/core/widgets/floating_bottom_nav_bar.dart';
+import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/login_view.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/register_view.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/splash_view.dart';
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
+import 'package:dineflow/features/profile/presintation/view/screens/edit_profile_view.dart';
+import 'package:dineflow/features/profile/presintation/view/favourites_view.dart';
+import 'package:dineflow/features/profile/presintation/view/screens/profile_view.dart';
+import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -111,7 +116,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
           return _CustomerShell(navigationShell: navigationShell);
         },
         branches: [
-          // Branch 0: Menu & Order Tracking
+          // Branch 0: Menu
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -121,47 +126,31 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                   label: 'Menu',
                   role: AppRole.customer,
                 ),
-                routes: [
-                  GoRoute(
-                    path: AppPaths.customerOrderTracking,
-                    name: AppRoutes.customerOrderTracking,
-                    builder: (context, state) {
-                      final orderId = state.pathParameters['orderId']!;
-                      return _PlaceholderScreen(
-                        label: 'Order Tracking — $orderId',
-                        role: AppRole.customer,
-                      );
-                    },
-                  ),
-                ],
               ),
             ],
           ),
 
-          // Branch 1: Cart
+          // Branch 1: Orders
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.customerShell}/${AppPaths.customerCart}',
-                name: AppRoutes.customerCart,
+                path: '${AppPaths.customerShell}/${AppPaths.customerOrders}',
+                name: AppRoutes.customerOrders,
                 builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Cart',
+                  label: 'Orders',
                   role: AppRole.customer,
                 ),
               ),
             ],
           ),
 
-          // Branch 2: Tables
+          // Branch 2: Favourites
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.customerShell}/${AppPaths.customerTables}',
-                name: AppRoutes.customerTables,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Table Selection',
-                  role: AppRole.customer,
-                ),
+                path: '${AppPaths.customerShell}/${AppPaths.customerFavourites}',
+                name: AppRoutes.customerFavourites,
+                builder: (context, state) => const FavouritesView(),
               ),
             ],
           ),
@@ -172,10 +161,34 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerProfile}',
                 name: AppRoutes.customerProfile,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Profile',
-                  role: AppRole.customer,
+                builder: (context, state) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (_) => sl<ProfileCubit>()),
+                    BlocProvider(create: (_) => sl<AuthCubit>()),
+                  ],
+                  child: const ProfileView(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: AppPaths.customerEditProfile,
+                    name: AppRoutes.customerEditProfile,
+                    builder: (context, state) {
+                      final user = state.extra as UserEntity?;
+                      return BlocProvider(
+                        create: (_) => sl<ProfileCubit>(),
+                        child: EditProfileView(
+                          user: user ??
+                              const UserEntity(
+                                id: '',
+                                name: '',
+                                email: '',
+                                role: UserRole.customer,
+                              ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -331,17 +344,17 @@ class _CustomerShell extends StatelessWidget {
           FloatingNavItem(
             icon: Icons.restaurant_menu_outlined,
             selectedIcon: Icons.restaurant_menu,
-            label: 'Menu',
+            label: 'Home',
           ),
           FloatingNavItem(
-            icon: Icons.shopping_cart_outlined,
-            selectedIcon: Icons.shopping_cart_rounded,
+            icon: Icons.shopping_bag_outlined,
+            selectedIcon: Icons.shopping_bag_rounded,
             label: 'Orders',
           ),
           FloatingNavItem(
-            icon: Icons.table_restaurant_outlined,
-            selectedIcon: Icons.table_restaurant,
-            label: 'Tables',
+            icon: Icons.favorite_border_rounded,
+            selectedIcon: Icons.favorite_rounded,
+            label: 'Favourites',
           ),
           FloatingNavItem(
             icon: Icons.person_outline_rounded,
