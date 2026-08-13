@@ -44,6 +44,7 @@ class AppScaffold extends StatelessWidget {
     this.floatingActionButtonLocation,
     this.resizeToAvoidBottomInset = true,
     this.extendBodyBehindAppBar = false,
+    this.extendBody = true,
     this.showAppBar = true,
     this.centerTitle = true,
     this.titleWidget,
@@ -69,6 +70,8 @@ class AppScaffold extends StatelessWidget {
 
   final bool extendBodyBehindAppBar;
 
+  final bool extendBody;
+
   final bool showAppBar;
 
   final bool centerTitle;
@@ -80,17 +83,16 @@ class AppScaffold extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent,
-        systemNavigationBarColor: AppColors.surfaceContainerLowest,
+        systemNavigationBarColor: AppColors.surface,
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.surface,
+        extendBody: extendBody,
         extendBodyBehindAppBar: extendBodyBehindAppBar,
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         appBar: showAppBar ? _buildAppBar(context) : null,
-        body: _AppBackground(
-          role: role,
-          child: body,
-        ),
+        body: body,
         bottomNavigationBar: bottomNavigationBar,
         floatingActionButton: floatingActionButton,
         floatingActionButtonLocation: floatingActionButtonLocation,
@@ -120,117 +122,6 @@ class AppScaffold extends StatelessWidget {
   }
 }
 
- 
-class _AppBackground extends StatelessWidget {
-  const _AppBackground({required this.child, this.role});
-
-  final Widget child;
-  final AppRole? role;
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = role?.accentColor ?? AppColors.primaryContainer;
-
-    return Stack(
-      children: [
-         
-        Positioned.fill(
-          child: Image.asset(
-            'assets/Background Image with Dark Overlay.png',
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-          ),
-        ),
-
-        
-        Positioned.fill(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.surface.withValues(alpha: 0.70),
-                  AppColors.surface.withValues(alpha: 0.88),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-         
-        Positioned(
-          top: -120,
-          left: -120,
-          child: _RadialGlow(
-            color: accent.withValues(alpha: 0.18),
-            radius: 320,
-          ),
-        ),
-
-        Positioned(
-          bottom: -160,
-          right: -160,
-          child: _RadialGlow(
-            color: AppColors.surfaceBright.withValues(alpha: 0.20),
-            radius: 300,
-          ),
-        ),
-
-        Positioned.fill(
-          child: CustomPaint(painter: _DotGridPainter()),
-        ),
-
-        Positioned.fill(child: child),
-      ],
-    );
-  }
-}
-
-class _RadialGlow extends StatelessWidget {
-  const _RadialGlow({required this.color, required this.radius});
-
-  final Color color;
-  final double radius;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: radius * 2,
-      height: radius * 2,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, Colors.transparent],
-          stops: const [0.0, 1.0],
-        ),
-      ),
-    );
-  }
-}
-
-class _DotGridPainter extends CustomPainter {
-  static final _paint = Paint()
-    ..color = AppColors.onSurface.withValues(alpha: 0.025)
-    ..strokeCap = StrokeCap.round;
-
-  static const double _spacing = 28;
-  static const double _dotRadius = 1.0;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (double x = _spacing / 2; x < size.width; x += _spacing) {
-      for (double y = _spacing / 2; y < size.height; y += _spacing) {
-        canvas.drawCircle(Offset(x, y), _dotRadius, _paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-
 class _FrostedAppBar extends StatelessWidget {
   const _FrostedAppBar({
     required this.accent,
@@ -258,12 +149,6 @@ class _FrostedAppBar extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.surfaceContainerLowest.withValues(alpha: 0.82),
-            border: Border(
-              bottom: BorderSide(
-                color: AppColors.outlineVariant.withValues(alpha: 0.3),
-                width: 0.5,
-              ),
-            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -386,7 +271,6 @@ class _RolePill extends StatelessWidget {
     );
   }
 }
-
 
 class _BackButton extends StatelessWidget {
   const _BackButton({required this.accentColor});
