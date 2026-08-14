@@ -39,12 +39,12 @@ class _RegisterFormState extends State<RegisterForm> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().register(
-            RegisterParams(
-              name: _nameController.text.trim(),
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        RegisterParams(
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -163,9 +163,9 @@ class _RegisterFormState extends State<RegisterForm> {
                   borderRadius: BorderRadius.circular(12.0),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primaryContainer.withValues(alpha: 0.35),
-                      blurRadius: 18.0,
-                      offset: const Offset(0, 4),
+                      color: AppColors.primaryContainer.withValues(alpha: 0.16),
+                      blurRadius: 10.0,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),

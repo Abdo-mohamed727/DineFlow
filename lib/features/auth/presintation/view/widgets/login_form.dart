@@ -34,11 +34,11 @@ class _LoginFormState extends State<LoginForm> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().login(
-            LoginParams(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        LoginParams(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -107,9 +107,9 @@ class _LoginFormState extends State<LoginForm> {
                   borderRadius: BorderRadius.circular(12.0),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primaryContainer.withValues(alpha: 0.35),
-                      blurRadius: 18.0,
-                      offset: const Offset(0, 4),
+                      color: AppColors.primaryContainer.withValues(alpha: 0.16),
+                      blurRadius: 10.0,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
