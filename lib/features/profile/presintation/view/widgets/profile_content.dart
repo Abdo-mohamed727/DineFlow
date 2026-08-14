@@ -1,4 +1,6 @@
+import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:dineflow/core/router/app_routes.dart';
+import 'package:dineflow/core/router/route_guard.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_primary_button.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
@@ -37,8 +39,12 @@ class ProfileContent extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primaryContainer,
             padding: const EdgeInsets.symmetric(vertical: 14),
-            side: BorderSide(color: AppColors.primaryContainer.withValues(alpha: 0.55)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            side: BorderSide(
+              color: AppColors.primaryContainer.withValues(alpha: 0.55),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
         ),
         const SizedBox(height: 20),
@@ -81,12 +87,18 @@ class ProfileContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 28),
-        BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) => AppPrimaryButton(
-            text: 'Log Out',
-            isLoading: state.maybeWhen(loading: () => true, orElse: () => false),
-            icon: const Icon(Icons.logout_rounded, size: 18, color: AppColors.onPrimaryContainer),
-            onPressed: () => context.read<AuthCubit>().logout(),
+        BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) => state.whenOrNull(
+            unauthenticated: () => sl<RouterNotifier>().updateStatus(
+              AuthStatus.unauthenticated,
+            ),
+          ),
+          child: AppPrimaryButton(
+            onPressed: () {
+              context.read<AuthCubit>().logout();
+            },
+            text: 'Logout',
+            backgroundColor: AppColors.inversePrimary,
           ),
         ),
       ],
@@ -94,7 +106,9 @@ class ProfileContent extends StatelessWidget {
   }
 
   void _comingSoon(BuildContext context, String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(feature + ' will be available soon.')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(feature + ' will be available soon.')),
+    );
   }
 }
 
@@ -106,7 +120,9 @@ class _ProfileCard extends StatelessWidget {
     decoration: BoxDecoration(
       color: AppColors.surfaceContainerLow,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.35)),
+      border: Border.all(
+        color: AppColors.outlineVariant.withValues(alpha: 0.35),
+      ),
     ),
     child: Column(children: children),
   );
@@ -140,32 +156,72 @@ class _MenuRow extends StatelessWidget {
       title: label,
       icon: icon,
       showDivider: showDivider,
-      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.onSurfaceVariant),
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        color: AppColors.onSurfaceVariant,
+      ),
     ),
   );
 }
 
 class _ProfileRow extends StatelessWidget {
-  const _ProfileRow({required this.title, required this.icon, required this.showDivider, this.subtitle, this.trailing});
+  const _ProfileRow({
+    required this.title,
+    required this.icon,
+    required this.showDivider,
+    this.subtitle,
+    this.trailing,
+  });
   final String title;
   final String? subtitle;
   final IconData icon;
   final bool showDivider;
   final Widget? trailing;
   @override
-  Widget build(BuildContext context) => Column(children: [
-    Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(children: [
-        Icon(icon, size: 18, color: AppColors.primaryContainer),
-        const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: TextStyle(color: AppColors.onSurfaceVariant.withValues(alpha: 0.7), fontSize: subtitle == null ? 15 : 11)),
-          if (subtitle != null) ...[const SizedBox(height: 5), Text(subtitle!, style: const TextStyle(color: AppColors.onSurface, fontSize: 15, fontWeight: FontWeight.w500))],
-        ])),
-        if (trailing != null) trailing!,
-      ]),
-    ),
-    if (showDivider) Divider(height: 1, indent: 16, endIndent: 16, color: AppColors.outlineVariant.withValues(alpha: 0.3)),
-  ]);
+  Widget build(BuildContext context) => Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: AppColors.primaryContainer),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: AppColors.onSurfaceVariant.withValues(alpha: 0.7),
+                      fontSize: subtitle == null ? 15 : 11,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      subtitle!,
+                      style: const TextStyle(
+                        color: AppColors.onSurface,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (trailing != null) trailing!,
+          ],
+        ),
+      ),
+      if (showDivider)
+        Divider(
+          height: 1,
+          indent: 16,
+          endIndent: 16,
+          color: AppColors.outlineVariant.withValues(alpha: 0.3),
+        ),
+    ],
+  );
 }
