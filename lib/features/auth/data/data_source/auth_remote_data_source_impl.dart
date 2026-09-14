@@ -1,17 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dineflow/core/error/exception.dart';
 import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart';
 import 'package:dineflow/features/auth/data/models/user_model.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
 @LazySingleton(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final FirebaseAuth _firebaseAuth;
-  final FirebaseFirestore _firestore;
+  final SupabaseClient _supabaseClient;
 
-  AuthRemoteDataSourceImpl(this._firebaseAuth, this._firestore);
+  AuthRemoteDataSourceImpl(this._supabaseClient);
 
   @override
   Future<UserModel> login({
@@ -19,26 +17,31 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
   }) async {
     try {
-      final credential = await _firebaseAuth.signInWithEmailAndPassword(
+      final response = await _supabaseClient.auth.signInWithPassword(
         email: email,
         password: password,
       );
 
-      final uid = credential.user?.uid;
+      final uid = response.user?.id;
       if (uid == null) {
         throw const AuthException('User ID not found after login.');
       }
 
-      final doc = await _firestore.collection('users').doc(uid).get();
-      if (!doc.exists || doc.data() == null) {
+      final data = await _supabaseClient
+          .from('users')
+          .select()
+          .eq('id', uid)
+          .maybeSingle();
+
+      if (data == null) {
         throw const NotFoundException(
           'User profile does not exist in database.',
         );
       }
 
-      return UserModel.fromJson(doc.data()!);
-    } on FirebaseAuthException catch (e) {
-      throw AuthException(e.message ?? 'Authentication failed.');
+      return UserModel.fromJson(data);
+    } on AuthException {
+      rethrow;
     } on AppException {
       rethrow;
     } catch (e) {
@@ -54,19 +57,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? phone,
   }) async {
     try {
-      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+      final response = await _supabaseClient.auth.signUp(
         email: email,
         password: password,
+        data: {'display_name': name},
       );
 
-      final uid = credential.user?.uid;
+      final uid = response.user?.id;
       if (uid == null) {
         throw const AuthException(
           'Failed to retrieve user ID upon registration.',
         );
       }
-
-      await credential.user?.updateDisplayName(name);
 
       final userModel = UserModel(
         id: uid,
@@ -76,11 +78,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         phone: phone,
       );
 
-      await _firestore.collection('users').doc(uid).set(userModel.toJson());
+      await _supabaseClient.from('users').insert(userModel.toJson());
 
       return userModel;
-    } on FirebaseAuthException catch (e) {
-      throw AuthException(e.message ?? 'Registration failed.');
+    } on AuthException {
+      rethrow;
     } on AppException {
       rethrow;
     } catch (e) {
@@ -91,7 +93,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     try {
-      await _firebaseAuth.signOut();
+      await _supabaseClient.auth.signOut();
     } catch (e) {
       throw ServerException('Failed to logout: ${e.toString()}');
     }
@@ -100,16 +102,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel?> getCurrentUserData() async {
     try {
-      final currentUser = _firebaseAuth.currentUser;
+      final currentUser = _supabaseClient.auth.currentUser;
       if (currentUser == null) return null;
 
-      final doc = await _firestore
-          .collection('users')
-          .doc(currentUser.uid)
-          .get();
-      if (!doc.exists || doc.data() == null) return null;
+      final data = await _supabaseClient
+          .from('users')
+          .select()
+          .eq('id', currentUser.id)
+          .maybeSingle();
 
-      return UserModel.fromJson(doc.data()!);
+      if (data == null) return null;
+
+      return UserModel.fromJson(data);
     } catch (e) {
       throw ServerException('Failed to get current user data: ${e.toString()}');
     }

@@ -9,7 +9,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:dineflow/core/di/firebase_module.dart' as _i297;
 import 'package:dineflow/core/di/router_module.dart' as _i1038;
 import 'package:dineflow/core/router/route_guard.dart' as _i696;
@@ -45,9 +44,9 @@ import 'package:dineflow/features/profile/domain/usecase/update_profile_usecase.
     as _i922;
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
     as _i87;
-import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -56,22 +55,15 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    final firebaseModule = _$FirebaseModule();
+    final supabaseModule = _$SupabaseModule();
     final routerModule = _$RouterModule();
-    gh.singleton<_i59.FirebaseAuth>(() => firebaseModule.firebaseAuth);
-    gh.singleton<_i974.FirebaseFirestore>(() => firebaseModule.firestore);
+    gh.singleton<_i454.SupabaseClient>(() => supabaseModule.supabaseClient);
     gh.singleton<_i696.RouterNotifier>(() => routerModule.routerNotifier);
-    gh.lazySingleton<_i207.AuthRemoteDataSource>(
-      () => _i784.AuthRemoteDataSourceImpl(
-        gh<_i59.FirebaseAuth>(),
-        gh<_i974.FirebaseFirestore>(),
-      ),
-    );
     gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
-      () => _i485.ProfileRemoteDataSourceImpl(
-        gh<_i59.FirebaseAuth>(),
-        gh<_i974.FirebaseFirestore>(),
-      ),
+      () => _i485.ProfileRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i207.AuthRemoteDataSource>(
+      () => _i784.AuthRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i995.ProfileRepositoryInterface>(
       () => _i491.ProfileRepositoryImpl(
@@ -118,6 +110,6 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$FirebaseModule extends _i297.FirebaseModule {}
+class _$SupabaseModule extends _i297.SupabaseModule {}
 
 class _$RouterModule extends _i1038.RouterModule {}

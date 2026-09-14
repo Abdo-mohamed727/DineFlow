@@ -1,12 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 @module
-abstract class FirebaseModule {
+abstract class SupabaseModule {
   @singleton
-  FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
-
-  @singleton
-  FirebaseFirestore get firestore => FirebaseFirestore.instance;
+  SupabaseClient get supabaseClient => Supabase.instance.client;
 }
