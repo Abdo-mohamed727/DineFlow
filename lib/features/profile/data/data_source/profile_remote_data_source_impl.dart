@@ -1,34 +1,34 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dineflow/core/error/exception.dart';
 import 'package:dineflow/features/auth/data/models/user_model.dart';
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
 @LazySingleton(as: ProfileRemoteDataSourceInterface)
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSourceInterface {
-  final FirebaseAuth _firebaseAuth;
-  final FirebaseFirestore _firestore;
+  final SupabaseClient _supabaseClient;
 
-  ProfileRemoteDataSourceImpl(this._firebaseAuth, this._firestore);
+  ProfileRemoteDataSourceImpl(this._supabaseClient);
 
   @override
   Future<UserModel> getProfile() async {
     try {
-      final currentUser = _firebaseAuth.currentUser;
+      final currentUser = _supabaseClient.auth.currentUser;
       if (currentUser == null) {
         throw const AuthException('No authenticated user found.');
       }
 
-      final doc = await _firestore
-          .collection('users')
-          .doc(currentUser.uid)
-          .get();
-      if (!doc.exists || doc.data() == null) {
+      final data = await _supabaseClient
+          .from('users')
+          .select()
+          .eq('id', currentUser.id)
+          .maybeSingle();
+
+      if (data == null) {
         throw const NotFoundException('User profile does not exist.');
       }
 
-      return UserModel.fromJson(doc.data()!);
+      return UserModel.fromJson(data);
     } on AppException {
       rethrow;
     } catch (e) {
@@ -42,23 +42,27 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSourceInterface {
     String? phone,
   }) async {
     try {
-      final currentUser = _firebaseAuth.currentUser;
+      final currentUser = _supabaseClient.auth.currentUser;
       if (currentUser == null) {
         throw const AuthException('No authenticated user found.');
       }
 
-      final docRef = _firestore.collection('users').doc(currentUser.uid);
-      await docRef.update({
-        'name': name,
-        'phone': phone,
-      });
+      await _supabaseClient
+          .from('users')
+          .update({'name': name, 'phone': phone})
+          .eq('id', currentUser.id);
 
-      final doc = await docRef.get();
-      if (!doc.exists || doc.data() == null) {
+      final data = await _supabaseClient
+          .from('users')
+          .select()
+          .eq('id', currentUser.id)
+          .maybeSingle();
+
+      if (data == null) {
         throw const NotFoundException('User profile does not exist.');
       }
 
-      return UserModel.fromJson(doc.data()!);
+      return UserModel.fromJson(data);
     } on AppException {
       rethrow;
     } catch (e) {
