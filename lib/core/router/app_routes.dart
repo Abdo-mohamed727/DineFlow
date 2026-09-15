@@ -9,6 +9,8 @@ abstract final class AppRoutes {
   static const String customerShell = 'customer-shell';
   static const String customerMenu = 'customer-menu';
   static const String customerCategories = 'customer-categories';
+  static const String customerProductDetails = 'customer-product-details';
+  static const String customerSearch = 'customer-search';
   static const String customerOrders = 'customer-orders';
   static const String customerOrderTracking = 'customer-order-tracking';
   static const String customerFavourites = 'customer-favourites';
@@ -40,6 +42,8 @@ abstract final class AppPaths {
   static const String customerShell = '/customer';
   static const String customerMenu = 'menu';
   static const String customerCategories = 'categories';
+  static const String customerProductDetails = '/product-details';
+  static const String customerSearch = '/search';
   static const String customerOrders = 'orders';
   static const String customerOrderTracking = 'order/:orderId';
   static const String customerFavourites = 'favourites';

@@ -8,6 +8,8 @@ class ProductModel {
   final double price;
   final String? imageUrl;
   final bool isAvailable;
+  final int? preparingTime;
+  final String? spiceLevel;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -19,6 +21,8 @@ class ProductModel {
     required this.price,
     this.imageUrl,
     this.isAvailable = true,
+    this.preparingTime,
+    this.spiceLevel,
     this.createdAt,
     this.updatedAt,
   });
@@ -29,6 +33,14 @@ class ProductModel {
         ? rawPrice.toDouble()
         : (double.tryParse(rawPrice?.toString() ?? '') ?? 0.0);
 
+    final rawPrepTime = json['preparing_time'] ?? json['preparingTime'];
+    final int? parsedPrepTime = rawPrepTime is num
+        ? rawPrepTime.toInt()
+        : int.tryParse(rawPrepTime?.toString() ?? '');
+
+    final rawSpice = json['spice_level'] ?? json['spiceLevel'];
+    final String? parsedSpiceLevel = rawSpice?.toString();
+
     return ProductModel(
       id: json['id'] as String? ?? '',
       categoryId: (json['category_id'] ?? json['categoryId']) as String? ?? '',
@@ -37,6 +49,8 @@ class ProductModel {
       price: parsedPrice,
       imageUrl: (json['image_url'] ?? json['imageUrl']) as String?,
       isAvailable: (json['is_available'] ?? json['isAvailable']) as bool? ?? true,
+      preparingTime: parsedPrepTime,
+      spiceLevel: parsedSpiceLevel,
       createdAt: (json['created_at'] ?? json['createdAt']) != null
           ? DateTime.tryParse((json['created_at'] ?? json['createdAt']).toString())
           : null,
@@ -55,6 +69,8 @@ class ProductModel {
       'price': price,
       'image_url': imageUrl,
       'is_available': isAvailable,
+      'preparing_time': preparingTime,
+      'spice_level': spiceLevel,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -69,6 +85,8 @@ class ProductModel {
       price: entity.price,
       imageUrl: entity.imageUrl,
       isAvailable: entity.isAvailable,
+      preparingTime: entity.preparingTime,
+      spiceLevel: entity.spiceLevel,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );
@@ -83,6 +101,8 @@ class ProductModel {
       price: price,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
+      preparingTime: preparingTime,
+      spiceLevel: spiceLevel,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );

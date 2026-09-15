@@ -6,6 +6,8 @@ class ProductEntity {
   final double price;
   final String? imageUrl;
   final bool isAvailable;
+  final int? preparingTime;
+  final String? spiceLevel;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -17,6 +19,8 @@ class ProductEntity {
     required this.price,
     this.imageUrl,
     this.isAvailable = true,
+    this.preparingTime,
+    this.spiceLevel,
     this.createdAt,
     this.updatedAt,
   });
@@ -29,6 +33,8 @@ class ProductEntity {
     double? price,
     String? imageUrl,
     bool? isAvailable,
+    int? preparingTime,
+    String? spiceLevel,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -40,6 +46,8 @@ class ProductEntity {
       price: price ?? this.price,
       imageUrl: imageUrl ?? this.imageUrl,
       isAvailable: isAvailable ?? this.isAvailable,
+      preparingTime: preparingTime ?? this.preparingTime,
+      spiceLevel: spiceLevel ?? this.spiceLevel,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
