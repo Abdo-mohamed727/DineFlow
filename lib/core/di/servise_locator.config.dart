@@ -30,6 +30,22 @@ import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart'
     as _i1;
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart'
     as _i87;
+import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_impl.dart'
+    as _i301;
+import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_interface.dart'
+    as _i302;
+import 'package:dineflow/features/menu/data/repo/menu_repository_impl.dart'
+    as _i303;
+import 'package:dineflow/features/menu/domain/repo/menu_repository_interface.dart'
+    as _i304;
+import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart'
+    as _i305;
+import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart'
+    as _i306;
+import 'package:dineflow/features/menu/domain/usecase/search_products_usecase.dart'
+    as _i307;
+import 'package:dineflow/features/menu/presentation/view_model/cubit/menu_cubit.dart'
+    as _i308;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
     as _i485;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart'
@@ -65,6 +81,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i207.AuthRemoteDataSource>(
       () => _i784.AuthRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i302.MenuRemoteDataSource>(
+      () => _i301.MenuRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i995.ProfileRepositoryInterface>(
       () => _i491.ProfileRepositoryImpl(
         gh<_i752.ProfileRemoteDataSourceInterface>(),
@@ -72,6 +91,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i821.AuthRepositoryInterface>(
       () => _i764.AuthRepositoryImpl(gh<_i207.AuthRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i304.MenuRepositoryInterface>(
+      () => _i303.MenuRepositoryImpl(gh<_i302.MenuRemoteDataSource>()),
     );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
       () =>
@@ -91,6 +113,22 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i922.UpdateProfileUseCase>(
       () => _i922.UpdateProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i305.GetCategoriesUseCase>(
+      () => _i305.GetCategoriesUseCase(gh<_i304.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i306.GetProductsUseCase>(
+      () => _i306.GetProductsUseCase(gh<_i304.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i307.SearchProductsUseCase>(
+      () => _i307.SearchProductsUseCase(gh<_i304.MenuRepositoryInterface>()),
+    );
+    gh.factory<_i308.MenuCubit>(
+      () => _i308.MenuCubit(
+        gh<_i305.GetCategoriesUseCase>(),
+        gh<_i306.GetProductsUseCase>(),
+        gh<_i307.SearchProductsUseCase>(),
+      ),
     );
     gh.factory<_i87.ProfileCubit>(
       () => _i87.ProfileCubit(

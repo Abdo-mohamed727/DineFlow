@@ -5,6 +5,8 @@ import 'package:dineflow/features/auth/presintation/view/screens/login_view.dart
 import 'package:dineflow/features/auth/presintation/view/screens/register_view.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/splash_view.dart';
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
+import 'package:dineflow/features/menu/presentation/view/screens/categories_view.dart';
+import 'package:dineflow/features/menu/presentation/view/screens/menu_view.dart';
 import 'package:dineflow/features/profile/presintation/view/screens/edit_profile_view.dart';
 import 'package:dineflow/features/profile/presintation/view/favourites_view.dart';
 import 'package:dineflow/features/profile/presintation/view/screens/profile_view.dart';
@@ -122,10 +124,14 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerMenu}',
                 name: AppRoutes.customerMenu,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Menu',
-                  role: AppRole.customer,
-                ),
+                builder: (context, state) => const MenuView(),
+                routes: [
+                  GoRoute(
+                    path: AppPaths.customerCategories,
+                    name: AppRoutes.customerCategories,
+                    builder: (context, state) => const CategoriesView(),
+                  ),
+                ],
               ),
             ],
           ),
