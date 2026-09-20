@@ -16,10 +16,8 @@ class MenuRepositoryImpl implements MenuRepositoryInterface {
   @override
   Future<Result<List<CategoryEntity>>> getCategories() async {
     try {
-      final categoryModels = await _remoteDataSource.getCategories();
-      final categoryEntities =
-          categoryModels.map((model) => model.toEntity()).toList();
-      return Success(categoryEntities);
+      final responseModel = await _remoteDataSource.getCategories();
+      return Success(responseModel.toEntity());
     } on NotFoundException catch (e) {
       return FailureResult(NotFoundFailure(e.message));
     } on ServerException catch (e) {
@@ -32,11 +30,9 @@ class MenuRepositoryImpl implements MenuRepositoryInterface {
   @override
   Future<Result<List<ProductEntity>>> getProducts({String? categoryId}) async {
     try {
-      final productModels =
+      final productsModel =
           await _remoteDataSource.getProducts(categoryId: categoryId);
-      final productEntities =
-          productModels.map((model) => model.toEntity()).toList();
-      return Success(productEntities);
+      return Success(productsModel.toEntity().items);
     } on NotFoundException catch (e) {
       return FailureResult(NotFoundFailure(e.message));
     } on ServerException catch (e) {
@@ -49,8 +45,8 @@ class MenuRepositoryImpl implements MenuRepositoryInterface {
   @override
   Future<Result<ProductEntity>> getProductById(String id) async {
     try {
-      final productModel = await _remoteDataSource.getProductById(id);
-      return Success(productModel.toEntity());
+      final item = await _remoteDataSource.getProductById(id);
+      return Success(item.toEntity());
     } on NotFoundException catch (e) {
       return FailureResult(NotFoundFailure(e.message));
     } on ServerException catch (e) {
@@ -63,10 +59,8 @@ class MenuRepositoryImpl implements MenuRepositoryInterface {
   @override
   Future<Result<List<ProductEntity>>> searchProducts(String query) async {
     try {
-      final productModels = await _remoteDataSource.searchProducts(query);
-      final productEntities =
-          productModels.map((model) => model.toEntity()).toList();
-      return Success(productEntities);
+      final productsModel = await _remoteDataSource.searchProducts(query);
+      return Success(productsModel.toEntity().items);
     } on NotFoundException catch (e) {
       return FailureResult(NotFoundFailure(e.message));
     } on ServerException catch (e) {

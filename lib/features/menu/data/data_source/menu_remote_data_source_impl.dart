@@ -1,25 +1,34 @@
 import 'package:dineflow/core/error/exception.dart';
+import 'package:dineflow/core/networking/api_constants.dart';
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_interface.dart';
 import 'package:dineflow/features/menu/data/models/category_model.dart';
 import 'package:dineflow/features/menu/data/models/product_model.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 @LazySingleton(as: MenuRemoteDataSource)
 class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
-  final SupabaseClient _supabaseClient;
+  final Dio _dio;
 
-  MenuRemoteDataSourceImpl(this._supabaseClient);
+  MenuRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<List<CategoryModel>> getCategories() async {
+  Future<CategoriesResponseModel> getCategories() async {
     try {
-      final response = await _supabaseClient.from('categories').select();
+      final response = await _dio.get(ApiConstants.categories);
 
-      final list = response as List<dynamic>;
-      return list
-          .map((json) => CategoryModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      if (response.data is Map<String, dynamic>) {
+        return CategoriesResponseModel.fromJson(response.data as Map<String, dynamic>);
+      } else if (response.data is List) {
+        return CategoriesResponseModel(
+          data: CategoriesDataModel(
+            categories: (response.data as List<dynamic>)
+                .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+                .toList(),
+          ),
+        );
+      }
+      return const CategoriesResponseModel();
     } on AppException {
       rethrow;
     } catch (e) {
@@ -28,19 +37,27 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
   }
 
   @override
-  Future<List<ProductModel>> getProducts({String? categoryId}) async {
+  Future<ProductsModel> getProducts({String? categoryId}) async {
     try {
-      final response = categoryId != null && categoryId.isNotEmpty
-          ? await _supabaseClient
-              .from('products')
-              .select()
-              .eq('category_id', categoryId)
-          : await _supabaseClient.from('products').select();
+      final response = await _dio.get(
+        ApiConstants.products,
+        queryParameters: categoryId != null && categoryId.isNotEmpty
+            ? {'category_id': categoryId}
+            : null,
+      );
 
-      final list = response as List<dynamic>;
-      return list
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      if (response.data is Map<String, dynamic>) {
+        return ProductsModel.fromJson(response.data as Map<String, dynamic>);
+      } else if (response.data is List) {
+        return ProductsModel(
+          data: Data(
+            items: (response.data as List<dynamic>)
+                .map((e) => Items.fromJson(e as Map<String, dynamic>))
+                .toList(),
+          ),
+        );
+      }
+      return ProductsModel();
     } on AppException {
       rethrow;
     } catch (e) {
@@ -49,19 +66,19 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
   }
 
   @override
-  Future<ProductModel> getProductById(String id) async {
+  Future<Items> getProductById(String id) async {
     try {
-      final response = await _supabaseClient
-          .from('products')
-          .select()
-          .eq('id', id)
-          .maybeSingle();
+      final response = await _dio.get('${ApiConstants.products}/$id');
 
-      if (response == null) {
+      if (response.data == null) {
         throw const NotFoundException('Product not found.');
       }
 
-      return ProductModel.fromJson(response);
+      final data = (response.data is Map<String, dynamic> && response.data['data'] != null)
+          ? response.data['data']
+          : (response.data['product'] ?? response.data);
+
+      return Items.fromJson(data as Map<String, dynamic>);
     } on AppException {
       rethrow;
     } catch (e) {
@@ -70,17 +87,25 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
   }
 
   @override
-  Future<List<ProductModel>> searchProducts(String query) async {
+  Future<ProductsModel> searchProducts(String query) async {
     try {
-      final response = await _supabaseClient
-          .from('products')
-          .select()
-          .ilike('name', '%$query%');
+      final response = await _dio.get(
+        ApiConstants.products,
+        queryParameters: {'search': query},
+      );
 
-      final list = response as List<dynamic>;
-      return list
-          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      if (response.data is Map<String, dynamic>) {
+        return ProductsModel.fromJson(response.data as Map<String, dynamic>);
+      } else if (response.data is List) {
+        return ProductsModel(
+          data: Data(
+            items: (response.data as List<dynamic>)
+                .map((e) => Items.fromJson(e as Map<String, dynamic>))
+                .toList(),
+          ),
+        );
+      }
+      return ProductsModel();
     } on AppException {
       rethrow;
     } catch (e) {

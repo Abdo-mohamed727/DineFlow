@@ -2,11 +2,11 @@ import 'package:dineflow/features/menu/data/models/category_model.dart';
 import 'package:dineflow/features/menu/data/models/product_model.dart';
 
 abstract interface class MenuRemoteDataSource {
-  Future<List<CategoryModel>> getCategories();
+  Future<CategoriesResponseModel> getCategories();
 
-  Future<List<ProductModel>> getProducts({String? categoryId});
+  Future<ProductsModel> getProducts({String? categoryId});
 
-  Future<ProductModel> getProductById(String id);
+  Future<Items> getProductById(String id);
 
-  Future<List<ProductModel>> searchProducts(String query);
+  Future<ProductsModel> searchProducts(String query);
 }

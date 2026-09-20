@@ -1,20 +1,15 @@
 import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app_config.dart';
 import 'core/router/app_router.dart';
 import 'core/router/route_guard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: 'https://qttjpubolafxbtbhztbl.supabase.co',
-    anonKey: 'sb_publishable_88Qio_5ZPS9KIONVqUjKxg_RUBbWvZJ',
-  );
 
   AppConfig.instance = const AppConfig(
     environment: AppEnvironment.production,
-    apiBaseUrl: 'https://api.dineflow.example.com',
+    apiBaseUrl: 'http://10.0.2.2:3000',
   );
   configureDependencies();
   runApp(const DineFlowApp());

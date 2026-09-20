@@ -35,8 +35,7 @@ class SearchProductsUseCase
 
       final filtered = params.products!.where((product) {
         final nameMatches = product.name.toLowerCase().contains(query);
-        final descMatches =
-            product.description?.toLowerCase().contains(query) ?? false;
+        final descMatches = product.description.toLowerCase().contains(query);
         return nameMatches || descMatches;
       }).toList();
 

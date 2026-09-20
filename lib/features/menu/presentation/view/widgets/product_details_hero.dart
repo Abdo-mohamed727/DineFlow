@@ -36,9 +36,9 @@ class ProductDetailsHero extends StatelessWidget {
               end: Alignment.bottomCenter,
             ),
           ),
-          child: product.imageUrl != null && product.imageUrl!.isNotEmpty
+          child: product.image.isNotEmpty
               ? Image.network(
-                  product.imageUrl!,
+                  product.image,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) =>
                       _buildImageFallback(),

@@ -1,110 +1,159 @@
 import 'package:dineflow/features/menu/domain/entity/product_entity.dart';
 
-class ProductModel {
-  final String id;
-  final String categoryId;
-  final String name;
-  final String? description;
-  final double price;
-  final String? imageUrl;
-  final bool isAvailable;
-  final int? preparingTime;
-  final String? spiceLevel;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+class ProductsModel {
+  Data? data;
 
-  const ProductModel({
-    required this.id,
-    required this.categoryId,
-    required this.name,
+  ProductsModel({this.data});
+
+  ProductsModel.fromJson(Map<String, dynamic> json) {
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = <String, dynamic>{};
+    if (data != null) {
+      map['data'] = data!.toJson();
+    }
+    return map;
+  }
+
+  ProductsPageEntity toEntity() => (data ?? Data()).toEntity();
+}
+
+class Data {
+  List<Items>? items;
+  int? total;
+  int? page;
+  int? limit;
+  int? totalPages;
+
+  Data({this.items, this.total, this.page, this.limit, this.totalPages});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    if (json['items'] != null) {
+      items = <Items>[];
+      json['items'].forEach((v) {
+        items!.add(Items.fromJson(v));
+      });
+    }
+    total = json['total'];
+    page = json['page'];
+    limit = json['limit'];
+    totalPages = json['totalPages'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = <String, dynamic>{};
+    if (items != null) {
+      map['items'] = items!.map((v) => v.toJson()).toList();
+    }
+    map['total'] = total;
+    map['page'] = page;
+    map['limit'] = limit;
+    map['totalPages'] = totalPages;
+    return map;
+  }
+
+  ProductsPageEntity toEntity() => ProductsPageEntity(
+        items: items?.map((e) => e.toEntity()).toList() ?? [],
+        total: total ?? 0,
+        page: page ?? 1,
+        limit: limit ?? 0,
+        totalPages: totalPages ?? 0,
+      );
+}
+
+class Items {
+  String? id;
+  String? name;
+  String? description;
+  int? price;
+  String? image;
+  String? imagePublicId;
+  CategoryId? categoryId;
+  bool? isAvailable;
+  String? createdAt;
+  String? updatedAt;
+
+  Items({
+    this.id,
+    this.name,
     this.description,
-    required this.price,
-    this.imageUrl,
-    this.isAvailable = true,
-    this.preparingTime,
-    this.spiceLevel,
+    this.price,
+    this.image,
+    this.imagePublicId,
+    this.categoryId,
+    this.isAvailable,
     this.createdAt,
     this.updatedAt,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    final rawPrice = json['price'];
-    final double parsedPrice = rawPrice is num
-        ? rawPrice.toDouble()
-        : (double.tryParse(rawPrice?.toString() ?? '') ?? 0.0);
-
-    final rawPrepTime = json['preparing_time'] ?? json['preparingTime'];
-    final int? parsedPrepTime = rawPrepTime is num
-        ? rawPrepTime.toInt()
-        : int.tryParse(rawPrepTime?.toString() ?? '');
-
-    final rawSpice = json['spice_level'] ?? json['spiceLevel'];
-    final String? parsedSpiceLevel = rawSpice?.toString();
-
-    return ProductModel(
-      id: json['id'] as String? ?? '',
-      categoryId: (json['category_id'] ?? json['categoryId']) as String? ?? '',
-      name: json['name'] as String? ?? '',
-      description: json['description'] as String?,
-      price: parsedPrice,
-      imageUrl: (json['image_url'] ?? json['imageUrl']) as String?,
-      isAvailable: (json['is_available'] ?? json['isAvailable']) as bool? ?? true,
-      preparingTime: parsedPrepTime,
-      spiceLevel: parsedSpiceLevel,
-      createdAt: (json['created_at'] ?? json['createdAt']) != null
-          ? DateTime.tryParse((json['created_at'] ?? json['createdAt']).toString())
-          : null,
-      updatedAt: (json['updated_at'] ?? json['updatedAt']) != null
-          ? DateTime.tryParse((json['updated_at'] ?? json['updatedAt']).toString())
-          : null,
-    );
+  Items.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    description = json['description'];
+    price = json['price'];
+    image = json['image'];
+    imagePublicId = json['imagePublicId'];
+    categoryId = json['categoryId'] != null
+        ? CategoryId.fromJson(json['categoryId'])
+        : null;
+    isAvailable = json['isAvailable'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'category_id': categoryId,
-      'name': name,
-      'description': description,
-      'price': price,
-      'image_url': imageUrl,
-      'is_available': isAvailable,
-      'preparing_time': preparingTime,
-      'spice_level': spiceLevel,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-    };
+    final Map<String, dynamic> map = <String, dynamic>{};
+    map['id'] = id;
+    map['name'] = name;
+    map['description'] = description;
+    map['price'] = price;
+    map['image'] = image;
+    map['imagePublicId'] = imagePublicId;
+    if (categoryId != null) {
+      map['categoryId'] = categoryId!.toJson();
+    }
+    map['isAvailable'] = isAvailable;
+    map['createdAt'] = createdAt;
+    map['updatedAt'] = updatedAt;
+    return map;
   }
 
-  factory ProductModel.fromEntity(ProductEntity entity) {
-    return ProductModel(
-      id: entity.id,
-      categoryId: entity.categoryId,
-      name: entity.name,
-      description: entity.description,
-      price: entity.price,
-      imageUrl: entity.imageUrl,
-      isAvailable: entity.isAvailable,
-      preparingTime: entity.preparingTime,
-      spiceLevel: entity.spiceLevel,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    );
+  ProductEntity toEntity() => ProductEntity(
+        id: id ?? '',
+        name: name ?? '',
+        description: description ?? '',
+        price: price ?? 0,
+        image: image ?? '',
+        imagePublicId: imagePublicId ?? '',
+        category: (categoryId ?? CategoryId()).toEntity(),
+        isAvailable: isAvailable ?? false,
+        createdAt: DateTime.tryParse(createdAt ?? ''),
+        updatedAt: DateTime.tryParse(updatedAt ?? ''),
+      );
+}
+
+class CategoryId {
+  String? id;
+  String? name;
+
+  CategoryId({this.id, this.name});
+
+  CategoryId.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
   }
 
-  ProductEntity toEntity() {
-    return ProductEntity(
-      id: id,
-      categoryId: categoryId,
-      name: name,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-      isAvailable: isAvailable,
-      preparingTime: preparingTime,
-      spiceLevel: spiceLevel,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = <String, dynamic>{};
+    map['id'] = id;
+    map['name'] = name;
+    return map;
   }
+
+  ProductCategoryEntity toEntity() => ProductCategoryEntity(
+        id: id ?? '',
+        name: name ?? '',
+      );
 }

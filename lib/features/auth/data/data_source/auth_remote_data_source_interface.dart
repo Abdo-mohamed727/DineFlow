@@ -1,9 +1,9 @@
 import 'package:dineflow/features/auth/data/models/user_model.dart';
 
 abstract interface class AuthRemoteDataSource {
-  Future<UserModel> login({required String email, required String password});
+  Future<User> login({required String email, required String password});
 
-  Future<UserModel> register({
+  Future<User> register({
     required String name,
     required String email,
     required String password,
@@ -12,5 +12,5 @@ abstract interface class AuthRemoteDataSource {
 
   Future<void> logout();
 
-  Future<UserModel?> getCurrentUserData();
+  Future<User?> getCurrentUserData();
 }
