@@ -14,21 +14,22 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSourceInterface {
   @override
   Future<User> getProfile() async {
     try {
-      final response = await _dio.get(ApiConstants.profile);
+      Response response;
+      try {
+        response = await _dio.get(ApiConstants.profile);
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 404) {
+          response = await _dio.get(ApiConstants.me);
+        } else {
+          rethrow;
+        }
+      }
 
       if (response.data == null) {
         throw const NotFoundException('User profile does not exist.');
       }
 
-      final userData = response.data?['data']?['user'] ??
-          response.data?['user'] ??
-          response.data;
-
-      if (userData == null) {
-        throw const NotFoundException('User profile does not exist.');
-      }
-
-      return User.fromJson(userData as Map<String, dynamic>);
+      return User.fromJson(response.data as Map<String, dynamic>);
     } on AppException {
       rethrow;
     } catch (e) {
@@ -42,24 +43,35 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSourceInterface {
     String? phone,
   }) async {
     try {
-      final response = await _dio.put(
-        ApiConstants.profile,
-        data: {'name': name, 'phone': phone},
-      );
+      Response response;
+      try {
+        response = await _dio.patch(
+          ApiConstants.profile,
+          data: {'name': name, 'phone': phone},
+        );
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 404) {
+          try {
+            response = await _dio.patch(
+              ApiConstants.me,
+              data: {'name': name, 'phone': phone},
+            );
+          } on DioException catch (_) {
+            response = await _dio.put(
+              ApiConstants.me,
+              data: {'name': name, 'phone': phone},
+            );
+          }
+        } else {
+          rethrow;
+        }
+      }
 
       if (response.data == null) {
         throw const NotFoundException('User profile does not exist.');
       }
 
-      final userData = response.data?['data']?['user'] ??
-          response.data?['user'] ??
-          response.data;
-
-      if (userData == null) {
-        throw const NotFoundException('User profile does not exist.');
-      }
-
-      return User.fromJson(userData as Map<String, dynamic>);
+      return User.fromJson(response.data as Map<String, dynamic>);
     } on AppException {
       rethrow;
     } catch (e) {
