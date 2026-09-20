@@ -1,55 +1,50 @@
+class ProductsPageEntity {
+  final List<ProductEntity> items;
+  final int total;
+  final int page;
+  final int limit;
+  final int totalPages;
+
+  const ProductsPageEntity({
+    required this.items,
+    required this.total,
+    required this.page,
+    required this.limit,
+    required this.totalPages,
+  });
+
+  bool get hasNextPage => page < totalPages;
+}
+
 class ProductEntity {
   final String id;
-  final String categoryId;
   final String name;
-  final String? description;
-  final double price;
-  final String? imageUrl;
+  final String description;
+  final int price;
+  final String image;
+  final String imagePublicId;
+  final ProductCategoryEntity category;
   final bool isAvailable;
-  final int? preparingTime;
-  final String? spiceLevel;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   const ProductEntity({
     required this.id,
-    required this.categoryId,
     required this.name,
-    this.description,
+    required this.description,
     required this.price,
-    this.imageUrl,
-    this.isAvailable = true,
-    this.preparingTime,
-    this.spiceLevel,
+    required this.image,
+    required this.imagePublicId,
+    required this.category,
+    required this.isAvailable,
     this.createdAt,
     this.updatedAt,
   });
+}
 
-  ProductEntity copyWith({
-    String? id,
-    String? categoryId,
-    String? name,
-    String? description,
-    double? price,
-    String? imageUrl,
-    bool? isAvailable,
-    int? preparingTime,
-    String? spiceLevel,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
-    return ProductEntity(
-      id: id ?? this.id,
-      categoryId: categoryId ?? this.categoryId,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      price: price ?? this.price,
-      imageUrl: imageUrl ?? this.imageUrl,
-      isAvailable: isAvailable ?? this.isAvailable,
-      preparingTime: preparingTime ?? this.preparingTime,
-      spiceLevel: spiceLevel ?? this.spiceLevel,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
+class ProductCategoryEntity {
+  final String id;
+  final String name;
+
+  const ProductCategoryEntity({required this.id, required this.name});
 }

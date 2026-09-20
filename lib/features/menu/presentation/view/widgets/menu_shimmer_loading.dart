@@ -25,10 +25,13 @@ class MenuShimmerLoading extends StatelessWidget {
       6,
       (index) => ProductEntity(
         id: 'dummy_prod_$index',
-        categoryId: 'dummy_cat',
         name: 'Dish Name Sample',
         description: 'Sample description placeholder text',
-        price: 12.99,
+        price: 12,
+        image: '',
+        imagePublicId: '',
+        category: const ProductCategoryEntity(id: 'dummy_cat', name: 'Dummy Category'),
+        isAvailable: true,
       ),
     );
 

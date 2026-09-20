@@ -146,7 +146,7 @@ class _CategoriesViewBody extends StatelessWidget {
         final category = categories[index];
         final itemCount = products.isEmpty
             ? _getFallbackItemCount(category.name)
-            : products.where((p) => p.categoryId == category.id).length;
+            : products.where((p) => p.category.id == category.id).length;
 
         return CategoryListCard(
           category: category,

@@ -44,9 +44,9 @@ class SearchResultCard extends StatelessWidget {
                     color: AppColors.surfaceContainerHigh,
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: product.imageUrl != null && product.imageUrl!.isNotEmpty
+                  child: product.image.isNotEmpty
                       ? Image.network(
-                          product.imageUrl!,
+                          product.image,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               _buildPlaceholder(),
@@ -110,7 +110,9 @@ class SearchResultCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    product.description ?? 'Delicious fresh recipe prepared with top ingredients.',
+                    product.description.isNotEmpty
+                        ? product.description
+                        : 'Delicious fresh recipe prepared with top ingredients.',
                     style: TextStyle(
                       color: AppColors.onSurface.withValues(alpha: 0.55),
                       fontSize: 12,

@@ -6,7 +6,7 @@ class UserEntity {
   final String email;
   final UserRole role;
   final String? phone;
-  final String? photoUrl;
+  final String? profileImage;
 
   const UserEntity({
     required this.id,
@@ -14,7 +14,7 @@ class UserEntity {
     required this.email,
     this.role = UserRole.customer,
     this.phone,
-    this.photoUrl,
+    this.profileImage,
   });
 
   UserEntity copyWith({
@@ -23,7 +23,7 @@ class UserEntity {
     String? email,
     UserRole? role,
     String? phone,
-    String? photoUrl,
+    String? profileImage,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -31,7 +31,7 @@ class UserEntity {
       email: email ?? this.email,
       role: role ?? this.role,
       phone: phone ?? this.phone,
-      photoUrl: photoUrl ?? this.photoUrl,
+      profileImage: profileImage ?? this.profileImage,
     );
   }
 }

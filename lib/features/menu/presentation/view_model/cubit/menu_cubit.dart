@@ -80,7 +80,7 @@ class MenuCubit extends Cubit<MenuState> {
     List<ProductEntity> categoryFiltered = _allProducts;
     if (_selectedCategoryId != null && _selectedCategoryId!.isNotEmpty) {
       categoryFiltered = _allProducts
-          .where((product) => product.categoryId == _selectedCategoryId)
+          .where((product) => product.category.id == _selectedCategoryId)
           .toList();
     }
 

@@ -1,9 +1,9 @@
 import 'package:dineflow/features/auth/data/models/user_model.dart';
 
 abstract interface class ProfileRemoteDataSourceInterface {
-  Future<UserModel> getProfile();
+  Future<User> getProfile();
 
-  Future<UserModel> updateProfile({
+  Future<User> updateProfile({
     required String name,
     String? phone,
   });

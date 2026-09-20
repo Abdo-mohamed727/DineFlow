@@ -1,67 +1,94 @@
 import 'package:dineflow/features/menu/domain/entity/category_entity.dart';
 
+ 
+class CategoriesResponseModel {
+  final CategoriesDataModel? data;
+
+  const CategoriesResponseModel({this.data});
+
+  factory CategoriesResponseModel.fromJson(Map<String, dynamic> json) {
+    return CategoriesResponseModel(
+      data: json['data'] is Map<String, dynamic>
+          ? CategoriesDataModel.fromJson(json['data'] as Map<String, dynamic>)
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'data': data?.toJson()};
+
+  List<CategoryEntity> toEntity() =>
+      data?.categories.map((e) => e.toEntity()).toList() ?? [];
+}
+
+class CategoriesDataModel {
+  final List<CategoryModel> categories;
+
+  const CategoriesDataModel({this.categories = const []});
+
+  factory CategoriesDataModel.fromJson(Map<String, dynamic> json) {
+    return CategoriesDataModel(
+      categories: (json['categories'] as List<dynamic>? ?? [])
+          .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'categories': categories.map((e) => e.toJson()).toList(),
+      };
+}
+
 class CategoryModel {
-  final String id;
-  final String name;
+  final String? id;
+  final String? name;
   final String? description;
-  final String? imageUrl;
+  final String? image;
+  final String? imagePublicId;
+  final bool? isActive;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   const CategoryModel({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
     this.description,
-    this.imageUrl,
+    this.image,
+    this.imagePublicId,
+    this.isActive,
     this.createdAt,
     this.updatedAt,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
+      id: json['id'] as String?,
+      name: json['name'] as String?,
       description: json['description'] as String?,
-      imageUrl: (json['image_url'] ?? json['imageUrl']) as String?,
-      createdAt: (json['created_at'] ?? json['createdAt']) != null
-          ? DateTime.tryParse((json['created_at'] ?? json['createdAt']).toString())
-          : null,
-      updatedAt: (json['updated_at'] ?? json['updatedAt']) != null
-          ? DateTime.tryParse((json['updated_at'] ?? json['updatedAt']).toString())
-          : null,
+      image: json['image'] as String?,
+      imagePublicId: json['imagePublicId'] as String?,
+      isActive: json['isActive'] as bool?,
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'image_url': imageUrl,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'description': description,
+        'image': image,
+        'imagePublicId': imagePublicId,
+        'isActive': isActive,
+        'createdAt': createdAt?.toIso8601String(),
+        'updatedAt': updatedAt?.toIso8601String(),
+      };
 
-  factory CategoryModel.fromEntity(CategoryEntity entity) {
-    return CategoryModel(
-      id: entity.id,
-      name: entity.name,
-      description: entity.description,
-      imageUrl: entity.imageUrl,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    );
-  }
-
-  CategoryEntity toEntity() {
-    return CategoryEntity(
-      id: id,
-      name: name,
-      description: description,
-      imageUrl: imageUrl,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-    );
-  }
+  CategoryEntity toEntity() => CategoryEntity(
+        id: id ?? '',
+        name: name ?? '',
+        description: description ?? '',
+        imageUrl: image ?? '',
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
 }

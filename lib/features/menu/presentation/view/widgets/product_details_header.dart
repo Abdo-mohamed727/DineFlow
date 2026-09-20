@@ -12,9 +12,7 @@ class ProductDetailsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prepTime = product.preparingTime != null
-        ? '${product.preparingTime} min'
-        : '15-20 min';
+    const prepTime = '15-20 min';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,8 +114,9 @@ class ProductDetailsHeader extends StatelessWidget {
 
         // Description
         Text(
-          product.description ??
-              'Juicy beef patty with cheese, lettuce, tomato, onion and our special sauce, served on a toasted sesame seed bun. A classic craving satisfied.',
+          product.description.isNotEmpty
+              ? product.description
+              : 'Juicy beef patty with cheese, lettuce, tomato, onion and our special sauce, served on a toasted sesame seed bun. A classic craving satisfied.',
           style: TextStyle(
             color: AppColors.onSurface.withValues(alpha: 0.75),
             fontSize: 14,

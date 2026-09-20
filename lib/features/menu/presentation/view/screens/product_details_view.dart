@@ -28,14 +28,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   @override
   void initState() {
     super.initState();
-    if (widget.product.spiceLevel != null) {
-      final level = widget.product.spiceLevel!.toLowerCase();
-      if (level.contains('medium')) {
-        _selectedSpiceLevel = 1;
-      } else if (level.contains('hot') || level.contains('spicy')) {
-        _selectedSpiceLevel = 2;
-      }
-    }
   }
 
   void _handleAddToCart() {

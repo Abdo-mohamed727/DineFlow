@@ -9,8 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:dineflow/core/di/firebase_module.dart' as _i297;
 import 'package:dineflow/core/di/router_module.dart' as _i1038;
+import 'package:dineflow/core/di/third_party_module.dart' as _i425;
 import 'package:dineflow/core/router/route_guard.dart' as _i696;
 import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_impl.dart'
     as _i784;
@@ -31,21 +31,21 @@ import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart'
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart'
     as _i87;
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_impl.dart'
-    as _i301;
+    as _i853;
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_interface.dart'
-    as _i302;
+    as _i944;
 import 'package:dineflow/features/menu/data/repo/menu_repository_impl.dart'
-    as _i303;
+    as _i591;
 import 'package:dineflow/features/menu/domain/repo/menu_repository_interface.dart'
-    as _i304;
+    as _i1012;
 import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart'
-    as _i305;
+    as _i492;
 import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart'
-    as _i306;
+    as _i1;
 import 'package:dineflow/features/menu/domain/usecase/search_products_usecase.dart'
-    as _i307;
+    as _i1028;
 import 'package:dineflow/features/menu/presentation/view_model/cubit/menu_cubit.dart'
-    as _i308;
+    as _i1064;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
     as _i485;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart'
@@ -60,9 +60,9 @@ import 'package:dineflow/features/profile/domain/usecase/update_profile_usecase.
     as _i922;
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
     as _i87;
+import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -71,18 +71,21 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    final supabaseModule = _$SupabaseModule();
     final routerModule = _$RouterModule();
-    gh.singleton<_i454.SupabaseClient>(() => supabaseModule.supabaseClient);
+    final thirdPartyModule = _$ThirdPartyModule();
     gh.singleton<_i696.RouterNotifier>(() => routerModule.routerNotifier);
-    gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
-      () => _i485.ProfileRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
+    gh.lazySingleton<_i361.Dio>(() => thirdPartyModule.dio);
+    gh.lazySingleton<_i944.MenuRemoteDataSource>(
+      () => _i853.MenuRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i207.AuthRemoteDataSource>(
-      () => _i784.AuthRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
+      () => _i784.AuthRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i302.MenuRemoteDataSource>(
-      () => _i301.MenuRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
+    gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
+      () => _i485.ProfileRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i1012.MenuRepositoryInterface>(
+      () => _i591.MenuRepositoryImpl(gh<_i944.MenuRemoteDataSource>()),
     );
     gh.lazySingleton<_i995.ProfileRepositoryInterface>(
       () => _i491.ProfileRepositoryImpl(
@@ -92,8 +95,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i821.AuthRepositoryInterface>(
       () => _i764.AuthRepositoryImpl(gh<_i207.AuthRemoteDataSource>()),
     );
-    gh.lazySingleton<_i304.MenuRepositoryInterface>(
-      () => _i303.MenuRepositoryImpl(gh<_i302.MenuRemoteDataSource>()),
+    gh.lazySingleton<_i492.GetCategoriesUseCase>(
+      () => _i492.GetCategoriesUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i1.GetProductsUseCase>(
+      () => _i1.GetProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i1028.SearchProductsUseCase>(
+      () => _i1028.SearchProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
     );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
       () =>
@@ -114,20 +123,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i922.UpdateProfileUseCase>(
       () => _i922.UpdateProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
     );
-    gh.lazySingleton<_i305.GetCategoriesUseCase>(
-      () => _i305.GetCategoriesUseCase(gh<_i304.MenuRepositoryInterface>()),
-    );
-    gh.lazySingleton<_i306.GetProductsUseCase>(
-      () => _i306.GetProductsUseCase(gh<_i304.MenuRepositoryInterface>()),
-    );
-    gh.lazySingleton<_i307.SearchProductsUseCase>(
-      () => _i307.SearchProductsUseCase(gh<_i304.MenuRepositoryInterface>()),
-    );
-    gh.factory<_i308.MenuCubit>(
-      () => _i308.MenuCubit(
-        gh<_i305.GetCategoriesUseCase>(),
-        gh<_i306.GetProductsUseCase>(),
-        gh<_i307.SearchProductsUseCase>(),
+    gh.factory<_i1064.MenuCubit>(
+      () => _i1064.MenuCubit(
+        gh<_i492.GetCategoriesUseCase>(),
+        gh<_i1.GetProductsUseCase>(),
+        gh<_i1028.SearchProductsUseCase>(),
       ),
     );
     gh.factory<_i87.ProfileCubit>(
@@ -148,6 +148,6 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$SupabaseModule extends _i297.SupabaseModule {}
-
 class _$RouterModule extends _i1038.RouterModule {}
+
+class _$ThirdPartyModule extends _i425.ThirdPartyModule {}

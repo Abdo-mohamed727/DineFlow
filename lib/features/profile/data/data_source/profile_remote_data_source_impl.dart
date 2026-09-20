@@ -1,34 +1,34 @@
 import 'package:dineflow/core/error/exception.dart';
+import 'package:dineflow/core/networking/api_constants.dart';
 import 'package:dineflow/features/auth/data/models/user_model.dart';
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
 @LazySingleton(as: ProfileRemoteDataSourceInterface)
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSourceInterface {
-  final SupabaseClient _supabaseClient;
+  final Dio _dio;
 
-  ProfileRemoteDataSourceImpl(this._supabaseClient);
+  ProfileRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<UserModel> getProfile() async {
+  Future<User> getProfile() async {
     try {
-      final currentUser = _supabaseClient.auth.currentUser;
-      if (currentUser == null) {
-        throw const AuthException('No authenticated user found.');
-      }
+      final response = await _dio.get(ApiConstants.profile);
 
-      final data = await _supabaseClient
-          .from('users')
-          .select()
-          .eq('id', currentUser.id)
-          .maybeSingle();
-
-      if (data == null) {
+      if (response.data == null) {
         throw const NotFoundException('User profile does not exist.');
       }
 
-      return UserModel.fromJson(data);
+      final userData = response.data?['data']?['user'] ??
+          response.data?['user'] ??
+          response.data;
+
+      if (userData == null) {
+        throw const NotFoundException('User profile does not exist.');
+      }
+
+      return User.fromJson(userData as Map<String, dynamic>);
     } on AppException {
       rethrow;
     } catch (e) {
@@ -37,32 +37,29 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSourceInterface {
   }
 
   @override
-  Future<UserModel> updateProfile({
+  Future<User> updateProfile({
     required String name,
     String? phone,
   }) async {
     try {
-      final currentUser = _supabaseClient.auth.currentUser;
-      if (currentUser == null) {
-        throw const AuthException('No authenticated user found.');
-      }
+      final response = await _dio.put(
+        ApiConstants.profile,
+        data: {'name': name, 'phone': phone},
+      );
 
-      await _supabaseClient
-          .from('users')
-          .update({'name': name, 'phone': phone})
-          .eq('id', currentUser.id);
-
-      final data = await _supabaseClient
-          .from('users')
-          .select()
-          .eq('id', currentUser.id)
-          .maybeSingle();
-
-      if (data == null) {
+      if (response.data == null) {
         throw const NotFoundException('User profile does not exist.');
       }
 
-      return UserModel.fromJson(data);
+      final userData = response.data?['data']?['user'] ??
+          response.data?['user'] ??
+          response.data;
+
+      if (userData == null) {
+        throw const NotFoundException('User profile does not exist.');
+      }
+
+      return User.fromJson(userData as Map<String, dynamic>);
     } on AppException {
       rethrow;
     } catch (e) {

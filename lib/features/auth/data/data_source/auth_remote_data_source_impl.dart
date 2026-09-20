@@ -1,45 +1,44 @@
+import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:dineflow/core/error/exception.dart';
+import 'package:dineflow/core/networking/api_constants.dart';
 import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart';
 import 'package:dineflow/features/auth/data/models/user_model.dart';
-import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
+import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final SupabaseClient _supabaseClient;
+  final Dio _dio;
 
-  AuthRemoteDataSourceImpl(this._supabaseClient);
+  AuthRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<UserModel> login({
+  Future<User> login({
     required String email,
     required String password,
   }) async {
     try {
-      final response = await _supabaseClient.auth.signInWithPassword(
-        email: email,
-        password: password,
+      final response = await _dio.post(
+        ApiConstants.login,
+        data: {'email': email, 'password': password},
       );
 
-      final uid = response.user?.id;
-      if (uid == null) {
-        throw const AuthException('User ID not found after login.');
+      final token = response.data?['data']?['token'] ?? response.data?['token'];
+      if (token != null) {
+        final prefs = sl<SharedPreferences>();
+        await prefs.setString('token', token.toString());
       }
 
-      final data = await _supabaseClient
-          .from('users')
-          .select()
-          .eq('id', uid)
-          .maybeSingle();
+      final userData = response.data?['data']?['user'] ??
+          response.data?['user'] ??
+          response.data;
 
-      if (data == null) {
-        throw const NotFoundException(
-          'User profile does not exist in database.',
-        );
+      if (userData == null) {
+        throw const AuthException('User data not found after login.');
       }
 
-      return UserModel.fromJson(data);
+      return User.fromJson(userData as Map<String, dynamic>);
     } on AuthException {
       rethrow;
     } on AppException {
@@ -50,37 +49,34 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> register({
+  Future<User> register({
     required String name,
     required String email,
     required String password,
     String? phone,
   }) async {
     try {
-      final response = await _supabaseClient.auth.signUp(
-        email: email,
-        password: password,
-        data: {'display_name': name},
+      final response = await _dio.post(
+        ApiConstants.register,
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+          'phone': phone,
+        },
       );
 
-      final uid = response.user?.id;
-      if (uid == null) {
+      final userData = response.data?['data']?['user'] ??
+          response.data?['user'] ??
+          response.data;
+
+      if (userData == null) {
         throw const AuthException(
-          'Failed to retrieve user ID upon registration.',
+          'Failed to retrieve user data upon registration.',
         );
       }
 
-      final userModel = UserModel(
-        id: uid,
-        name: name,
-        email: email,
-        role: UserRole.customer,
-        phone: phone,
-      );
-
-      await _supabaseClient.from('users').insert(userModel.toJson());
-
-      return userModel;
+      return User.fromJson(userData as Map<String, dynamic>);
     } on AuthException {
       rethrow;
     } on AppException {
@@ -93,27 +89,26 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     try {
-      await _supabaseClient.auth.signOut();
+      await _dio.post(ApiConstants.logout);
+      final prefs = sl<SharedPreferences>();
+      await prefs.remove('token');
     } catch (e) {
       throw ServerException('Failed to logout: ${e.toString()}');
     }
   }
 
   @override
-  Future<UserModel?> getCurrentUserData() async {
+  Future<User?> getCurrentUserData() async {
     try {
-      final currentUser = _supabaseClient.auth.currentUser;
-      if (currentUser == null) return null;
+      final response = await _dio.get(ApiConstants.me);
+      if (response.data == null) return null;
 
-      final data = await _supabaseClient
-          .from('users')
-          .select()
-          .eq('id', currentUser.id)
-          .maybeSingle();
+      final userData = response.data?['data']?['user'] ??
+          response.data?['user'] ??
+          response.data;
 
-      if (data == null) return null;
-
-      return UserModel.fromJson(data);
+      if (userData == null) return null;
+      return User.fromJson(userData as Map<String, dynamic>);
     } catch (e) {
       throw ServerException('Failed to get current user data: ${e.toString()}');
     }

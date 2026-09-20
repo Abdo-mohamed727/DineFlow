@@ -10,13 +10,16 @@ class ProfileHeader extends StatelessWidget {
   String get _initials {
     final names = user.name.trim().split(RegExp(r'\s+'));
     if (names.length >= 2) {
-      return '\${names.first[0]}\${names.last[0]}'.toUpperCase();
+      return '${names.first[0]}${names.last[0]}'.toUpperCase();
     }
     return user.name.isEmpty ? '?' : user.name[0].toUpperCase();
   }
 
   @override
   Widget build(BuildContext context) {
+    final hasProfileImage =
+        user.profileImage != null && user.profileImage!.isNotEmpty;
+
     return Column(
       children: [
         Container(
@@ -37,15 +40,31 @@ class ProfileHeader extends StatelessWidget {
               ),
             ],
           ),
+          clipBehavior: Clip.antiAlias,
           alignment: Alignment.center,
-          child: Text(
-            _initials,
-            style: const TextStyle(
-              color: AppColors.onPrimary,
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: hasProfileImage
+              ? Image.network(
+                  user.profileImage!,
+                  fit: BoxFit.cover,
+                  width: 90,
+                  height: 90,
+                  errorBuilder: (context, error, stackTrace) => Text(
+                    _initials,
+                    style: const TextStyle(
+                      color: AppColors.onPrimary,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : Text(
+                  _initials,
+                  style: const TextStyle(
+                    color: AppColors.onPrimary,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
         ),
         const SizedBox(height: 16),
         Text(
@@ -67,9 +86,9 @@ class ProfileHeader extends StatelessWidget {
               color: AppColors.primaryContainer.withValues(alpha: 0.3),
             ),
           ),
-          child: const Text(
-            'Customer account',
-            style: TextStyle(
+          child: Text(
+            '${user.role.name[0].toUpperCase()}${user.role.name.substring(1)} account',
+            style: const TextStyle(
               color: AppColors.primaryContainer,
               fontSize: 12,
               fontWeight: FontWeight.w600,
