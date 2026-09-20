@@ -5,8 +5,12 @@ class UsersModel {
 
   UsersModel({this.data});
 
-  UsersModel.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? Data.fromJson(json['data'] as Map<String, dynamic>) : null;
+  factory UsersModel.fromJson(Map<String, dynamic> json) {
+    return UsersModel(
+      data: json['data'] != null
+          ? Data.fromJson(json['data'] as Map<String, dynamic>)
+          : Data(user: User.fromJson(json)),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -25,8 +29,12 @@ class Data {
 
   Data({this.user});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    user = json['user'] != null ? User.fromJson(json['user'] as Map<String, dynamic>) : null;
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      user: json['user'] != null
+          ? User.fromJson(json['user'] as Map<String, dynamic>)
+          : User.fromJson(json),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -61,16 +69,30 @@ class User {
     this.updatedAt,
   });
 
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'] as String?;
-    name = json['name'] as String?;
-    email = json['email'] as String?;
-    phone = json['phone'] as String?;
-    role = json['role'] as String?;
-    profileImage = json['profileImage'] as String?;
-    profileImagePublicId = json['profileImagePublicId'] as String?;
-    createdAt = json['createdAt'] as String?;
-    updatedAt = json['updatedAt'] as String?;
+  factory User.fromJson(Map<String, dynamic> json) {
+    final target = json['user'] is Map<String, dynamic>
+        ? json['user'] as Map<String, dynamic>
+        : (json['data'] is Map<String, dynamic> &&
+                json['data']['user'] is Map<String, dynamic>
+            ? json['data']['user'] as Map<String, dynamic>
+            : (json['data'] is Map<String, dynamic>
+                ? json['data'] as Map<String, dynamic>
+                : json));
+
+    return User(
+      id: (target['id'] ?? target['_id'])?.toString(),
+      name: target['name'] as String?,
+      email: target['email'] as String?,
+      phone: target['phone'] as String?,
+      role: target['role'] as String?,
+      profileImage: (target['profileImage'] ??
+          target['profile_image'] ??
+          target['photoUrl'] ??
+          target['avatar']) as String?,
+      profileImagePublicId: target['profileImagePublicId'] as String?,
+      createdAt: (target['createdAt'] ?? target['created_at'])?.toString(),
+      updatedAt: (target['updatedAt'] ?? target['updated_at'])?.toString(),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -93,7 +115,7 @@ class User {
       name: name ?? '',
       email: email ?? '',
       role: UserRole.values.firstWhere(
-        (r) => r.name == role,
+        (r) => r.name.toLowerCase() == (role ?? '').toLowerCase(),
         orElse: () => UserRole.customer,
       ),
       phone: phone,

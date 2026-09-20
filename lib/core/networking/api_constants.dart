@@ -12,5 +12,5 @@ abstract class ApiConstants {
   static const String products = '/api/products';
 
   // Profile Endpoints
-  static const String profile = '/api/profile';
+  static const String profile = '/api/users/me';
 }

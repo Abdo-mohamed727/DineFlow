@@ -30,15 +30,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         await prefs.setString('token', token.toString());
       }
 
-      final userData = response.data?['data']?['user'] ??
-          response.data?['user'] ??
-          response.data;
-
-      if (userData == null) {
+      if (response.data == null) {
         throw const AuthException('User data not found after login.');
       }
 
-      return User.fromJson(userData as Map<String, dynamic>);
+      return User.fromJson(response.data as Map<String, dynamic>);
     } on AuthException {
       rethrow;
     } on AppException {
@@ -66,17 +62,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         },
       );
 
-      final userData = response.data?['data']?['user'] ??
-          response.data?['user'] ??
-          response.data;
-
-      if (userData == null) {
+      if (response.data == null) {
         throw const AuthException(
           'Failed to retrieve user data upon registration.',
         );
       }
 
-      return User.fromJson(userData as Map<String, dynamic>);
+      return User.fromJson(response.data as Map<String, dynamic>);
     } on AuthException {
       rethrow;
     } on AppException {
@@ -103,12 +95,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await _dio.get(ApiConstants.me);
       if (response.data == null) return null;
 
-      final userData = response.data?['data']?['user'] ??
-          response.data?['user'] ??
-          response.data;
-
-      if (userData == null) return null;
-      return User.fromJson(userData as Map<String, dynamic>);
+      return User.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       throw ServerException('Failed to get current user data: ${e.toString()}');
     }
