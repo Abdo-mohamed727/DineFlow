@@ -23,7 +23,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
 
   final _emailRegex = RegExp(r'^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$');
 
@@ -32,7 +32,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -43,6 +43,7 @@ class _RegisterFormState extends State<RegisterForm> {
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text,
+          phone: _phoneNumberController.text,
         ),
       );
     }
@@ -128,26 +129,16 @@ class _RegisterFormState extends State<RegisterForm> {
 
           // ── Confirm Password ─────────────────────────────────────────────
           AppTextFormField(
-            label: 'Confirm Password',
+            label: 'Phone number',
             hintText: '••••••••',
-            controller: _confirmPasswordController,
-            isPassword: true,
+            controller: _phoneNumberController,
+
             textInputAction: TextInputAction.done,
             prefixIcon: const Icon(
-              Icons.lock_outline_rounded,
+              Icons.phone_android_outlined,
               color: AppColors.onSurfaceVariant,
               size: 20.0,
             ),
-            onFieldSubmitted: (_) => _submit(),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
-              }
-              if (value != _passwordController.text) {
-                return 'Passwords do not match';
-              }
-              return null;
-            },
           ),
           const SizedBox(height: 28.0),
 

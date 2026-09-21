@@ -14,10 +14,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<User> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<User> login({required String email, required String password}) async {
     try {
       final response = await _dio.post(
         ApiConstants.login,
@@ -61,6 +58,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'phone': phone,
         },
       );
+      final token = response.data?['data']?['token'] ?? response.data?['token'];
+      if (token != null) {
+        final prefs = sl<SharedPreferences>();
+        await prefs.setString('token', token.toString());
+      }
 
       if (response.data == null) {
         throw const AuthException(
@@ -81,7 +83,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     try {
-      await _dio.post(ApiConstants.logout);
       final prefs = sl<SharedPreferences>();
       await prefs.remove('token');
     } catch (e) {
