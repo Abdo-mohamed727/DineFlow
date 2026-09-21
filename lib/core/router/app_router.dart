@@ -4,7 +4,6 @@ import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/login_view.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/register_view.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/splash_view.dart';
-import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
 import 'package:dineflow/features/menu/domain/entity/product_entity.dart';
 import 'package:dineflow/features/menu/presentation/view/screens/categories_view.dart';
 import 'package:dineflow/features/menu/presentation/view/screens/menu_view.dart';
@@ -91,28 +90,19 @@ GoRouter createRouter({required RouterNotifier notifier}) {
       GoRoute(
         path: AppPaths.splash,
         name: AppRoutes.splash,
-        builder: (context, state) => BlocProvider(
-          create: (_) => sl<AuthCubit>(),
-          child: const SplashView(),
-        ),
+        builder: (context, state) => const SplashView(),
       ),
 
       // ── Auth ──────────────────────────────────────────────────────────────
       GoRoute(
         path: AppPaths.login,
         name: AppRoutes.login,
-        builder: (context, state) => BlocProvider(
-          create: (_) => sl<AuthCubit>(),
-          child: const LoginView(),
-        ),
+        builder: (context, state) => const LoginView(),
       ),
       GoRoute(
         path: AppPaths.register,
         name: AppRoutes.register,
-        builder: (context, state) => BlocProvider(
-          create: (_) => sl<AuthCubit>(),
-          child: const RegisterView(),
-        ),
+        builder: (context, state) => const RegisterView(),
       ),
       GoRoute(
         path: AppPaths.customerProductDetails,
@@ -186,11 +176,8 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerProfile}',
                 name: AppRoutes.customerProfile,
-                builder: (context, state) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider(create: (_) => sl<ProfileCubit>()),
-                    BlocProvider(create: (_) => sl<AuthCubit>()),
-                  ],
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<ProfileCubit>(),
                   child: const ProfileView(),
                 ),
                 routes: [

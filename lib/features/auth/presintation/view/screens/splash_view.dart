@@ -1,8 +1,5 @@
-import 'package:dineflow/core/di/servise_locator.dart';
-import 'package:dineflow/core/router/route_guard.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_scaffold.dart';
-import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,9 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 ///
 /// Strategy:
 /// - Dispatches [AuthCubit.getCurrentUserData()] after the first frame.
-/// - On any result (authenticated / unauthenticated / error) it updates
-///   [RouterNotifier], which triggers GoRouter's `redirect` automatically.
-///   No manual `context.go` needed here — the router handles everything.
+/// - The root-level [BlocListener] in [DineFlowApp] picks up the resulting
+///   [AuthState] and updates [RouterNotifier], which triggers GoRouter's
+///   `redirect` automatically. No manual `context.go` needed here.
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -35,32 +32,10 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
+    return const AppScaffold(
       showAppBar: false,
-      body: BlocListener<AuthCubit, AuthState>(
-        listener: (context, state) {
-          state.whenOrNull(
-            authenticated: (user) {
-              final status = switch (user.role) {
-                UserRole.customer => AuthStatus.customer,
-                UserRole.waiter => AuthStatus.waiter,
-                UserRole.kitchen => AuthStatus.kitchen,
-              };
-              // Update RouterNotifier → GoRouter redirect fires automatically
-              sl<RouterNotifier>().updateStatus(status);
-            },
-            unauthenticated: () {
-              sl<RouterNotifier>().updateStatus(AuthStatus.unauthenticated);
-            },
-            error: (_) {
-              // Treat any error as unauthenticated so we don't get stuck
-              sl<RouterNotifier>().updateStatus(AuthStatus.unauthenticated);
-            },
-          );
-        },
-        child: const Center(
-          child: _SplashContent(),
-        ),
+      body: Center(
+        child: _SplashContent(),
       ),
     );
   }

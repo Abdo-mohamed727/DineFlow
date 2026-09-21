@@ -1,6 +1,4 @@
-import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:dineflow/core/router/app_routes.dart';
-import 'package:dineflow/core/router/route_guard.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_primary_button.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
@@ -87,19 +85,12 @@ class ProfileContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 28),
-        BlocListener<AuthCubit, AuthState>(
-          listener: (context, state) => state.whenOrNull(
-            unauthenticated: () => sl<RouterNotifier>().updateStatus(
-              AuthStatus.unauthenticated,
-            ),
-          ),
-          child: AppPrimaryButton(
-            onPressed: () {
-              context.read<AuthCubit>().logout();
-            },
-            text: 'Logout',
-            backgroundColor: AppColors.inversePrimary,
-          ),
+        AppPrimaryButton(
+          onPressed: () {
+            context.read<AuthCubit>().logout();
+          },
+          text: 'Logout',
+          backgroundColor: AppColors.inversePrimary,
         ),
       ],
     );
