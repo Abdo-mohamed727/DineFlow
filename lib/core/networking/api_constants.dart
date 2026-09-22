@@ -13,4 +13,14 @@ abstract class ApiConstants {
 
   // Profile Endpoints
   static const String profile = '/api/users/me';
+
+  // Cart Endpoints
+  static const String cart = '/api/cart';
+  static const String cartItems = '/api/cart/items';
+
+  // Order Endpoints
+  static const String orders = '/api/orders';
+
+  // Table Endpoints
+  static const String tables = '/api/tables';
 }

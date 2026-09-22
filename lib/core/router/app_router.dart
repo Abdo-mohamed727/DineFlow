@@ -1,4 +1,5 @@
 import 'package:dineflow/core/di/servise_locator.dart';
+import 'package:dineflow/core/enums/order_type.dart';
 import 'package:dineflow/core/widgets/floating_bottom_nav_bar.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/login_view.dart';
@@ -14,6 +15,12 @@ import 'package:dineflow/features/profile/presintation/view/screens/edit_profile
 import 'package:dineflow/features/profile/presintation/view/favourites_view.dart';
 import 'package:dineflow/features/profile/presintation/view/screens/profile_view.dart';
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart';
+import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart';
+import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
+import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
+import 'package:dineflow/features/orders/presentation/view/screens/checkout_view.dart';
+import 'package:dineflow/features/orders/presentation/view/screens/order_success_view.dart';
+import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -128,6 +135,36 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         builder: (context, state) {
           final query = state.extra as String?;
           return SearchView(initialQuery: query);
+        },
+      ),
+      GoRoute(
+        path: AppPaths.customerCart,
+        name: AppRoutes.customerCart,
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<CartCubit>()..getCart()),
+            BlocProvider(create: (_) => sl<CheckoutCubit>()..selectOrderType(OrderType.takeaway)),
+          ],
+          child: const CartView(),
+        ),
+      ),
+      GoRoute(
+        path: AppPaths.customerCheckout,
+        name: AppRoutes.customerCheckout,
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<CartCubit>()),
+            BlocProvider(create: (_) => sl<CheckoutCubit>()),
+          ],
+          child: const CheckoutView(),
+        ),
+      ),
+      GoRoute(
+        path: AppPaths.customerOrderSuccess,
+        name: AppRoutes.customerOrderSuccess,
+        builder: (context, state) {
+          final order = state.extra as OrderEntity;
+          return OrderSuccessView(order: order);
         },
       ),
 
@@ -353,40 +390,43 @@ class _CustomerShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      showAppBar: false,
-      body: navigationShell,
-      bottomNavigationBar: FloatingBottomNavBar(
-        currentIndex: navigationShell.currentIndex,
-        accentColor: AppRole.customer.accentColor,
-        onTap: (index) {
-          navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          );
-        },
-        items: const [
-          FloatingNavItem(
-            icon: Icons.restaurant_menu_outlined,
-            selectedIcon: Icons.restaurant_menu,
-            label: 'Home',
-          ),
-          FloatingNavItem(
-            icon: Icons.shopping_bag_outlined,
-            selectedIcon: Icons.shopping_bag_rounded,
-            label: 'Orders',
-          ),
-          FloatingNavItem(
-            icon: Icons.favorite_border_rounded,
-            selectedIcon: Icons.favorite_rounded,
-            label: 'Favourites',
-          ),
-          FloatingNavItem(
-            icon: Icons.person_outline_rounded,
-            selectedIcon: Icons.person_rounded,
-            label: 'Profile',
-          ),
-        ],
+    return BlocProvider.value(
+      value: sl<CartCubit>()..getCart(),
+      child: AppScaffold(
+        showAppBar: false,
+        body: navigationShell,
+        bottomNavigationBar: FloatingBottomNavBar(
+          currentIndex: navigationShell.currentIndex,
+          accentColor: AppRole.customer.accentColor,
+          onTap: (index) {
+            navigationShell.goBranch(
+              index,
+              initialLocation: index == navigationShell.currentIndex,
+            );
+          },
+          items: const [
+            FloatingNavItem(
+              icon: Icons.restaurant_menu_outlined,
+              selectedIcon: Icons.restaurant_menu,
+              label: 'Home',
+            ),
+            FloatingNavItem(
+              icon: Icons.shopping_bag_outlined,
+              selectedIcon: Icons.shopping_bag_rounded,
+              label: 'Orders',
+            ),
+            FloatingNavItem(
+              icon: Icons.favorite_border_rounded,
+              selectedIcon: Icons.favorite_rounded,
+              label: 'Favourites',
+            ),
+            FloatingNavItem(
+              icon: Icons.person_outline_rounded,
+              selectedIcon: Icons.person_rounded,
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }

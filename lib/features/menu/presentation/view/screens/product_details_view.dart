@@ -1,10 +1,12 @@
 import 'package:dineflow/core/theme/app_colors.dart';
+import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
 import 'package:dineflow/features/menu/domain/entity/product_entity.dart';
 import 'package:dineflow/features/menu/presentation/view/widgets/product_details_bottom_bar.dart';
 import 'package:dineflow/features/menu/presentation/view/widgets/product_details_header.dart';
 import 'package:dineflow/features/menu/presentation/view/widgets/product_details_hero.dart';
 import 'package:dineflow/features/menu/presentation/view/widgets/product_details_options.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductDetailsView extends StatefulWidget {
   final ProductEntity product;
@@ -30,17 +32,21 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     super.initState();
   }
 
-  void _handleAddToCart() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Added $_quantity x ${widget.product.name} to cart (\$${_totalPrice.toStringAsFixed(2)})',
+  Future<void> _handleAddToCart() async {
+    final cartCubit = context.read<CartCubit>();
+    final success = await cartCubit.addItem(widget.product.id, _quantity);
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Added $_quantity x ${widget.product.name} to cart',
+          ),
+          backgroundColor: AppColors.surfaceContainerHigh,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
-        backgroundColor: AppColors.surfaceContainerHigh,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+      );
+    }
   }
 
   @override

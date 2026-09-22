@@ -1,3 +1,4 @@
+import 'package:dineflow/core/error/exception.dart';
 import 'package:dio/dio.dart';
 import 'api_error_model.dart';
 
@@ -87,5 +88,42 @@ class ApiErrorHandler {
       message: message,
       error: e.message,
     );
+  }
+
+  /// Maps networking errors to [AppException] so UI never sees raw Dio text.
+  static Never throwAppException(
+    Object error, {
+    String fallback = 'Something went wrong. Please try again.',
+  }) {
+    if (error is AppException) {
+      throw error;
+    }
+
+    final model = handle(error);
+    final message = (model.message?.isNotEmpty ?? false)
+        ? model.message!
+        : ((model.error?.isNotEmpty ?? false) ? model.error! : fallback);
+
+    if (error is DioException) {
+      switch (error.type) {
+        case DioExceptionType.connectionTimeout:
+        case DioExceptionType.sendTimeout:
+        case DioExceptionType.receiveTimeout:
+        case DioExceptionType.connectionError:
+          throw NetworkException(message);
+        default:
+          break;
+      }
+
+      final code = error.response?.statusCode;
+      if (code == 401 || code == 403) {
+        throw AuthException(message);
+      }
+      if (code == 404) {
+        throw NotFoundException(message);
+      }
+    }
+
+    throw ServerException(message);
   }
 }
