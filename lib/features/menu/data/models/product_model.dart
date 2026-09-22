@@ -89,18 +89,29 @@ class Items {
   });
 
   Items.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    description = json['description'];
-    price = json['price'];
-    image = json['image'];
-    imagePublicId = json['imagePublicId'];
-    categoryId = json['categoryId'] != null
-        ? CategoryId.fromJson(json['categoryId'])
-        : null;
-    isAvailable = json['isAvailable'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    id = json['id']?.toString() ?? json['_id']?.toString();
+    name = json['name']?.toString() ??
+        json['title']?.toString() ??
+        json['productName']?.toString();
+    description = json['description']?.toString() ?? json['desc']?.toString();
+    price = _asInt(json['price'] ?? json['unitPrice']);
+    image = json['image']?.toString() ??
+        json['imageUrl']?.toString() ??
+        json['img']?.toString();
+    imagePublicId = json['imagePublicId']?.toString();
+    
+    final cat = json['category'] ?? json['categoryId'];
+    if (cat is Map<String, dynamic>) {
+      categoryId = CategoryId.fromJson(cat);
+    } else if (cat is Map) {
+      categoryId = CategoryId.fromJson(Map<String, dynamic>.from(cat));
+    } else if (cat is String) {
+      categoryId = CategoryId(id: cat, name: cat);
+    }
+
+    isAvailable = json['isAvailable'] as bool? ?? true;
+    createdAt = json['createdAt']?.toString();
+    updatedAt = json['updatedAt']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -141,8 +152,8 @@ class CategoryId {
   CategoryId({this.id, this.name});
 
   CategoryId.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
+    id = json['id']?.toString() ?? json['_id']?.toString();
+    name = json['name']?.toString() ?? json['title']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -156,4 +167,12 @@ class CategoryId {
         id: id ?? '',
         name: name ?? '',
       );
+}
+
+int? _asInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is double) return value.round();
+  return int.tryParse(value.toString()) ??
+      double.tryParse(value.toString())?.round();
 }

@@ -16,6 +16,9 @@ abstract final class AppRoutes {
   static const String customerFavourites = 'customer-favourites';
   static const String customerProfile = 'customer-profile';
   static const String customerEditProfile = 'customer-edit-profile';
+  static const String customerCart = 'customer-cart';
+  static const String customerCheckout = 'customer-checkout';
+  static const String customerOrderSuccess = 'customer-order-success';
 
   // ── Waiter shell ─────────────────────────────────────────────────────────
   static const String waiterShell = 'waiter-shell';
@@ -49,6 +52,9 @@ abstract final class AppPaths {
   static const String customerFavourites = 'favourites';
   static const String customerProfile = 'profile';
   static const String customerEditProfile = 'edit';
+  static const String customerCart = '/cart';
+  static const String customerCheckout = '/checkout';
+  static const String customerOrderSuccess = '/order-success';
 
   // Waiter
   static const String waiterShell = '/waiter';

@@ -1,0 +1,114 @@
+import 'package:dineflow/core/enums/order_type.dart';
+import 'package:dineflow/core/theme/app_colors.dart';
+import 'package:dineflow/features/cart/presentation/view/widgets/order_type_selector_sheet.dart';
+import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class CartDeliveryTableCard extends StatelessWidget {
+  const CartDeliveryTableCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CheckoutCubit, CheckoutState>(
+      builder: (context, state) {
+        final orderType = state.maybeWhen(
+          initial: (type, a, b, c, d, e) => type,
+          orElse: () => OrderType.takeaway,
+        );
+        final selectedTableId = state.maybeWhen(
+          initial: (a, tableId, b, c, d, e) => tableId,
+          orElse: () => null,
+        );
+        final tables = state.maybeWhen(
+          initial: (a, b, tablesList, c, d, e) => tablesList,
+          orElse: () => [],
+        );
+
+        String titleText = 'Takeaway Order';
+        if (orderType == OrderType.dineIn) {
+          final tableObj = tables.cast<dynamic>().firstWhere(
+                (t) => t.id == selectedTableId,
+                orElse: () => null,
+              );
+          final tableName =
+              tableObj != null ? tableObj.name : (selectedTableId ?? 'Table');
+          titleText = 'Deliver to $tableName';
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  orderType == OrderType.dineIn
+                      ? Icons.table_restaurant_outlined
+                      : Icons.delivery_dining_rounded,
+                  color: AppColors.primaryContainer,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      titleText,
+                      style: const TextStyle(
+                        color: AppColors.onSurface,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.5,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    const Text(
+                      'Estimated prep time: ~15-20 mins',
+                      style: TextStyle(
+                        color: AppColors.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  final checkoutCubit = context.read<CheckoutCubit>();
+                  OrderTypeSelectorSheet.show(context, checkoutCubit);
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text(
+                  'Change',
+                  style: TextStyle(
+                    color: AppColors.primaryContainer,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

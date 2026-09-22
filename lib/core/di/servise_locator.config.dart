@@ -30,6 +30,26 @@ import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart'
     as _i1;
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart'
     as _i87;
+import 'package:dineflow/features/cart/data/data_source/cart_remote_data_source_impl.dart'
+    as _i991;
+import 'package:dineflow/features/cart/data/data_source/cart_remote_data_source_interface.dart'
+    as _i692;
+import 'package:dineflow/features/cart/data/repo/cart_repository_impl.dart'
+    as _i729;
+import 'package:dineflow/features/cart/domain/repo/cart_repository_interface.dart'
+    as _i652;
+import 'package:dineflow/features/cart/domain/usecase/add_to_cart_usecase.dart'
+    as _i589;
+import 'package:dineflow/features/cart/domain/usecase/clear_cart_usecase.dart'
+    as _i534;
+import 'package:dineflow/features/cart/domain/usecase/get_cart_usecase.dart'
+    as _i453;
+import 'package:dineflow/features/cart/domain/usecase/remove_cart_item_usecase.dart'
+    as _i139;
+import 'package:dineflow/features/cart/domain/usecase/update_cart_item_usecase.dart'
+    as _i351;
+import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart'
+    as _i137;
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_impl.dart'
     as _i853;
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_interface.dart'
@@ -46,6 +66,20 @@ import 'package:dineflow/features/menu/domain/usecase/search_products_usecase.da
     as _i1028;
 import 'package:dineflow/features/menu/presentation/view_model/cubit/menu_cubit.dart'
     as _i1064;
+import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_impl.dart'
+    as _i240;
+import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart'
+    as _i146;
+import 'package:dineflow/features/orders/data/repo/order_repository_impl.dart'
+    as _i971;
+import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart'
+    as _i300;
+import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart'
+    as _i181;
+import 'package:dineflow/features/orders/domain/usecase/place_order_usecase.dart'
+    as _i405;
+import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart'
+    as _i713;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
     as _i485;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart'
@@ -84,16 +118,52 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
       () => _i485.ProfileRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i146.OrderRemoteDataSource>(
+      () => _i240.OrderRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i692.CartRemoteDataSource>(
+      () => _i991.CartRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i1012.MenuRepositoryInterface>(
       () => _i591.MenuRepositoryImpl(gh<_i944.MenuRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i300.OrderRepositoryInterface>(
+      () => _i971.OrderRepositoryImpl(gh<_i146.OrderRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i652.CartRepositoryInterface>(
+      () => _i729.CartRepositoryImpl(gh<_i692.CartRemoteDataSource>()),
     );
     gh.lazySingleton<_i995.ProfileRepositoryInterface>(
       () => _i491.ProfileRepositoryImpl(
         gh<_i752.ProfileRemoteDataSourceInterface>(),
       ),
     );
+    gh.lazySingleton<_i589.AddToCartUseCase>(
+      () => _i589.AddToCartUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i534.ClearCartUseCase>(
+      () => _i534.ClearCartUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i453.GetCartUseCase>(
+      () => _i453.GetCartUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i139.RemoveCartItemUseCase>(
+      () => _i139.RemoveCartItemUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i351.UpdateCartItemUseCase>(
+      () => _i351.UpdateCartItemUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
     gh.lazySingleton<_i821.AuthRepositoryInterface>(
       () => _i764.AuthRepositoryImpl(gh<_i207.AuthRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i137.CartCubit>(
+      () => _i137.CartCubit(
+        gh<_i453.GetCartUseCase>(),
+        gh<_i589.AddToCartUseCase>(),
+        gh<_i351.UpdateCartItemUseCase>(),
+        gh<_i139.RemoveCartItemUseCase>(),
+        gh<_i534.ClearCartUseCase>(),
+      ),
     );
     gh.lazySingleton<_i492.GetCategoriesUseCase>(
       () => _i492.GetCategoriesUseCase(gh<_i1012.MenuRepositoryInterface>()),
@@ -103,6 +173,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1028.SearchProductsUseCase>(
       () => _i1028.SearchProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i181.GetAvailableTablesUseCase>(
+      () =>
+          _i181.GetAvailableTablesUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i405.PlaceOrderUseCase>(
+      () => _i405.PlaceOrderUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
       () =>
@@ -128,6 +205,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i492.GetCategoriesUseCase>(),
         gh<_i1.GetProductsUseCase>(),
         gh<_i1028.SearchProductsUseCase>(),
+      ),
+    );
+    gh.factory<_i713.CheckoutCubit>(
+      () => _i713.CheckoutCubit(
+        gh<_i405.PlaceOrderUseCase>(),
+        gh<_i181.GetAvailableTablesUseCase>(),
       ),
     );
     gh.factory<_i87.ProfileCubit>(
