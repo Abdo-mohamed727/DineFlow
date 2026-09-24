@@ -2,7 +2,6 @@ import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/cart/domain/entites/cart_entity.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_bottom_action_bar.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_cooking_notes_card.dart';
-import 'package:dineflow/features/cart/presentation/view/widgets/cart_delivery_table_card.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_item_tile.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_order_header.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_payment_summary_card.dart';
@@ -82,12 +81,9 @@ class CartContent extends StatelessWidget {
                   cart: cart,
                   isPromoApplied: isPromoApplied,
                 ),
-                const SizedBox(height: 16),
-
-                // 6. Delivery / Table Selection Card
-                const CartDeliveryTableCard(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
               ],
+
             ),
           ),
         ),

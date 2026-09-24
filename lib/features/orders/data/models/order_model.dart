@@ -2,23 +2,7 @@ import 'package:dineflow/core/enums/order_status.dart';
 import 'package:dineflow/core/enums/order_type.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 
-class CreateOrderRequest {
-  final String orderType;
-  
-  final String? tableId;
-
-  const CreateOrderRequest({required this.orderType, this.tableId});
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{'orderType': orderType};
-    if (orderType == OrderType.dineIn.apiValue &&
-        tableId != null &&
-        tableId!.isNotEmpty) {
-      map['tableId'] = tableId;
-    }
-    return map;
-  }
-}
+export 'order_request.dart';
 
 class OrderModel {
   String? id;
@@ -87,7 +71,8 @@ class RestaurantTableModel {
   factory RestaurantTableModel.fromJson(Map<String, dynamic> json) {
     return RestaurantTableModel(
       id: json['id']?.toString() ?? json['_id']?.toString(),
-      tableNumber: json['tableNumber']?.toString() ??
+      tableNumber:
+          json['tableNumber']?.toString() ??
           json['tablenumber']?.toString() ??
           json['number']?.toString() ??
           json['name']?.toString(),

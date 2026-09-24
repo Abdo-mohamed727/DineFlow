@@ -55,11 +55,14 @@ extension CheckoutStatePatterns on CheckoutState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CheckoutInitial value)?  initial,TResult Function( _CheckoutSuccess value)?  success,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CheckoutInitial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Error value)?  error,TResult Function( _NavigateToOrder value)?  navigateToOrder,TResult Function( _CheckoutSuccess value)?  success,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _CheckoutInitial() when initial != null:
-return initial(_that);case _CheckoutSuccess() when success != null:
+return initial(_that);case _Loading() when loading != null:
+return loading(_that);case _Error() when error != null:
+return error(_that);case _NavigateToOrder() when navigateToOrder != null:
+return navigateToOrder(_that);case _CheckoutSuccess() when success != null:
 return success(_that);case _:
   return orElse();
 
@@ -78,11 +81,14 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CheckoutInitial value)  initial,required TResult Function( _CheckoutSuccess value)  success,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CheckoutInitial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Error value)  error,required TResult Function( _NavigateToOrder value)  navigateToOrder,required TResult Function( _CheckoutSuccess value)  success,}){
 final _that = this;
 switch (_that) {
 case _CheckoutInitial():
-return initial(_that);case _CheckoutSuccess():
+return initial(_that);case _Loading():
+return loading(_that);case _Error():
+return error(_that);case _NavigateToOrder():
+return navigateToOrder(_that);case _CheckoutSuccess():
 return success(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -100,11 +106,14 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CheckoutInitial value)?  initial,TResult? Function( _CheckoutSuccess value)?  success,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CheckoutInitial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Error value)?  error,TResult? Function( _NavigateToOrder value)?  navigateToOrder,TResult? Function( _CheckoutSuccess value)?  success,}){
 final _that = this;
 switch (_that) {
 case _CheckoutInitial() when initial != null:
-return initial(_that);case _CheckoutSuccess() when success != null:
+return initial(_that);case _Loading() when loading != null:
+return loading(_that);case _Error() when error != null:
+return error(_that);case _NavigateToOrder() when navigateToOrder != null:
+return navigateToOrder(_that);case _CheckoutSuccess() when success != null:
 return success(_that);case _:
   return null;
 
@@ -122,10 +131,13 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( OrderType? orderType,  String? selectedTableId,  List<RestaurantTableEntity> tables,  bool isLoadingTables,  bool isPlacingOrder,  String? errorMessage)?  initial,TResult Function( OrderEntity order)?  success,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CheckoutSelection selection)?  initial,TResult Function( CheckoutSelection selection)?  loading,TResult Function( CheckoutSelection selection,  String message)?  error,TResult Function( String? sessionId,  OrderType orderType,  String? tableId,  String? tableName)?  navigateToOrder,TResult Function( OrderEntity order)?  success,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CheckoutInitial() when initial != null:
-return initial(_that.orderType,_that.selectedTableId,_that.tables,_that.isLoadingTables,_that.isPlacingOrder,_that.errorMessage);case _CheckoutSuccess() when success != null:
+return initial(_that.selection);case _Loading() when loading != null:
+return loading(_that.selection);case _Error() when error != null:
+return error(_that.selection,_that.message);case _NavigateToOrder() when navigateToOrder != null:
+return navigateToOrder(_that.sessionId,_that.orderType,_that.tableId,_that.tableName);case _CheckoutSuccess() when success != null:
 return success(_that.order);case _:
   return orElse();
 
@@ -144,10 +156,13 @@ return success(_that.order);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( OrderType? orderType,  String? selectedTableId,  List<RestaurantTableEntity> tables,  bool isLoadingTables,  bool isPlacingOrder,  String? errorMessage)  initial,required TResult Function( OrderEntity order)  success,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CheckoutSelection selection)  initial,required TResult Function( CheckoutSelection selection)  loading,required TResult Function( CheckoutSelection selection,  String message)  error,required TResult Function( String? sessionId,  OrderType orderType,  String? tableId,  String? tableName)  navigateToOrder,required TResult Function( OrderEntity order)  success,}) {final _that = this;
 switch (_that) {
 case _CheckoutInitial():
-return initial(_that.orderType,_that.selectedTableId,_that.tables,_that.isLoadingTables,_that.isPlacingOrder,_that.errorMessage);case _CheckoutSuccess():
+return initial(_that.selection);case _Loading():
+return loading(_that.selection);case _Error():
+return error(_that.selection,_that.message);case _NavigateToOrder():
+return navigateToOrder(_that.sessionId,_that.orderType,_that.tableId,_that.tableName);case _CheckoutSuccess():
 return success(_that.order);case _:
   throw StateError('Unexpected subclass');
 
@@ -165,10 +180,13 @@ return success(_that.order);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( OrderType? orderType,  String? selectedTableId,  List<RestaurantTableEntity> tables,  bool isLoadingTables,  bool isPlacingOrder,  String? errorMessage)?  initial,TResult? Function( OrderEntity order)?  success,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CheckoutSelection selection)?  initial,TResult? Function( CheckoutSelection selection)?  loading,TResult? Function( CheckoutSelection selection,  String message)?  error,TResult? Function( String? sessionId,  OrderType orderType,  String? tableId,  String? tableName)?  navigateToOrder,TResult? Function( OrderEntity order)?  success,}) {final _that = this;
 switch (_that) {
 case _CheckoutInitial() when initial != null:
-return initial(_that.orderType,_that.selectedTableId,_that.tables,_that.isLoadingTables,_that.isPlacingOrder,_that.errorMessage);case _CheckoutSuccess() when success != null:
+return initial(_that.selection);case _Loading() when loading != null:
+return loading(_that.selection);case _Error() when error != null:
+return error(_that.selection,_that.message);case _NavigateToOrder() when navigateToOrder != null:
+return navigateToOrder(_that.sessionId,_that.orderType,_that.tableId,_that.tableName);case _CheckoutSuccess() when success != null:
 return success(_that.order);case _:
   return null;
 
@@ -181,21 +199,10 @@ return success(_that.order);case _:
 
 
 class _CheckoutInitial implements CheckoutState {
-  const _CheckoutInitial({this.orderType, this.selectedTableId, final  List<RestaurantTableEntity> tables = const [], this.isLoadingTables = false, this.isPlacingOrder = false, this.errorMessage}): _tables = tables;
+  const _CheckoutInitial({this.selection = const CheckoutSelection()});
   
 
- final  OrderType? orderType;
- final  String? selectedTableId;
- final  List<RestaurantTableEntity> _tables;
-@JsonKey() List<RestaurantTableEntity> get tables {
-  if (_tables is EqualUnmodifiableListView) return _tables;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_tables);
-}
-
-@JsonKey() final  bool isLoadingTables;
-@JsonKey() final  bool isPlacingOrder;
- final  String? errorMessage;
+@JsonKey() final  CheckoutSelection selection;
 
 /// Create a copy of CheckoutState
 /// with the given fields replaced by the non-null parameter values.
@@ -207,16 +214,16 @@ _$CheckoutInitialCopyWith<_CheckoutInitial> get copyWith => __$CheckoutInitialCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckoutInitial&&(identical(other.orderType, orderType) || other.orderType == orderType)&&(identical(other.selectedTableId, selectedTableId) || other.selectedTableId == selectedTableId)&&const DeepCollectionEquality().equals(other._tables, _tables)&&(identical(other.isLoadingTables, isLoadingTables) || other.isLoadingTables == isLoadingTables)&&(identical(other.isPlacingOrder, isPlacingOrder) || other.isPlacingOrder == isPlacingOrder)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckoutInitial&&(identical(other.selection, selection) || other.selection == selection));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,orderType,selectedTableId,const DeepCollectionEquality().hash(_tables),isLoadingTables,isPlacingOrder,errorMessage);
+int get hashCode => Object.hash(runtimeType,selection);
 
 @override
 String toString() {
-  return 'CheckoutState.initial(orderType: $orderType, selectedTableId: $selectedTableId, tables: $tables, isLoadingTables: $isLoadingTables, isPlacingOrder: $isPlacingOrder, errorMessage: $errorMessage)';
+  return 'CheckoutState.initial(selection: $selection)';
 }
 
 
@@ -227,7 +234,7 @@ abstract mixin class _$CheckoutInitialCopyWith<$Res> implements $CheckoutStateCo
   factory _$CheckoutInitialCopyWith(_CheckoutInitial value, $Res Function(_CheckoutInitial) _then) = __$CheckoutInitialCopyWithImpl;
 @useResult
 $Res call({
- OrderType? orderType, String? selectedTableId, List<RestaurantTableEntity> tables, bool isLoadingTables, bool isPlacingOrder, String? errorMessage
+ CheckoutSelection selection
 });
 
 
@@ -244,14 +251,215 @@ class __$CheckoutInitialCopyWithImpl<$Res>
 
 /// Create a copy of CheckoutState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? orderType = freezed,Object? selectedTableId = freezed,Object? tables = null,Object? isLoadingTables = null,Object? isPlacingOrder = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? selection = null,}) {
   return _then(_CheckoutInitial(
-orderType: freezed == orderType ? _self.orderType : orderType // ignore: cast_nullable_to_non_nullable
-as OrderType?,selectedTableId: freezed == selectedTableId ? _self.selectedTableId : selectedTableId // ignore: cast_nullable_to_non_nullable
-as String?,tables: null == tables ? _self._tables : tables // ignore: cast_nullable_to_non_nullable
-as List<RestaurantTableEntity>,isLoadingTables: null == isLoadingTables ? _self.isLoadingTables : isLoadingTables // ignore: cast_nullable_to_non_nullable
-as bool,isPlacingOrder: null == isPlacingOrder ? _self.isPlacingOrder : isPlacingOrder // ignore: cast_nullable_to_non_nullable
-as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+selection: null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
+as CheckoutSelection,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Loading implements CheckoutState {
+  const _Loading(this.selection);
+  
+
+ final  CheckoutSelection selection;
+
+/// Create a copy of CheckoutState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.selection, selection) || other.selection == selection));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,selection);
+
+@override
+String toString() {
+  return 'CheckoutState.loading(selection: $selection)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoadingCopyWith<$Res> implements $CheckoutStateCopyWith<$Res> {
+  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
+@useResult
+$Res call({
+ CheckoutSelection selection
+});
+
+
+
+
+}
+/// @nodoc
+class __$LoadingCopyWithImpl<$Res>
+    implements _$LoadingCopyWith<$Res> {
+  __$LoadingCopyWithImpl(this._self, this._then);
+
+  final _Loading _self;
+  final $Res Function(_Loading) _then;
+
+/// Create a copy of CheckoutState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? selection = null,}) {
+  return _then(_Loading(
+null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
+as CheckoutSelection,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Error implements CheckoutState {
+  const _Error({required this.selection, required this.message});
+  
+
+ final  CheckoutSelection selection;
+ final  String message;
+
+/// Create a copy of CheckoutState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,selection,message);
+
+@override
+String toString() {
+  return 'CheckoutState.error(selection: $selection, message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ErrorCopyWith<$Res> implements $CheckoutStateCopyWith<$Res> {
+  factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
+@useResult
+$Res call({
+ CheckoutSelection selection, String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$ErrorCopyWithImpl<$Res>
+    implements _$ErrorCopyWith<$Res> {
+  __$ErrorCopyWithImpl(this._self, this._then);
+
+  final _Error _self;
+  final $Res Function(_Error) _then;
+
+/// Create a copy of CheckoutState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? selection = null,Object? message = null,}) {
+  return _then(_Error(
+selection: null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
+as CheckoutSelection,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _NavigateToOrder implements CheckoutState {
+  const _NavigateToOrder({required this.sessionId, required this.orderType, this.tableId, this.tableName});
+  
+
+ final  String? sessionId;
+ final  OrderType orderType;
+ final  String? tableId;
+ final  String? tableName;
+
+/// Create a copy of CheckoutState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NavigateToOrderCopyWith<_NavigateToOrder> get copyWith => __$NavigateToOrderCopyWithImpl<_NavigateToOrder>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigateToOrder&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.orderType, orderType) || other.orderType == orderType)&&(identical(other.tableId, tableId) || other.tableId == tableId)&&(identical(other.tableName, tableName) || other.tableName == tableName));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,sessionId,orderType,tableId,tableName);
+
+@override
+String toString() {
+  return 'CheckoutState.navigateToOrder(sessionId: $sessionId, orderType: $orderType, tableId: $tableId, tableName: $tableName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$NavigateToOrderCopyWith<$Res> implements $CheckoutStateCopyWith<$Res> {
+  factory _$NavigateToOrderCopyWith(_NavigateToOrder value, $Res Function(_NavigateToOrder) _then) = __$NavigateToOrderCopyWithImpl;
+@useResult
+$Res call({
+ String? sessionId, OrderType orderType, String? tableId, String? tableName
+});
+
+
+
+
+}
+/// @nodoc
+class __$NavigateToOrderCopyWithImpl<$Res>
+    implements _$NavigateToOrderCopyWith<$Res> {
+  __$NavigateToOrderCopyWithImpl(this._self, this._then);
+
+  final _NavigateToOrder _self;
+  final $Res Function(_NavigateToOrder) _then;
+
+/// Create a copy of CheckoutState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? sessionId = freezed,Object? orderType = null,Object? tableId = freezed,Object? tableName = freezed,}) {
+  return _then(_NavigateToOrder(
+sessionId: freezed == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
+as String?,orderType: null == orderType ? _self.orderType : orderType // ignore: cast_nullable_to_non_nullable
+as OrderType,tableId: freezed == tableId ? _self.tableId : tableId // ignore: cast_nullable_to_non_nullable
+as String?,tableName: freezed == tableName ? _self.tableName : tableName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -1,5 +1,4 @@
 import 'package:dineflow/core/di/servise_locator.dart';
-import 'package:dineflow/core/enums/order_type.dart';
 import 'package:dineflow/core/widgets/floating_bottom_nav_bar.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:dineflow/features/auth/presintation/view/screens/login_view.dart';
@@ -17,6 +16,7 @@ import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_
 import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart';
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
+import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/features/orders/presentation/view/screens/checkout_view.dart';
 import 'package:dineflow/features/orders/presentation/view/screens/order_success_view.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
@@ -133,7 +133,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider.value(value: sl<CartCubit>()..getCart()),
-            BlocProvider(create: (_) => sl<CheckoutCubit>()..selectOrderType(OrderType.takeaway)),
+            BlocProvider.value(value: sl<CheckoutCubit>()),
           ],
           child: const CartView(),
         ),
@@ -141,13 +141,26 @@ GoRouter createRouter({required RouterNotifier notifier}) {
       GoRoute(
         path: AppPaths.customerCheckout,
         name: AppRoutes.customerCheckout,
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: sl<CartCubit>()),
-            BlocProvider(create: (_) => sl<CheckoutCubit>()),
-          ],
-          child: const CheckoutView(),
-        ),
+        builder: (context, state) {
+          final arguments = state.extra as OrderNavigationArguments?;
+          debugPrint(
+            'ROUTE EXTRA (Point 5): '
+            'sessionId=${arguments?.sessionId}, '
+            'tableId=${arguments?.tableId}, '
+            'orderType=${arguments?.orderType}',
+          );
+          final checkoutCubit = sl<CheckoutCubit>();
+          if (arguments != null) {
+            checkoutCubit.restoreOrderSelection(arguments);
+          }
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<CartCubit>()),
+              BlocProvider.value(value: checkoutCubit),
+            ],
+            child: const CheckoutView(),
+          );
+        },
       ),
       GoRoute(
         path: AppPaths.customerOrderSuccess,
@@ -200,7 +213,8 @@ GoRouter createRouter({required RouterNotifier notifier}) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.customerShell}/${AppPaths.customerFavourites}',
+                path:
+                    '${AppPaths.customerShell}/${AppPaths.customerFavourites}',
                 name: AppRoutes.customerFavourites,
                 builder: (context, state) => const FavouritesView(),
               ),
@@ -226,7 +240,8 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                       return BlocProvider(
                         create: (_) => sl<ProfileCubit>(),
                         child: EditProfileView(
-                          user: user ??
+                          user:
+                              user ??
                               const UserEntity(
                                 id: '',
                                 name: '',

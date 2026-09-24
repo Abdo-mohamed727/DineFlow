@@ -3,7 +3,7 @@ import 'package:dineflow/core/networking/api_constants.dart';
 import 'package:dineflow/core/networking/api_error_handler.dart';
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart';
 import 'package:dineflow/features/orders/data/models/order_model.dart';
- import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: OrderRemoteDataSource)
@@ -13,7 +13,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
   OrderRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<OrderModel> createOrder(CreateOrderRequest request) async {
+  Future<OrderModel> createTakeAwayOrder(CreateOrderRequest request) async {
     try {
       final response = await _dio.post(
         ApiConstants.orders,
@@ -61,6 +61,28 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
     }
   }
 
+  @override
+  Future<String> startDining(String tableId) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.startDining,
+        data: {'tableId': tableId},
+      );
+      final sessionId = _sessionIdFrom(response.data);
+      if (sessionId == null || sessionId.isEmpty) {
+        throw const ServerException('Dining session was not started.');
+      }
+      return sessionId;
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      ApiErrorHandler.throwAppException(
+        e,
+        fallback: 'Could not start your dining session. Please try again.',
+      );
+    }
+  }
+
   List<RestaurantTableModel> _parseTables(dynamic data) {
     final list = _extractList(data);
     return list
@@ -92,5 +114,50 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
     if (data is Map<String, dynamic>) return data;
     if (data is Map) return Map<String, dynamic>.from(data);
     throw const ServerException('Unexpected order response.');
+  }
+
+String? _sessionIdFrom(dynamic data) {
+  if (data is! Map) return null;
+
+  final map = Map<String, dynamic>.from(data);
+  final dataObject = map['data'];
+
+  if (dataObject is! Map) return null;
+
+  final dataMap = Map<String, dynamic>.from(dataObject);
+  final session = dataMap['session'];
+
+  if (session is! Map) return null;
+
+  final sessionMap = Map<String, dynamic>.from(session);
+  final sessionId = sessionMap['id'] ?? sessionMap['_id'];
+
+  if (sessionId == null || sessionId.toString().isEmpty) {
+    return null;
+  }
+
+  return sessionId.toString();
+}
+
+  @override
+  Future<OrderModel> createDineInOrder(
+    CreateOrderRequest request, {
+    required String diningSessionId,
+  }) async {
+    try {
+      final payload = {...request.toJson(), 'diningSessionId': diningSessionId};
+      final response = await _dio.post(ApiConstants.orders, data: payload);
+      if (response.data == null) {
+        throw const ServerException('Order was not created.');
+      }
+      return OrderModel.fromJson(_asMap(response.data));
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      ApiErrorHandler.throwAppException(
+        e,
+        fallback: 'Could not place your order. Please try again.',
+      );
+    }
   }
 }

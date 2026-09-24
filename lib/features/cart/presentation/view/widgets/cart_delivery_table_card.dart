@@ -12,28 +12,25 @@ class CartDeliveryTableCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CheckoutCubit, CheckoutState>(
       builder: (context, state) {
-        final orderType = state.maybeWhen(
-          initial: (type, a, b, c, d, e) => type,
-          orElse: () => OrderType.takeaway,
-        );
-        final selectedTableId = state.maybeWhen(
-          initial: (a, tableId, b, c, d, e) => tableId,
-          orElse: () => null,
-        );
-        final tables = state.maybeWhen(
-          initial: (a, b, tablesList, c, d, e) => tablesList,
-          orElse: () => [],
-        );
+        final selection = state.selection;
+        final orderType = selection?.orderType;
+        final selectedTableId = selection?.selectedTableId;
+        final tables = selection?.tables ?? const [];
 
-        String titleText = 'Takeaway Order';
-        if (orderType == OrderType.dineIn) {
+        String titleText = 'Choose order type';
+        var icon = Icons.shopping_bag_outlined;
+        if (orderType == OrderType.takeaway) {
+          titleText = 'Takeaway Order';
+        } else if (orderType == OrderType.dineIn) {
           final tableObj = tables.cast<dynamic>().firstWhere(
-                (t) => t.id == selectedTableId,
-                orElse: () => null,
-              );
-          final tableName =
-              tableObj != null ? tableObj.name : (selectedTableId ?? 'Table');
+            (t) => t.id == selectedTableId,
+            orElse: () => null,
+          );
+          final tableName = tableObj != null
+              ? tableObj.name
+              : (selectedTableId ?? 'Table');
           titleText = 'Deliver to $tableName';
+          icon = Icons.table_restaurant_outlined;
         }
 
         return Container(
@@ -54,13 +51,7 @@ class CartDeliveryTableCard extends StatelessWidget {
                   color: AppColors.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  orderType == OrderType.dineIn
-                      ? Icons.table_restaurant_outlined
-                      : Icons.delivery_dining_rounded,
-                  color: AppColors.primaryContainer,
-                  size: 22,
-                ),
+                child: Icon(icon, color: AppColors.primaryContainer, size: 22),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -76,8 +67,10 @@ class CartDeliveryTableCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
-                      'Estimated prep time: ~15-20 mins',
+                    Text(
+                      orderType == null
+                          ? 'Select takeaway or dine-in to continue'
+                          : 'Estimated prep time: ~15-20 mins',
                       style: TextStyle(
                         color: AppColors.onSurfaceVariant,
                         fontSize: 12,

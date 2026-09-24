@@ -74,10 +74,14 @@ import 'package:dineflow/features/orders/data/repo/order_repository_impl.dart'
     as _i971;
 import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart'
     as _i300;
+import 'package:dineflow/features/orders/domain/usecase/create_dine_in_order_usecase.dart'
+    as _i440;
+import 'package:dineflow/features/orders/domain/usecase/create_take_away_order_usecase.dart'
+    as _i173;
 import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart'
     as _i181;
-import 'package:dineflow/features/orders/domain/usecase/place_order_usecase.dart'
-    as _i405;
+import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart'
+    as _i279;
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart'
     as _i713;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
@@ -174,12 +178,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1028.SearchProductsUseCase>(
       () => _i1028.SearchProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
     );
+    gh.lazySingleton<_i440.CreateDineInOrderUsecase>(
+      () =>
+          _i440.CreateDineInOrderUsecase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i173.CreateTakeAwayOrderUsecase>(
+      () => _i173.CreateTakeAwayOrderUsecase(
+        gh<_i300.OrderRepositoryInterface>(),
+      ),
+    );
     gh.lazySingleton<_i181.GetAvailableTablesUseCase>(
       () =>
           _i181.GetAvailableTablesUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
-    gh.lazySingleton<_i405.PlaceOrderUseCase>(
-      () => _i405.PlaceOrderUseCase(gh<_i300.OrderRepositoryInterface>()),
+    gh.lazySingleton<_i279.StartDiningUseCase>(
+      () => _i279.StartDiningUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.factory<_i713.CheckoutCubit>(
+      () => _i713.CheckoutCubit(
+        gh<_i173.CreateTakeAwayOrderUsecase>(),
+        gh<_i440.CreateDineInOrderUsecase>(),
+        gh<_i181.GetAvailableTablesUseCase>(),
+        gh<_i279.StartDiningUseCase>(),
+      ),
     );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
       () =>
@@ -205,12 +226,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i492.GetCategoriesUseCase>(),
         gh<_i1.GetProductsUseCase>(),
         gh<_i1028.SearchProductsUseCase>(),
-      ),
-    );
-    gh.factory<_i713.CheckoutCubit>(
-      () => _i713.CheckoutCubit(
-        gh<_i405.PlaceOrderUseCase>(),
-        gh<_i181.GetAvailableTablesUseCase>(),
       ),
     );
     gh.factory<_i87.ProfileCubit>(

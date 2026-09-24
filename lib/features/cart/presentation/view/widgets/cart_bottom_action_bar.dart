@@ -1,5 +1,6 @@
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_primary_button.dart';
+import 'package:dineflow/features/cart/presentation/view/widgets/order_type_selector_sheet.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,16 +26,16 @@ class CartBottomActionBar extends StatelessWidget {
         top: false,
         child: BlocBuilder<CheckoutCubit, CheckoutState>(
           builder: (context, state) {
-            final isPlacingOrder = state.maybeWhen(
-              initial: (a, b, c, d, placing, e) => placing,
-              orElse: () => false,
-            );
+            final isLoading = state.selection?.isLoadingTables ?? false;
             return AppPrimaryButton(
-              text: 'Place Order',
-              isLoading: isPlacingOrder,
-              onPressed: isPlacingOrder
+              text: 'Continue',
+              isLoading: isLoading,
+              onPressed: isLoading
                   ? null
-                  : () => context.read<CheckoutCubit>().placeOrder(),
+                  : () => OrderTypeSelectorSheet.show(
+                      context,
+                      context.read<CheckoutCubit>(),
+                    ),
             );
           },
         ),
