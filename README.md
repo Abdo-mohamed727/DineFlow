@@ -106,16 +106,19 @@ The application provides a complete digital ordering experience for customers wh
 
   <tr>
     <td align="center">
-      <img  <img width="1344" height="2992" alt="Screenshot_1790079032" src="https://github.com/user-attachments/assets/d8c11482-acd3-47d3-b866-254464e7e943" />
+      <img   <img width="1280" height="2856" alt="Screenshot_1790248540" src="https://github.com/user-attachments/assets/bfb5fcce-7549-4bb5-a5da-6b6b89590e9b" />
+ />
  width="220"/><br/>
       <strong>Cart</strong>
     </td>
     <td align="center">
-      <img src="screenshots/orders.png" width="220"/><br/>
-      <strong>Orders</strong>
+      <img  <img width="1344" height="2992" alt="Screenshot_1790079045" src="https://github.com/user-attachments/assets/f25f1410-e0f0-4602-a64e-d8a57fc4c2d3" />
+ width="220"/><br/>
+      <strong>OrderType</strong>
     </td>
     <td align="center">
-      <img src="screenshots/order_details.png" width="220"/><br/>
+      <img  <img width="1280" height="2856" alt="Screenshot_1790248413" src="https://github.com/user-attachments/assets/900599b1-aeb0-49a7-ad50-c36fcc3236f7" />
+ width="220"/><br/>
       <strong>Order Details</strong>
     </td>
   </tr>
