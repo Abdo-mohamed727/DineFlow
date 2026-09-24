@@ -6,6 +6,7 @@ import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/core/widgets/app_scaffold.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_content.dart';
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
+import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,8 +21,9 @@ class CartView extends StatefulWidget {
 
 class _CartViewState extends State<CartView> {
   final TextEditingController _notesController = TextEditingController();
-  final TextEditingController _promoController =
-      TextEditingController(text: 'CRAVINGS3');
+  final TextEditingController _promoController = TextEditingController(
+    text: 'CRAVINGS3',
+  );
   bool _isPromoApplied = true;
 
   @override
@@ -57,13 +59,34 @@ class _CartViewState extends State<CartView> {
             },
           ),
           BlocListener<CheckoutCubit, CheckoutState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               state.whenOrNull(
                 success: (order) {
                   context.read<CartCubit>().getCart(silent: true);
+                  context.goNamed(AppRoutes.customerOrderSuccess, extra: order);
+                },
+                error: (_, message) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(message),
+                      backgroundColor: AppColors.errorContainer,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                navigateToOrder: (sessionId, orderType, tableId, tableName) async {
+                  // Close the order-type selector bottom sheet.
+                  Navigator.of(context, rootNavigator: true).pop();
+                  if (!context.mounted) return;
+
                   context.goNamed(
-                    AppRoutes.customerOrderSuccess,
-                    extra: order,
+                    AppRoutes.customerCheckout,
+                    extra: OrderNavigationArguments(
+                      sessionId: sessionId,
+                      orderType: orderType,
+                      tableId: tableId,
+                      tableName: tableName,
+                    ),
                   );
                 },
               );

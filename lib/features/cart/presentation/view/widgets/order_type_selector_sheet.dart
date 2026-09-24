@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:dineflow/core/enums/order_type.dart';
+import 'package:dineflow/core/router/app_routes.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_primary_button.dart';
+import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class OrderTypeSelectorSheet extends StatelessWidget {
   const OrderTypeSelectorSheet({super.key});
@@ -28,24 +33,66 @@ class OrderTypeSelectorSheet extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-        child: BlocBuilder<CheckoutCubit, CheckoutState>(
+        child: BlocConsumer<CheckoutCubit, CheckoutState>(
+          listener: (context, state) {
+            state.whenOrNull(
+              error: (selection, message) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                );
+              },
+
+              navigateToOrder: (sessionId, orderType, tableId, tableName) {
+                log(
+                  'SHEET NAVIGATION (Point 3):\n'
+                  'orderType=$orderType\n'
+                  'tableId=$tableId\n'
+                  'sessionId=$sessionId',
+                );
+
+                // Close the bottom sheet first.
+                Navigator.of(context).pop();
+
+                log(
+                  'PUSH ARGUMENTS (Point 4):\n'
+                  'sessionId=$sessionId\n'
+                  'tableId=$tableId\n'
+                  'orderType=$orderType',
+                );
+
+                // Then navigate to checkout/order review.
+                context.pushNamed(
+                  AppRoutes.customerCheckout,
+                  extra: OrderNavigationArguments(
+                    sessionId: sessionId,
+                    orderType: orderType,
+                    tableId: tableId,
+                    tableName: tableName,
+                  ),
+                );
+
+                // Reset the cubit NOW — after push — so the navigateToOrder
+                // state doesn't linger. This is the ONLY place that resets.
+                context.read<CheckoutCubit>().resetAfterNavigation();
+              },
+            );
+          },
           builder: (context, state) {
-            final orderType = state.maybeWhen(
-              initial: (type, a, b, c, d, e) => type,
-              orElse: () => OrderType.takeaway,
-            );
-            final selectedTableId = state.maybeWhen(
-              initial: (a, tableId, b, c, d, e) => tableId,
-              orElse: () => null,
-            );
-            final tables = state.maybeWhen(
-              initial: (a, b, tablesList, c, d, e) => tablesList,
-              orElse: () => [],
-            );
-            final isLoadingTables = state.maybeWhen(
-              initial: (a, b, c, loading, d, e) => loading,
-              orElse: () => false,
-            );
+            final selection = state.selection;
+            if (selection == null) return const SizedBox.shrink();
+
+            final orderType = selection.orderType;
+            final selectedTableId = selection.selectedTableId;
+            final tables = selection.tables;
+            final isLoadingTables = selection.isLoadingTables;
+            final isConfirmingSelection = state.isConfirmingSelection;
+            final canConfirm =
+                !isConfirmingSelection &&
+                !(orderType == OrderType.dineIn &&
+                    (selectedTableId == null || selectedTableId.isEmpty));
 
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -65,9 +112,9 @@ class OrderTypeSelectorSheet extends StatelessWidget {
                 Text(
                   'Select Dining Preference',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.onSurface,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    color: AppColors.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -100,9 +147,9 @@ class OrderTypeSelectorSheet extends StatelessWidget {
                   Text(
                     'Available Tables',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: AppColors.onSurface,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      color: AppColors.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   if (isLoadingTables)
@@ -139,13 +186,14 @@ class OrderTypeSelectorSheet extends StatelessWidget {
                         return ChoiceChip(
                           label: Text(labelText),
                           selected: isSelected,
-                          onSelected: (_) => context
-                              .read<CheckoutCubit>()
-                              .selectTable(t.id),
+                          onSelected: (_) =>
+                              context.read<CheckoutCubit>().selectTable(t.id),
                           selectedColor: AppColors.primaryContainer,
                           backgroundColor: AppColors.surfaceContainerHigh,
                           labelStyle: TextStyle(
-                            color: isSelected ? Colors.white : AppColors.onSurface,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.onSurface,
                             fontWeight: FontWeight.w600,
                           ),
                         );
@@ -155,7 +203,15 @@ class OrderTypeSelectorSheet extends StatelessWidget {
                 const SizedBox(height: 24),
                 AppPrimaryButton(
                   text: 'Confirm Choice',
-                  onPressed: () => Navigator.of(context).pop(),
+                  isLoading: isConfirmingSelection,
+                  onPressed: canConfirm
+                      ? () {
+                          if (orderType == OrderType.dineIn) {
+                            log("Dine-in selected");
+                          }
+                          context.read<CheckoutCubit>().confirmSelection();
+                        }
+                      : null,
                 ),
               ],
             );
@@ -211,7 +267,9 @@ class _OptionTile extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: selected ? AppColors.onSurface : AppColors.onSurfaceVariant,
+                color: selected
+                    ? AppColors.onSurface
+                    : AppColors.onSurfaceVariant,
                 fontWeight: selected ? FontWeight.bold : FontWeight.w500,
               ),
             ),
