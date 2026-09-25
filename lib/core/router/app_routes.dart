@@ -1,4 +1,3 @@
- 
 abstract final class AppRoutes {
   // ── Auth ────────────────────────────────────────────────────────────────
   static const String splash = 'splash';
@@ -11,7 +10,7 @@ abstract final class AppRoutes {
   static const String customerCategories = 'customer-categories';
   static const String customerProductDetails = 'customer-product-details';
   static const String customerSearch = 'customer-search';
-  static const String customerOrders = 'customer-orders';
+  static const String customerOrders = 'orders';
   static const String customerOrderTracking = 'customer-order-tracking';
   static const String customerFavourites = 'customer-favourites';
   static const String customerProfile = 'customer-profile';

@@ -4,6 +4,8 @@ import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 
 abstract interface class OrderRepositoryInterface {
+  Future<Result<List<OrderEntity>>> getOrders();
+
   Future<Result<OrderEntity>> createTakeAwayOrder(CreateOrderRequest request);
 
   Future<Result<OrderEntity>> createDineInOrder(CreateOrderRequest request);

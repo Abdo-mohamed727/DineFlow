@@ -80,10 +80,14 @@ import 'package:dineflow/features/orders/domain/usecase/create_take_away_order_u
     as _i173;
 import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart'
     as _i181;
+import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart'
+    as _i612;
 import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart'
     as _i279;
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart'
     as _i713;
+import 'package:dineflow/features/orders/presentation/view_model/cubit/orders_cubit.dart'
+    as _i427;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
     as _i485;
 import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart'
@@ -191,10 +195,13 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i181.GetAvailableTablesUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
+    gh.lazySingleton<_i612.GetOrdersUseCase>(
+      () => _i612.GetOrdersUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
     gh.lazySingleton<_i279.StartDiningUseCase>(
       () => _i279.StartDiningUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
-    gh.factory<_i713.CheckoutCubit>(
+    gh.lazySingleton<_i713.CheckoutCubit>(
       () => _i713.CheckoutCubit(
         gh<_i173.CreateTakeAwayOrderUsecase>(),
         gh<_i440.CreateDineInOrderUsecase>(),
@@ -227,6 +234,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1.GetProductsUseCase>(),
         gh<_i1028.SearchProductsUseCase>(),
       ),
+    );
+    gh.factory<_i427.OrdersCubit>(
+      () => _i427.OrdersCubit(gh<_i612.GetOrdersUseCase>()),
     );
     gh.factory<_i87.ProfileCubit>(
       () => _i87.ProfileCubit(

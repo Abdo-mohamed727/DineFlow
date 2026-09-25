@@ -17,8 +17,10 @@ import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart'
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
+import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/orders/presentation/view/screens/checkout_view.dart';
 import 'package:dineflow/features/orders/presentation/view/screens/order_success_view.dart';
+import 'package:dineflow/features/orders/presentation/view/screens/orders_view.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -201,10 +203,53 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerOrders}',
                 name: AppRoutes.customerOrders,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Orders',
-                  role: AppRole.customer,
-                ),
+                builder: (context, state) => const OrdersView(),
+                routes: [
+                  GoRoute(
+                    path: AppPaths.customerOrderTracking,
+                    name: AppRoutes.customerOrderTracking,
+                    builder: (context, state) {
+                      final orderId = state.pathParameters['orderId'];
+                      return AppScaffold(
+                        title: 'Order Details',
+                        role: AppRole.customer,
+                        showAppBar: true,
+                        body: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.receipt_long_rounded,
+                                  size: 48,
+                                  color: AppColors.primaryContainer,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Order $orderId',
+                                  style: Theme.of(context).textTheme.titleLarge
+                                      ?.copyWith(
+                                        color: AppColors.onSurface,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Detailed tracking is not yet available in this build.',
+                                  style: TextStyle(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

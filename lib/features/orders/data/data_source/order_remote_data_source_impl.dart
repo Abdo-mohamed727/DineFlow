@@ -13,6 +13,25 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
   OrderRemoteDataSourceImpl(this._dio);
 
   @override
+  Future<List<OrderModel>> getOrders() async {
+    try {
+      final response = await _dio.get(ApiConstants.orders);
+      final list = _extractList(response.data);
+      return list
+          .whereType<Map>()
+          .map((e) => OrderModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      ApiErrorHandler.throwAppException(
+        e,
+        fallback: 'Could not load orders. Please try again.',
+      );
+    }
+  }
+
+  @override
   Future<OrderModel> createTakeAwayOrder(CreateOrderRequest request) async {
     try {
       final response = await _dio.post(

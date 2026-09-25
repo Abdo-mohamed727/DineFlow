@@ -6,46 +6,63 @@ export 'order_request.dart';
 
 class OrderModel {
   String? id;
+  String? orderNumber;
   String? orderType;
   String? tableId;
   String? status;
   int? subtotal;
   int? tax;
   int? total;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   OrderModel({
     this.id,
+    this.orderNumber,
     this.orderType,
     this.tableId,
     this.status,
     this.subtotal,
     this.tax,
     this.total,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     final payload = _unwrap(json);
     return OrderModel(
       id: payload['id']?.toString() ?? payload['_id']?.toString(),
-      orderType: payload['orderType']?.toString(),
+      orderNumber: payload['orderNumber']?.toString() ??
+          payload['order_number']?.toString() ??
+          payload['number']?.toString(),
+      orderType:
+          payload['orderType']?.toString() ?? payload['type']?.toString(),
       tableId:
           payload['tableId']?.toString() ?? payload['table']?['id']?.toString(),
       status: payload['status']?.toString(),
       subtotal: _asInt(payload['subtotal']),
       tax: _asInt(payload['tax']),
       total: _asInt(payload['total']),
+      createdAt: _parseDateTime(payload['createdAt'] ?? payload['created_at']),
+      updatedAt: _parseDateTime(payload['updatedAt'] ?? payload['updated_at']),
     );
   }
+
+  OrderStatus get parsedStatus => _parseStatus(status);
 
   OrderEntity toEntity() {
     return OrderEntity(
       id: id ?? '',
+      orderNumber: orderNumber,
       orderType: OrderTypeX.fromApi(orderType),
       tableId: tableId,
       status: _parseStatus(status),
       subtotal: subtotal ?? 0,
       tax: tax ?? 0,
       total: total ?? 0,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }
@@ -123,8 +140,19 @@ int? _asInt(dynamic value) {
       double.tryParse(value.toString())?.round();
 }
 
+DateTime? _parseDateTime(dynamic value) {
+  if (value == null) return null;
+  if (value is DateTime) return value;
+  return DateTime.tryParse(value.toString());
+}
+
 OrderStatus _parseStatus(String? value) {
-  switch (value?.toUpperCase()) {
+  if (value == null || value.trim().isEmpty) {
+    return OrderStatus.pending;
+  }
+  switch (value.trim().toUpperCase()) {
+    case 'PENDING':
+      return OrderStatus.pending;
     case 'ACCEPTED':
       return OrderStatus.accepted;
     case 'PREPARING':
