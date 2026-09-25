@@ -15,6 +15,25 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
   OrderRepositoryImpl(this._remoteDataSource);
 
   @override
+  Future<Result<List<OrderEntity>>> getOrders() async {
+    try {
+      final models = await _remoteDataSource.getOrders();
+      final orders = models.map((e) => e.toEntity()).toList();
+      return Success(orders);
+    } on AuthException catch (e) {
+      return FailureResult(AuthFailure(e.message));
+    } on NetworkException catch (e) {
+      return FailureResult(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return FailureResult(NotFoundFailure(e.message));
+    } on ServerException catch (e) {
+      return FailureResult(ServerFailure(e.message));
+    } catch (e) {
+      return FailureResult(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Result<OrderEntity>> createTakeAwayOrder(
     CreateOrderRequest request,
   ) async {

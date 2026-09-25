@@ -1,6 +1,8 @@
 import 'package:dineflow/features/orders/data/models/order_model.dart';
 
 abstract interface class OrderRemoteDataSource {
+  Future<List<OrderModel>> getOrders();
+
   Future<OrderModel> createTakeAwayOrder(CreateOrderRequest request);
 
   Future<OrderModel> createDineInOrder(
