@@ -4,7 +4,6 @@ import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/status_badge.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// Shows a single active/in-progress order prominently.
 class ActiveOrderCard extends StatelessWidget {
@@ -69,10 +68,7 @@ class ActiveOrderCard extends StatelessWidget {
                   ),
                 ),
                 // Status badge
-                StatusBadge(
-                  status: order.status,
-                  orderType: order.orderType,
-                ),
+                StatusBadge(status: order.status, orderType: order.orderType),
               ],
             ),
           ),
@@ -168,9 +164,32 @@ class ActiveOrderCard extends StatelessWidget {
     final diff = now.difference(dt);
     if (diff.inMinutes < 1) return 'just now';
     if (diff.inHours < 1) return '${diff.inMinutes}m ago';
-    if (diff.inDays < 1) return 'at ${DateFormat.Hm().format(dt)}';
-    return DateFormat('MMM d').format(dt);
+    if (diff.inDays < 1) return 'at ${_formatTime(dt)}';
+    return '${_monthName(dt.month)} ${dt.day}';
   }
+
+  String _formatTime(DateTime dt) {
+    final hour = dt.hour == 0 ? 12 : (dt.hour > 12 ? dt.hour - 12 : dt.hour);
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour < 12 ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
+  String _monthName(int month) => const [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][month];
 }
 
 // ── Status message banner ────────────────────────────────────────────────────
@@ -224,45 +243,40 @@ class _StatusMessageBanner extends StatelessWidget {
   }
 
   (String, String, String) get _content => switch (status) {
-        OrderStatus.pending => (
-            '🕐',
-            'Order received',
-            'Waiting for kitchen confirmation.',
-          ),
-        OrderStatus.accepted => (
-            '✅',
-            'Order confirmed!',
-            'Your ticket is with the head chef.',
-          ),
-        OrderStatus.preparing => (
-            '🍳',
-            'Your order is being prepared.',
-            'The kitchen is finishing flame-roast!',
-          ),
-        OrderStatus.ready ||
-        OrderStatus.readyForPickup =>
-          ('🎉', 'Your order is ready!', 'Freshly plated — arriving now.'),
-        OrderStatus.served => (
-            '🍽️',
-            'Order served!',
-            'Enjoy your meal.',
-          ),
-        OrderStatus.paymentPending => (
-            '💳',
-            'Payment pending',
-            'Please settle the bill to complete.',
-          ),
-        _ => ('📦', 'Order in progress', ''),
-      };
+    OrderStatus.pending => (
+      '🕐',
+      'Order received',
+      'Waiting for kitchen confirmation.',
+    ),
+    OrderStatus.accepted => (
+      '✅',
+      'Order confirmed!',
+      'Your ticket is with the head chef.',
+    ),
+    OrderStatus.preparing => (
+      '🍳',
+      'Your order is being prepared.',
+      'The kitchen is finishing flame-roast!',
+    ),
+    OrderStatus.ready || OrderStatus.readyForPickup => (
+      '🎉',
+      'Your order is ready!',
+      'Freshly plated — arriving now.',
+    ),
+    OrderStatus.served => ('🍽️', 'Order served!', 'Enjoy your meal.'),
+    OrderStatus.paymentPending => (
+      '💳',
+      'Payment pending',
+      'Please settle the bill to complete.',
+    ),
+    _ => ('📦', 'Order in progress', ''),
+  };
 }
 
 // ── Progress stepper ─────────────────────────────────────────────────────────
 
 class _OrderProgressStepper extends StatelessWidget {
-  const _OrderProgressStepper({
-    required this.status,
-    required this.orderType,
-  });
+  const _OrderProgressStepper({required this.status, required this.orderType});
 
   final OrderStatus status;
   final OrderType orderType;
@@ -299,10 +313,7 @@ class _OrderProgressStepper extends StatelessWidget {
             final stepIndex = i ~/ 2;
             final isCompleted = stepIndex < currentStep;
             final isActive = stepIndex == currentStep;
-            return _StepDot(
-              isCompleted: isCompleted,
-              isActive: isActive,
-            );
+            return _StepDot(isCompleted: isCompleted, isActive: isActive);
           }),
         ),
         const SizedBox(height: 6),
@@ -317,11 +328,10 @@ class _OrderProgressStepper extends StatelessWidget {
                 color: isActive
                     ? AppColors.primaryContainer
                     : isDone
-                        ? AppColors.onSurface.withValues(alpha: 0.7)
-                        : AppColors.onSurfaceVariant.withValues(alpha: 0.5),
+                    ? AppColors.onSurface.withValues(alpha: 0.7)
+                    : AppColors.onSurfaceVariant.withValues(alpha: 0.5),
                 fontSize: 10,
-                fontWeight:
-                    isActive ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
               ),
             );
           }),
@@ -373,11 +383,18 @@ class _StepDot extends StatelessWidget {
         ),
       ),
       child: isCompleted
-          ? const Icon(Icons.check_rounded,
-              size: 12, color: AppColors.onPrimaryContainer)
+          ? const Icon(
+              Icons.check_rounded,
+              size: 12,
+              color: AppColors.onPrimaryContainer,
+            )
           : isActive
-              ? const Icon(Icons.circle, size: 8, color: AppColors.onPrimaryContainer)
-              : null,
+          ? const Icon(
+              Icons.circle,
+              size: 8,
+              color: AppColors.onPrimaryContainer,
+            )
+          : null,
     );
   }
 }

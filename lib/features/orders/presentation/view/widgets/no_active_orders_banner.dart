@@ -38,7 +38,7 @@ class NoActiveOrdersBanner extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Craving something delicious? Order fresh meals or discover new favourites in just a few taps.',
+            'Craving something delicious? Discover something new in just a few taps.',
             style: TextStyle(
               color: AppColors.onSurfaceVariant,
               fontSize: 13,
