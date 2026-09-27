@@ -10,7 +10,6 @@ import 'package:dineflow/features/menu/presentation/view/screens/menu_view.dart'
 import 'package:dineflow/features/menu/presentation/view/screens/product_details_view.dart';
 import 'package:dineflow/features/menu/presentation/view/screens/search_view.dart';
 import 'package:dineflow/features/profile/presintation/view/screens/edit_profile_view.dart';
-import 'package:dineflow/features/profile/presintation/view/favourites_view.dart';
 import 'package:dineflow/features/profile/presintation/view/screens/profile_view.dart';
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart';
 import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart';
@@ -130,17 +129,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         },
       ),
       GoRoute(
-        path: AppPaths.customerCart,
-        name: AppRoutes.customerCart,
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: sl<CartCubit>()..getCart()),
-            BlocProvider.value(value: sl<CheckoutCubit>()),
-          ],
-          child: const CartView(),
-        ),
-      ),
-      GoRoute(
         path: AppPaths.customerCheckout,
         name: AppRoutes.customerCheckout,
         builder: (context, state) {
@@ -254,14 +242,19 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             ],
           ),
 
-          // Branch 2: Favourites
+          // Branch 2: Cart
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path:
-                    '${AppPaths.customerShell}/${AppPaths.customerFavourites}',
-                name: AppRoutes.customerFavourites,
-                builder: (context, state) => const FavouritesView(),
+                path: AppPaths.customerCart,
+                name: AppRoutes.customerCart,
+                builder: (context, state) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: sl<CartCubit>()..getCart()),
+                    BlocProvider.value(value: sl<CheckoutCubit>()),
+                  ],
+                  child: const CartView(),
+                ),
               ),
             ],
           ),
@@ -442,37 +435,42 @@ class _CustomerShell extends StatelessWidget {
       child: AppScaffold(
         showAppBar: false,
         body: navigationShell,
-        bottomNavigationBar: FloatingBottomNavBar(
-          currentIndex: navigationShell.currentIndex,
-          accentColor: AppRole.customer.accentColor,
-          onTap: (index) {
-            navigationShell.goBranch(
-              index,
-              initialLocation: index == navigationShell.currentIndex,
+        bottomNavigationBar: BlocBuilder<CartCubit, CartState>(
+          builder: (context, _) {
+            return FloatingBottomNavBar(
+              currentIndex: navigationShell.currentIndex,
+              accentColor: AppRole.customer.accentColor,
+              onTap: (index) {
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+              items: [
+                const FloatingNavItem(
+                  icon: Icons.restaurant_menu_outlined,
+                  selectedIcon: Icons.restaurant_menu,
+                  label: 'Home',
+                ),
+                const FloatingNavItem(
+                  icon: Icons.shopping_bag_outlined,
+                  selectedIcon: Icons.shopping_bag_rounded,
+                  label: 'Orders',
+                ),
+                FloatingNavItem(
+                  icon: Icons.shopping_cart_outlined,
+                  selectedIcon: Icons.shopping_cart_rounded,
+                  label: 'Cart',
+                  badgeCount: context.read<CartCubit>().totalQuantity,
+                ),
+                const FloatingNavItem(
+                  icon: Icons.person_outline_rounded,
+                  selectedIcon: Icons.person_rounded,
+                  label: 'Profile',
+                ),
+              ],
             );
           },
-          items: const [
-            FloatingNavItem(
-              icon: Icons.restaurant_menu_outlined,
-              selectedIcon: Icons.restaurant_menu,
-              label: 'Home',
-            ),
-            FloatingNavItem(
-              icon: Icons.shopping_bag_outlined,
-              selectedIcon: Icons.shopping_bag_rounded,
-              label: 'Orders',
-            ),
-            FloatingNavItem(
-              icon: Icons.favorite_border_rounded,
-              selectedIcon: Icons.favorite_rounded,
-              label: 'Favourites',
-            ),
-            FloatingNavItem(
-              icon: Icons.person_outline_rounded,
-              selectedIcon: Icons.person_rounded,
-              label: 'Profile',
-            ),
-          ],
         ),
       ),
     );

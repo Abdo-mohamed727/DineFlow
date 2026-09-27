@@ -19,7 +19,6 @@ class ProductDetailsView extends StatefulWidget {
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
   int _quantity = 1;
-  bool _isFavorite = false;
   int _selectedPattySize = 0;
   int _selectedSpiceLevel = 0;
 
@@ -38,12 +37,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Added $_quantity x ${widget.product.name} to cart',
-          ),
+          content: Text('Added $_quantity x ${widget.product.name} to cart'),
           backgroundColor: AppColors.surfaceContainerHigh,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     }
@@ -62,9 +61,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               children: [
                 ProductDetailsHero(
                   product: widget.product,
-                  isFavorite: _isFavorite,
-                  onFavoriteToggle: () =>
-                      setState(() => _isFavorite = !_isFavorite),
                   onBackTap: () => Navigator.of(context).pop(),
                 ),
                 Padding(

@@ -4,15 +4,11 @@ import 'package:flutter/material.dart';
 
 class ProductDetailsHero extends StatelessWidget {
   final ProductEntity product;
-  final bool isFavorite;
-  final VoidCallback onFavoriteToggle;
   final VoidCallback onBackTap;
 
   const ProductDetailsHero({
     super.key,
     required this.product,
-    required this.isFavorite,
-    required this.onFavoriteToggle,
     required this.onBackTap,
   });
 
@@ -70,24 +66,6 @@ class ProductDetailsHero extends StatelessWidget {
                   ),
                 ),
 
-                // Favorite Toggle Button
-                GestureDetector(
-                  onTap: onFavoriteToggle,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.55),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
-                      color: isFavorite
-                          ? AppColors.primaryContainer
-                          : AppColors.primaryContainer.withValues(alpha: 0.9),
-                      size: 22,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

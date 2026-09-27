@@ -8,11 +8,13 @@ class FloatingNavItem {
     required this.icon,
     required this.label,
     this.selectedIcon,
+    this.badgeCount,
   });
 
   final IconData icon;
   final IconData? selectedIcon;
   final String label;
+  final int? badgeCount;
 }
 
 /// A refined, modern floating bottom navigation bar for DineFlow with subtle role accent glow.
@@ -75,7 +77,9 @@ class FloatingBottomNavBar extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 18.0, sigmaY: 18.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLowest.withValues(alpha: 0.85),
+                  color: AppColors.surfaceContainerLowest.withValues(
+                    alpha: 0.85,
+                  ),
                   borderRadius: BorderRadius.circular(33.0),
                   border: Border.all(
                     color: AppColors.outlineVariant.withValues(alpha: 0.35),
@@ -108,7 +112,9 @@ class FloatingBottomNavBar extends StatelessWidget {
                               boxShadow: isSelected
                                   ? [
                                       BoxShadow(
-                                        color: activeAccent.withValues(alpha: 0.16),
+                                        color: activeAccent.withValues(
+                                          alpha: 0.16,
+                                        ),
                                         blurRadius: 8.0,
                                         offset: const Offset(0, 2),
                                       ),
@@ -118,15 +124,49 @@ class FloatingBottomNavBar extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
-                                  isSelected
-                                      ? (item.selectedIcon ?? item.icon)
-                                      : item.icon,
-                                  size: 22.0,
-                                  color: isSelected
-                                      ? activeAccent
-                                      : AppColors.onSurfaceVariant
-                                          .withValues(alpha: 0.65),
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Icon(
+                                      isSelected
+                                          ? (item.selectedIcon ?? item.icon)
+                                          : item.icon,
+                                      size: 22.0,
+                                      color: isSelected
+                                          ? activeAccent
+                                          : AppColors.onSurfaceVariant
+                                                .withValues(alpha: 0.65),
+                                    ),
+                                    if (item.badgeCount case final count?
+                                        when count > 0)
+                                      Positioned(
+                                        top: -7,
+                                        right: -9,
+                                        child: Container(
+                                          constraints: const BoxConstraints(
+                                            minWidth: 16,
+                                            minHeight: 16,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                          ),
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.primaryContainer,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '$count',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 9.5,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                                 if (isSelected) ...[
                                   const SizedBox(width: 8.0),

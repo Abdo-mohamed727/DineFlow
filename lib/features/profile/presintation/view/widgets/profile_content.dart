@@ -67,11 +67,6 @@ class ProfileContent extends StatelessWidget {
               () => context.goNamed(AppRoutes.customerOrders),
             ),
             _MenuRow(
-              'Favourites',
-              Icons.favorite_border_rounded,
-              () => context.goNamed(AppRoutes.customerFavourites),
-            ),
-            _MenuRow(
               'Payment Methods',
               Icons.credit_card_outlined,
               () => _comingSoon(context, 'Payment methods'),

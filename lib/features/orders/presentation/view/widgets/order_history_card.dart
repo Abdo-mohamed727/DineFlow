@@ -4,7 +4,7 @@ import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/status_badge.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 
 /// A compact card used in the Order History section.
 class OrderHistoryCard extends StatelessWidget {
@@ -64,8 +64,10 @@ class OrderHistoryCard extends StatelessWidget {
                   status: order.status,
                   orderType: order.orderType,
                   fontSize: 11,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                 ),
               ],
             ),
@@ -130,7 +132,9 @@ class OrderHistoryCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    DateFormat('MMM d, yyyy · h:mm a').format(order.createdAt!),
+                    intl.DateFormat(
+                      'MMM d, yyyy · h:mm a',
+                    ).format(order.createdAt!),
                     style: const TextStyle(
                       color: AppColors.onSurfaceVariant,
                       fontSize: 11,
@@ -144,24 +148,26 @@ class OrderHistoryCard extends StatelessWidget {
             if (order.status == OrderStatus.cancelled) ...[
               const SizedBox(height: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.errorContainer.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.info_outline_rounded,
-                        size: 13, color: AppColors.error),
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 13,
+                      color: AppColors.error,
+                    ),
                     SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         'Order was cancelled.',
-                        style: TextStyle(
-                          color: AppColors.error,
-                          fontSize: 11,
-                        ),
+                        style: TextStyle(color: AppColors.error, fontSize: 11),
                       ),
                     ),
                   ],
