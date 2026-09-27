@@ -134,10 +134,11 @@ class ActiveOrderCard extends StatelessWidget {
 
   String get _locationLabel {
     if (order.orderType == OrderType.dineIn) {
-      final table = order.tableId;
-      return table != null && table.isNotEmpty
-          ? 'Dine In · Table ${table.length > 8 ? table.substring(table.length - 4) : table}'
-          : 'Dine In';
+      final tableNum = order.tableNumber;
+      if (tableNum != null && tableNum.isNotEmpty) {
+        return 'Dine In · Table $tableNum';
+      }
+      return 'Dine In';
     }
     return 'Takeaway Pickup';
   }
