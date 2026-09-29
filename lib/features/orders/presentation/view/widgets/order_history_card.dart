@@ -182,8 +182,9 @@ class OrderHistoryCard extends StatelessWidget {
 
   String get _subtitle {
     final type = order.orderType.label;
-    if (order.orderType == OrderType.dineIn && order.tableId != null) {
-      return '$type · Table ${order.tableId}';
+    if (order.orderType == OrderType.dineIn) {
+      final num = order.tableNumber ?? order.tableId;
+      if (num != null && num.isNotEmpty) return '$type · Table $num';
     }
     return type;
   }

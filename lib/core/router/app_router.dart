@@ -14,6 +14,7 @@ import 'package:dineflow/features/profile/presintation/view/screens/profile_view
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart';
 import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart';
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
+import 'package:dineflow/features/kitchen/presentation/view/screens/kitchen_kds_view.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
@@ -358,10 +359,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.kitchenShell}/${AppPaths.kitchenKds}',
                 name: AppRoutes.kitchenKds,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Kitchen Display System',
-                  role: AppRole.kitchen,
-                ),
+                builder: (context, state) => const KitchenKdsView(),
                 routes: [
                   GoRoute(
                     path: AppPaths.kitchenOrderDetail,

@@ -1,29 +1,47 @@
 import 'package:dineflow/core/enums/order_status.dart';
 import 'package:dineflow/core/enums/order_type.dart';
 
+class OrderItemEntity {
+  final String id;
+  final String name;
+  final int quantity;
+  final String? notes;
+
+  const OrderItemEntity({
+    required this.id,
+    required this.name,
+    required this.quantity,
+    this.notes,
+  });
+}
+
 class OrderEntity {
   final String id;
   final String? orderNumber;
   final OrderType orderType;
   final String? tableId;
+  final String? tableNumber;
   final OrderStatus status;
   final int subtotal;
   final int tax;
   final int total;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<OrderItemEntity> items;
 
   const OrderEntity({
     required this.id,
     this.orderNumber,
     required this.orderType,
     this.tableId,
+    this.tableNumber,
     required this.status,
     this.subtotal = 0,
     this.tax = 0,
     this.total = 0,
     this.createdAt,
     this.updatedAt,
+    this.items = const [],
   });
 }
 

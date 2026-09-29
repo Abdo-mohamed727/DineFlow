@@ -50,6 +50,22 @@ import 'package:dineflow/features/cart/domain/usecase/update_cart_item_usecase.d
     as _i351;
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart'
     as _i137;
+import 'package:dineflow/features/kitchen/data/data_source/kitchen_remote_data_source_imp.dart'
+    as _i338;
+import 'package:dineflow/features/kitchen/data/data_source/kitchen_remote_data_source_interface.dart'
+    as _i136;
+import 'package:dineflow/features/kitchen/data/repo/kitchen_repo_imp.dart'
+    as _i336;
+import 'package:dineflow/features/kitchen/domain/repo/kitchen_repo_interface.dart'
+    as _i35;
+import 'package:dineflow/features/kitchen/domain/use_cases/confirm_order_usecase.dart'
+    as _i855;
+import 'package:dineflow/features/kitchen/domain/use_cases/mark_done_order_usecase.dart'
+    as _i918;
+import 'package:dineflow/features/kitchen/domain/use_cases/start_preparing_order_usecase.dart'
+    as _i194;
+import 'package:dineflow/features/kitchen/presentation/view_model/cubit/kitchen_cubit.dart'
+    as _i400;
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_impl.dart'
     as _i853;
 import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_interface.dart'
@@ -117,6 +133,9 @@ extension GetItInjectableX on _i174.GetIt {
     final thirdPartyModule = _$ThirdPartyModule();
     gh.singleton<_i696.RouterNotifier>(() => routerModule.routerNotifier);
     gh.lazySingleton<_i361.Dio>(() => thirdPartyModule.dio);
+    gh.lazySingleton<_i136.KitchenRemoteDataSourceInterface>(
+      () => _i338.KitchenRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i944.MenuRemoteDataSource>(
       () => _i853.MenuRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
@@ -125,6 +144,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
       () => _i485.ProfileRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i35.KitchenRepoInterface>(
+      () => _i336.KitchenRepoImp(gh<_i136.KitchenRemoteDataSourceInterface>()),
     );
     gh.lazySingleton<_i146.OrderRemoteDataSource>(
       () => _i240.OrderRemoteDataSourceImpl(gh<_i361.Dio>()),
@@ -209,6 +231,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i279.StartDiningUseCase>(),
       ),
     );
+    gh.lazySingleton<_i855.ConfirmOrderUseCase>(
+      () => _i855.ConfirmOrderUseCase(gh<_i35.KitchenRepoInterface>()),
+    );
+    gh.lazySingleton<_i918.MarkReadyUseCase>(
+      () => _i918.MarkReadyUseCase(gh<_i35.KitchenRepoInterface>()),
+    );
+    gh.lazySingleton<_i194.StartPreparingUseCase>(
+      () => _i194.StartPreparingUseCase(gh<_i35.KitchenRepoInterface>()),
+    );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
       () =>
           _i1047.GetCurrentUserDataUseCase(gh<_i821.AuthRepositoryInterface>()),
@@ -242,6 +273,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i87.ProfileCubit(
         gh<_i831.GetProfileUseCase>(),
         gh<_i922.UpdateProfileUseCase>(),
+      ),
+    );
+    gh.factory<_i400.KitchenCubit>(
+      () => _i400.KitchenCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i855.ConfirmOrderUseCase>(),
+        gh<_i194.StartPreparingUseCase>(),
+        gh<_i918.MarkReadyUseCase>(),
       ),
     );
     gh.lazySingleton<_i87.AuthCubit>(

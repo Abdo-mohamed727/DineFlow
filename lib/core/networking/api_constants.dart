@@ -20,6 +20,8 @@ abstract class ApiConstants {
 
   // Order Endpoints
   static const String orders = '/api/orders';
+  static String updateOrder(String id) => '/api/orders/$id/status';
+  
   static const String startDining = '/api/dining-sessions';
 
   // Table Endpoints

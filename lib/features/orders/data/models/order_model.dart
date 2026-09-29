@@ -4,33 +4,88 @@ import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 
 export 'order_request.dart';
 
+class OrderItemModel {
+  final String id;
+  final String name;
+  final int quantity;
+  final String? notes;
+
+  OrderItemModel({
+    required this.id,
+    required this.name,
+    required this.quantity,
+    this.notes,
+  });
+
+  factory OrderItemModel.fromJson(Map<String, dynamic> json) {
+    // Support both nested product/menuItem objects and flat fields
+    final product = json['product'] ?? json['menuItem'] ?? json['item'] ?? {};
+    final name = (product is Map ? product['name'] : null)?.toString() ??
+        json['name']?.toString() ??
+        json['productName']?.toString() ??
+        'Unknown Item';
+    return OrderItemModel(
+      id: json['id']?.toString() ?? json['_id']?.toString() ?? '',
+      name: name,
+      quantity: _asInt(json['quantity']) ?? 1,
+      notes: json['notes']?.toString() ?? json['specialInstructions']?.toString(),
+    );
+  }
+
+  OrderItemEntity toEntity() => OrderItemEntity(
+        id: id,
+        name: name,
+        quantity: quantity,
+        notes: notes,
+      );
+}
+
 class OrderModel {
   String? id;
   String? orderNumber;
   String? orderType;
   String? tableId;
+  String? tableNumber;
   String? status;
   int? subtotal;
   int? tax;
   int? total;
   DateTime? createdAt;
   DateTime? updatedAt;
+  List<OrderItemModel> items;
 
   OrderModel({
     this.id,
     this.orderNumber,
     this.orderType,
     this.tableId,
+    this.tableNumber,
     this.status,
     this.subtotal,
     this.tax,
     this.total,
     this.createdAt,
     this.updatedAt,
+    this.items = const [],
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     final payload = _unwrap(json);
+    // Parse items from various possible field names
+    final rawItems = payload['items'] ?? payload['orderItems'] ?? payload['products'] ?? [];
+    final parsedItems = (rawItems is List)
+        ? rawItems
+            .whereType<Map<String, dynamic>>()
+            .map(OrderItemModel.fromJson)
+            .toList()
+        : <OrderItemModel>[];
+
+    // Extract table number from nested table object if present
+    final tableObj = payload['table'];
+    final tableNumber = (tableObj is Map)
+        ? (tableObj['tableNumber'] ?? tableObj['number'] ?? tableObj['name'])?.toString()
+        : null;
+
     return OrderModel(
       id: payload['id']?.toString() ?? payload['_id']?.toString(),
       orderNumber: payload['orderNumber']?.toString() ??
@@ -39,13 +94,15 @@ class OrderModel {
       orderType:
           payload['orderType']?.toString() ?? payload['type']?.toString(),
       tableId:
-          payload['tableId']?.toString() ?? payload['table']?['id']?.toString(),
+          payload['tableId']?.toString() ?? (tableObj is Map ? tableObj['id']?.toString() : null),
+      tableNumber: tableNumber ?? payload['tableNumber']?.toString(),
       status: payload['status']?.toString(),
       subtotal: _asInt(payload['subtotal']),
       tax: _asInt(payload['tax']),
       total: _asInt(payload['total']),
       createdAt: _parseDateTime(payload['createdAt'] ?? payload['created_at']),
       updatedAt: _parseDateTime(payload['updatedAt'] ?? payload['updated_at']),
+      items: parsedItems,
     );
   }
 
@@ -57,12 +114,14 @@ class OrderModel {
       orderNumber: orderNumber,
       orderType: OrderTypeX.fromApi(orderType),
       tableId: tableId,
+      tableNumber: tableNumber,
       status: _parseStatus(status),
       subtotal: subtotal ?? 0,
       tax: tax ?? 0,
       total: total ?? 0,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      items: items.map((i) => i.toEntity()).toList(),
     );
   }
 }
