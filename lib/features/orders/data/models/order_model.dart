@@ -213,6 +213,7 @@ OrderStatus _parseStatus(String? value) {
     case 'PENDING':
       return OrderStatus.pending;
     case 'ACCEPTED':
+    case 'CONFIRMED':
       return OrderStatus.accepted;
     case 'PREPARING':
       return OrderStatus.preparing;

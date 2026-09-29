@@ -339,7 +339,7 @@ class _StatusChip extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Action buttons
 // ─────────────────────────────────────────────────────────────────────────────
-class _ActionButton extends StatelessWidget {
+class _ActionButton extends StatefulWidget {
   const _ActionButton({
     required this.order,
     required this.cubit,
@@ -356,18 +356,37 @@ class _ActionButton extends StatelessWidget {
   final Color blue;
 
   @override
+  State<_ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<_ActionButton> {
+  bool _isProcessing = false;
+
+  Future<void> _handleAction(Future<void> Function() action) async {
+    if (_isProcessing) return;
+    setState(() => _isProcessing = true);
+    await action();
+    if (mounted) setState(() => _isProcessing = false);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return switch (order.status) {
-      // ── Pending: two side-by-side buttons ─────────────────────────────────
-      OrderStatus.pending => _DualBtnRow(
-          leftLabel: 'Confirm Order',
-          leftIcon: Icons.thumb_up_alt_rounded,
-          leftColor: green,
-          onLeftTap: () => cubit.confirmOrder(order.id),
-          rightLabel: 'Start Preparing',
-          rightIcon: Icons.local_fire_department_rounded,
-          rightColor: amber,
-          onRightTap: () => cubit.startPreparing(order.id),
+    // Read from both local state and cubit state to be perfectly safe across rebuilds
+    final isProcessing = _isProcessing || widget.cubit.isProcessing(widget.order.id);
+
+    return switch (widget.order.status) {
+      // ── Pending: confirm order only ───────────────────────────────────────
+      OrderStatus.pending => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: SizedBox(
+            width: double.infinity,
+            child: _Btn(
+              label: isProcessing ? 'Confirming...' : 'Confirm Order',
+              icon: Icons.thumb_up_alt_rounded,
+              color: widget.green,
+              onTap: isProcessing ? null : () => _handleAction(() => widget.cubit.confirmOrder(widget.order.id)),
+            ),
+          ),
         ),
       // ── Accepted: start preparing only ────────────────────────────────────
       OrderStatus.accepted => Padding(
@@ -375,10 +394,10 @@ class _ActionButton extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: _Btn(
-              label: 'Start Preparing',
+              label: isProcessing ? 'Processing...' : 'Start Preparing',
               icon: Icons.local_fire_department_rounded,
-              color: amber,
-              onTap: () => cubit.startPreparing(order.id),
+              color: widget.amber,
+              onTap: isProcessing ? null : () => _handleAction(() => widget.cubit.startPreparing(widget.order.id)),
             ),
           ),
         ),
@@ -388,10 +407,10 @@ class _ActionButton extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: _Btn(
-              label: 'Mark as Ready ✓',
+              label: isProcessing ? 'Processing...' : 'Mark as Ready ✓',
               icon: Icons.check_circle_rounded,
-              color: green,
-              onTap: () => cubit.markReady(order.id),
+              color: widget.green,
+              onTap: isProcessing ? null : () => _handleAction(() => widget.cubit.markReady(widget.order.id)),
             ),
           ),
         ),
@@ -429,11 +448,11 @@ class _DualBtnRow extends StatelessWidget {
   final String leftLabel;
   final IconData leftIcon;
   final Color leftColor;
-  final VoidCallback onLeftTap;
+  final VoidCallback? onLeftTap;
   final String rightLabel;
   final IconData rightIcon;
   final Color rightColor;
-  final VoidCallback onRightTap;
+  final VoidCallback? onRightTap;
 
   @override
   Widget build(BuildContext context) {
@@ -474,7 +493,7 @@ class _Btn extends StatelessWidget {
   final String label;
   final IconData icon;
   final Color color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -495,6 +514,8 @@ class _Btn extends StatelessWidget {
       style: FilledButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.black87,
+        disabledBackgroundColor: color.withValues(alpha: 0.5),
+        disabledForegroundColor: Colors.black54,
         padding: const EdgeInsets.symmetric(vertical: 13),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),

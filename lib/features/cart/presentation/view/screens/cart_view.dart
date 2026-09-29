@@ -6,8 +6,7 @@ import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/core/widgets/app_scaffold.dart';
 import 'package:dineflow/features/cart/presentation/view/widgets/cart_content.dart';
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
-import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
-import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -38,61 +37,23 @@ class _CartViewState extends State<CartView> {
     return AppScaffold(
       title: 'Checkout',
       role: AppRole.customer,
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<CartCubit, CartState>(
-            listener: (context, state) {
-              state.maybeWhen(
-                loaded: (cart, updating, isAdding, actionError) {
-                  if (actionError != null && actionError.isNotEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(actionError),
-                        backgroundColor: AppColors.errorContainer,
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  }
-                },
-                orElse: () {},
-              );
+      body: BlocListener<CartCubit, CartState>(
+        listener: (context, state) {
+          state.maybeWhen(
+            loaded: (cart, updating, isAdding, actionError) {
+              if (actionError != null && actionError.isNotEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(actionError),
+                    backgroundColor: AppColors.errorContainer,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
             },
-          ),
-          BlocListener<CheckoutCubit, CheckoutState>(
-            listener: (context, state) async {
-              state.whenOrNull(
-                success: (order) {
-                  context.read<CartCubit>().getCart(silent: true);
-                  context.goNamed(AppRoutes.customerOrderSuccess, extra: order);
-                },
-                error: (_, message) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(message),
-                      backgroundColor: AppColors.errorContainer,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                },
-                navigateToOrder: (sessionId, orderType, tableId, tableName) async {
-                  // Close the order-type selector bottom sheet.
-                  Navigator.of(context, rootNavigator: true).pop();
-                  if (!context.mounted) return;
-
-                  context.goNamed(
-                    AppRoutes.customerCheckout,
-                    extra: OrderNavigationArguments(
-                      sessionId: sessionId,
-                      orderType: orderType,
-                      tableId: tableId,
-                      tableName: tableName,
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ],
+            orElse: () {},
+          );
+        },
         child: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
             return state.when(
