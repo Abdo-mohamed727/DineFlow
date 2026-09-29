@@ -21,6 +21,7 @@ class KitchenCubit extends Cubit<KitchenState> {
   final MarkReadyUseCase _markReadyUseCase;
 
   List<OrderEntity> _orders = [];
+  final Set<String> _processingOrders = {};
 
   KitchenCubit(
     this._getKitchenOrdersUseCase,
@@ -28,6 +29,8 @@ class KitchenCubit extends Cubit<KitchenState> {
     this._startPreparingUseCase,
     this._markReadyUseCase,
   ) : super(const KitchenState.initial());
+
+  bool isProcessing(String orderId) => _processingOrders.contains(orderId);
 
   Future<void> fetchOrders() async {
     emit(const KitchenState.loading());
@@ -57,7 +60,14 @@ class KitchenCubit extends Cubit<KitchenState> {
   }
 
   Future<void> confirmOrder(String orderId) async {
+    if (_processingOrders.contains(orderId)) return;
+    
+    _processingOrders.add(orderId);
+    emit(KitchenState.loaded(List.unmodifiable(_orders)));
+    
     final result = await _confirmOrderUseCase(orderId);
+
+    _processingOrders.remove(orderId);
 
     switch (result) {
       case Success(data: final updatedOrder):
@@ -69,7 +79,14 @@ class KitchenCubit extends Cubit<KitchenState> {
   }
 
   Future<void> startPreparing(String orderId) async {
+    if (_processingOrders.contains(orderId)) return;
+    
+    _processingOrders.add(orderId);
+    emit(KitchenState.loaded(List.unmodifiable(_orders)));
+
     final result = await _startPreparingUseCase(orderId);
+
+    _processingOrders.remove(orderId);
 
     switch (result) {
       case Success(data: final updatedOrder):
@@ -81,7 +98,14 @@ class KitchenCubit extends Cubit<KitchenState> {
   }
 
   Future<void> markReady(String orderId) async {
+    if (_processingOrders.contains(orderId)) return;
+    
+    _processingOrders.add(orderId);
+    emit(KitchenState.loaded(List.unmodifiable(_orders)));
+
     final result = await _markReadyUseCase(orderId);
+
+    _processingOrders.remove(orderId);
 
     switch (result) {
       case Success(data: final updatedOrder):
