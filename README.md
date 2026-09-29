@@ -149,17 +149,9 @@ The application provides a complete digital ordering experience for customers wh
 
 ## 👨‍🍳 Kitchen
 
-<table>
-  <tr>
-    <td align="center">
-      <img  <img width="1280" height="2856" alt="Screenshot_1790544138" src="https://github.com/user-attachments/assets/90702028-674b-479d-a264-8734a20e4f13" />
- width="220"/><br/>
-      <strong>Kitchen Orders</strong>
-   
-  </tr>
-</table>
 
----
+https://github.com/user-attachments/assets/06e6f735-2cfc-47d4-aab2-f9d3e59ad880
+
 
 # 🛠️ Tech Stack
 
