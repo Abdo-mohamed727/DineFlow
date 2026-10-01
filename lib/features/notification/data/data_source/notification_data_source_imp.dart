@@ -70,4 +70,32 @@ class NotificationDataSourceImp
       throw  ApiErrorHandler.throwAppException(e);
     }
   }
+
+  @override
+  Future<void> registerDeviceToken(String token) async {
+    try {
+      await _dio.post(
+        ApiConstants.registerDeviceToken,
+        data: {
+          'token': token,
+        },
+      );
+    } on DioException catch (e) {
+      throw ApiErrorHandler.throwAppException(e);
+    }
+  }
+
+  @override
+  Future<void> unregisterDeviceToken(String token) async {
+    try {
+      await _dio.delete(
+        ApiConstants.unregisterDeviceToken,
+        data: {
+          'token': token,
+        },
+      );
+    } on DioException catch (e) {
+      throw ApiErrorHandler.throwAppException(e);
+    }
+  }
 }

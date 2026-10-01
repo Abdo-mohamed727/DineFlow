@@ -12,5 +12,7 @@ abstract interface class NotificationRepoInterface{
 
   Future<Result<NotificationsPageEntity>> getUnreadNotifications();
 
+  Future<Result<void>> registerDeviceToken(String token);
 
+  Future<Result<void>> unregisterDeviceToken(String token);
 }

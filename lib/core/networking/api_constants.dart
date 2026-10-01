@@ -31,4 +31,6 @@ abstract class ApiConstants {
   static const String notifications = '/api/notifications';
   static const String markAllNotificationsAsRead = '/api/notifications/read-all';
   static String markNotificationAsRead(String id) => '/api/notifications/$id/read';
+  static const String registerDeviceToken = '/api/notifications/device-token';
+  static const String unregisterDeviceToken = '/api/notifications/device-token';
 }

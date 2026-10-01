@@ -10,6 +10,7 @@ import 'core/router/route_guard.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:dineflow/firebase_options.dart';
+import 'package:dineflow/core/services/notification/fcm_token_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ void main() async {
   );
 
   await configureDependencies();
+  sl<FcmTokenManager>().init();
   runApp(const DineFlowApp());
 }
 

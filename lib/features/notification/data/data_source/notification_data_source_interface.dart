@@ -14,7 +14,8 @@ abstract interface class NotificationDataSourceInterface{
   Future<void> markAllNotificationsAsRead();
 
   Future<NotificationsPageModel> getUnreadNotifications();
+  
+  Future<void> registerDeviceToken(String token);
 
-  
-  
+  Future<void> unregisterDeviceToken(String token);
 }

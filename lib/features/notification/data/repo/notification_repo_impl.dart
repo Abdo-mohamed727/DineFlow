@@ -56,4 +56,24 @@ class NotificationRepoImpl implements NotificationRepoInterface {
       return FailureResult(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Result<void>> registerDeviceToken(String token) async {
+    try {
+      await _notificationDataSourceInterface.registerDeviceToken(token);
+      return Success(null);
+    } catch (e) {
+      return FailureResult(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Result<void>> unregisterDeviceToken(String token) async {
+    try {
+      await _notificationDataSourceInterface.unregisterDeviceToken(token);
+      return Success(null);
+    } catch (e) {
+      return FailureResult(ServerFailure(e.toString()));
+    }
+  }
 }
