@@ -6,9 +6,9 @@ import 'package:dineflow/features/auth/domain/usecase/get_current_user_data_usec
 import 'package:dineflow/features/auth/domain/usecase/login_usecase.dart';
 import 'package:dineflow/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart';
+import 'package:dineflow/core/services/fcm_token_manager.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-
 part 'auth_state.dart';
 part 'auth_cubit.freezed.dart';
 
@@ -18,12 +18,14 @@ class AuthCubit extends Cubit<AuthState> {
   final RegisterUseCase _registerUseCase;
   final LogoutUseCase _logoutUseCase;
   final GetCurrentUserDataUseCase _getCurrentUserDataUseCase;
+  final FcmTokenManager _fcmTokenManager;
 
   AuthCubit(
     this._loginUseCase,
     this._registerUseCase,
     this._logoutUseCase,
     this._getCurrentUserDataUseCase,
+    this._fcmTokenManager,
   ) : super(const AuthState.initial());
 
   Future<void> login(LoginParams params) async {
@@ -31,6 +33,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await _loginUseCase(params);
     switch (result) {
       case Success(data: final user):
+        _fcmTokenManager.registerFCMToken(user.id);
         emit(AuthState.authenticated(user));
       case FailureResult(failure: final failure):
         emit(AuthState.error(failure.message));
@@ -42,6 +45,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await _registerUseCase(params);
     switch (result) {
       case Success(data: final user):
+        _fcmTokenManager.registerFCMToken(user.id);
         emit(AuthState.authenticated(user));
       case FailureResult(failure: final failure):
         emit(AuthState.error(failure.message));
@@ -53,6 +57,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await _logoutUseCase(const NoParams());
     switch (result) {
       case Success():
+        _fcmTokenManager.clearUserId();
         emit(const AuthState.unauthenticated());
       case FailureResult(failure: final failure):
         emit(AuthState.error(failure.message));
@@ -65,6 +70,7 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(data: final user):
         if (user != null) {
+          _fcmTokenManager.registerFCMToken(user.id);
           emit(AuthState.authenticated(user));
         } else {
           emit(const AuthState.unauthenticated());

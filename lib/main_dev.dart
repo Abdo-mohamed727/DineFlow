@@ -8,8 +8,15 @@ import 'app_config.dart';
 import 'core/router/app_router.dart';
 import 'core/router/route_guard.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:dineflow/firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   AppConfig.instance = const AppConfig(
     environment: AppEnvironment.dev,
