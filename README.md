@@ -121,6 +121,12 @@ The application provides a complete digital ordering experience for customers wh
  width="220"/><br/>
       <strong>Order Details</strong>
     </td>
+    <td align="center">
+      <img  <img width="1280" height="2856" alt="Screenshot_1791115326" src="https://github.com/user-attachments/assets/48fe3fdc-077f-4078-bc78-1e92104ae141" />
+  />
+ width="220"/><br/>
+      <strong>Notification</strong>
+    </td>
   </tr>
 </table>
 
