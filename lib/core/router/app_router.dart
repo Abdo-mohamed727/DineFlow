@@ -15,6 +15,7 @@ import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_
 import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart';
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
 import 'package:dineflow/features/kitchen/presentation/view/screens/kitchen_kds_view.dart';
+import 'package:dineflow/features/kitchen/presentation/view/screens/kitchen_notifications_screen.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
@@ -26,6 +27,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:dineflow/features/notification/presentation/pages/notification_screen.dart';
+import 'package:dineflow/features/notification/presentation/view_models/notification_cubit.dart';
 import '../widgets/app_scaffold.dart';
 import 'app_routes.dart';
 import 'route_guard.dart';
@@ -86,7 +89,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
     initialLocation: AppPaths.splash,
     refreshListenable: notifier,
 
-    // ── Global redirect ───────────────────────────────────────────────────────
+    // â”€â”€ Global redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     redirect: (BuildContext context, GoRouterState state) {
       return routeGuard(
         currentPath: state.matchedLocation,
@@ -95,14 +98,14 @@ GoRouter createRouter({required RouterNotifier notifier}) {
     },
 
     routes: [
-      // ── Splash ────────────────────────────────────────────────────────────
+      // â”€â”€ Splash â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: AppPaths.splash,
         name: AppRoutes.splash,
         builder: (context, state) => const SplashView(),
       ),
 
-      // ── Auth ──────────────────────────────────────────────────────────────
+      // â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: AppPaths.login,
         name: AppRoutes.login,
@@ -162,7 +165,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         },
       ),
 
-      // ── Customer Shell (StatefulShellRoute for indexed tab state) ─────────
+      // â”€â”€ Customer Shell (StatefulShellRoute for indexed tab state) â”€â”€â”€â”€â”€â”€â”€â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return _CustomerShell(navigationShell: navigationShell);
@@ -260,7 +263,21 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             ],
           ),
 
-          // Branch 3: Profile
+          // Branch 3: Notifications
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '${AppPaths.customerShell}/${AppPaths.customerNotifications}',
+                name: AppRoutes.customerNotifications,
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<NotificationCubit>()..fetchNotifications(),
+                  child: const NotificationView(),
+                ),
+              ),
+            ],
+          ),
+
+          // Branch 4: Profile
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -298,7 +315,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         ],
       ),
 
-      // ── Waiter Shell (StatefulShellRoute) ────────────────────────────────
+      // â”€â”€ Waiter Shell (StatefulShellRoute) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return _WaiterShell(navigationShell: navigationShell);
@@ -325,7 +342,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterTables}',
                 name: AppRoutes.waiterTables,
                 builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter — Tables',
+                  label: 'Waiter â€” Tables',
                   role: AppRole.waiter,
                 ),
               ),
@@ -339,7 +356,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterRequests}',
                 name: AppRoutes.waiterRequests,
                 builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter — Requests',
+                  label: 'Waiter â€” Requests',
                   role: AppRole.waiter,
                 ),
               ),
@@ -348,12 +365,13 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         ],
       ),
 
-      // ── Kitchen Shell (StatefulShellRoute) ───────────────────────────────
+      // â”€â”€ Kitchen Shell (StatefulShellRoute) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return _KitchenShell(navigationShell: navigationShell);
         },
         branches: [
+          // Branch 0: KDS
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -367,7 +385,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                     builder: (context, state) {
                       final orderId = state.pathParameters['orderId']!;
                       return _PlaceholderScreen(
-                        label: 'Kitchen Order Detail — $orderId',
+                        label: 'Kitchen Order Detail â€” $orderId',
                         role: AppRole.kitchen,
                       );
                     },
@@ -376,11 +394,25 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               ),
             ],
           ),
+
+          // Branch 1: Notifications
+          // Reuses the existing NotificationCubit + UseCases â€” no Kitchen-specific
+          // data layer is created.
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '${AppPaths.kitchenShell}/${AppPaths.kitchenNotifications}',
+                name: AppRoutes.kitchenNotifications,
+                builder: (context, state) =>
+                    const KitchenNotificationsScreen(),
+              ),
+            ],
+          ),
         ],
       ),
     ],
 
-    // ── Error page ────────────────────────────────────────────────────────
+    // â”€â”€ Error page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     errorBuilder: (context, state) => AppScaffold(
       title: 'Page Not Found',
       showAppBar: true,
@@ -418,9 +450,9 @@ GoRouter createRouter({required RouterNotifier notifier}) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Shell wrappers — using StatefulNavigationShell & FloatingBottomNavBar
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Shell wrappers â€” using StatefulNavigationShell & FloatingBottomNavBar
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _CustomerShell extends StatelessWidget {
   const _CustomerShell({required this.navigationShell});
@@ -460,6 +492,11 @@ class _CustomerShell extends StatelessWidget {
                   selectedIcon: Icons.shopping_cart_rounded,
                   label: 'Cart',
                   badgeCount: context.read<CartCubit>().totalQuantity,
+                ),
+                const FloatingNavItem(
+                  icon: Icons.notifications_outlined,
+                  selectedIcon: Icons.notifications_rounded,
+                  label: 'Notifications',
                 ),
                 const FloatingNavItem(
                   icon: Icons.person_outline_rounded,
@@ -521,26 +558,48 @@ class _KitchenShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      showAppBar: false,
-      body: navigationShell,
-      bottomNavigationBar: FloatingBottomNavBar(
-        currentIndex: navigationShell.currentIndex,
-        accentColor: AppRole.kitchen.accentColor,
-        onTap: (index) {
-          navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
+    return BlocProvider(
+      create: (_) => sl<NotificationCubit>()..fetchNotifications(),
+      child: Builder(
+        builder: (context) {
+          return AppScaffold(
+            showAppBar: false,
+            body: navigationShell,
+            bottomNavigationBar: BlocBuilder<NotificationCubit, NotificationState>(
+              builder: (context, notifState) {
+                final unreadCount = notifState.maybeWhen(
+                  loaded: (_, u, _, _, _, _) => u,
+                  orElse: () => 0,
+                );
+                return FloatingBottomNavBar(
+                  currentIndex: navigationShell.currentIndex,
+                  accentColor: AppRole.kitchen.accentColor,
+                  onTap: (index) {
+                    navigationShell.goBranch(
+                      index,
+                      initialLocation: index == navigationShell.currentIndex,
+                    );
+                  },
+                  items: [
+                    const FloatingNavItem(
+                      icon: Icons.kitchen_outlined,
+                      selectedIcon: Icons.kitchen,
+                      label: 'KDS',
+                    ),
+                    FloatingNavItem(
+                      icon: Icons.notifications_outlined,
+                      selectedIcon: Icons.notifications_rounded,
+                      label: 'Notifications',
+                      badgeCount: unreadCount > 0 ? unreadCount : null,
+                    ),
+                  ],
+                );
+              },
+            ),
           );
         },
-        items: const [
-          FloatingNavItem(
-            icon: Icons.kitchen_outlined,
-            selectedIcon: Icons.kitchen,
-            label: 'KDS',
-          ),
-        ],
       ),
     );
   }
 }
+

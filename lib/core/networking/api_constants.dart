@@ -1,5 +1,5 @@
 abstract class ApiConstants {
-  static const String baseUrl = 'http://10.0.2.2:3000';
+  static const String baseUrl = 'http://192.168.1.9:3000';
 
   // Auth Endpoints
   static const String login = '/api/auth/login';
@@ -21,7 +21,7 @@ abstract class ApiConstants {
   // Order Endpoints
   static const String orders = '/api/orders';
   static String updateOrder(String id) => '/api/orders/$id/status';
-  
+
   static const String startDining = '/api/dining-sessions';
 
   // Table Endpoints
@@ -29,8 +29,10 @@ abstract class ApiConstants {
 
   // Notification Endpoints
   static const String notifications = '/api/notifications';
-  static const String markAllNotificationsAsRead = '/api/notifications/read-all';
-  static String markNotificationAsRead(String id) => '/api/notifications/$id/read';
+  static const String markAllNotificationsAsRead =
+      '/api/notifications/read-all';
+  static String markNotificationAsRead(String id) =>
+      '/api/notifications/$id/read';
   static const String registerDeviceToken = '/api/notifications/device-token';
   static const String unregisterDeviceToken = '/api/notifications/device-token';
 }

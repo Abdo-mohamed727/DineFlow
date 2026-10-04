@@ -33,6 +33,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   shared_preferences: ^2.5.5
   intl: ^0.20.3
+  flutter_local_notifications: ^22.3.1
 
 dev_dependencies:
   flutter_test:

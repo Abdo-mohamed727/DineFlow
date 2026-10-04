@@ -14,6 +14,7 @@ abstract final class AppRoutes {
   static const String customerOrderTracking = 'customer-order-tracking';
   static const String customerProfile = 'customer-profile';
   static const String customerEditProfile = 'customer-edit-profile';
+  static const String customerNotifications = 'customer-notifications';
   static const String customerCart = 'customer-cart';
   static const String customerCheckout = 'customer-checkout';
   static const String customerOrderSuccess = 'customer-order-success';
@@ -28,6 +29,7 @@ abstract final class AppRoutes {
   static const String kitchenShell = 'kitchen-shell';
   static const String kitchenKds = 'kitchen-kds';
   static const String kitchenOrderDetail = 'kitchen-order-detail';
+  static const String kitchenNotifications = 'kitchen-notifications';
 }
 
 /// Central registry of every route *path* (used by GoRouter internally).
@@ -49,6 +51,7 @@ abstract final class AppPaths {
   static const String customerOrderTracking = 'order/:orderId';
   static const String customerProfile = 'profile';
   static const String customerEditProfile = 'edit';
+  static const String customerNotifications = 'notifications';
   static const String customerCart = '/cart';
   static const String customerCheckout = '/checkout';
   static const String customerOrderSuccess = '/order-success';
@@ -63,4 +66,5 @@ abstract final class AppPaths {
   static const String kitchenShell = '/kitchen';
   static const String kitchenKds = 'kds';
   static const String kitchenOrderDetail = 'order/:orderId';
+  static const String kitchenNotifications = 'notifications';
 }

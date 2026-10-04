@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
+import 'package:dineflow/core/services/notification/notification_handler.dart';
 import 'package:dineflow/features/notification/domain/usecases/register_device_token_usecase.dart';
 import 'package:dineflow/features/notification/domain/usecases/unregister_device_token_usecase.dart';
 
@@ -38,25 +39,16 @@ class FcmTokenManager {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("Foreground notification:");
-      print("ID: ${message.messageId}");
-      print("Title: ${message.notification?.title}");
-      print("Data: ${message.data}");
+      NotificationHandler.handleForeground(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("Notification opened app:");
-      print("ID: ${message.messageId}");
-      print("Title: ${message.notification?.title}");
-      print("Data: ${message.data}");
+      NotificationHandler.handleBackgroundOpened(message);
     });
 
     _messaging.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
-        print("Initial notification:");
-        print("ID: ${message.messageId}");
-        print("Title: ${message.notification?.title}");
-        print("Data: ${message.data}");
+        NotificationHandler.handleInitialMessage(message);
       }
     });
   }
