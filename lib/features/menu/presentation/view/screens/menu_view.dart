@@ -12,8 +12,10 @@ import 'package:dineflow/features/menu/presentation/view/widgets/menu_shimmer_lo
 import 'package:dineflow/features/menu/presentation/view/widgets/products_grid.dart';
 import 'package:dineflow/features/menu/presentation/view/widgets/special_banner.dart';
 import 'package:dineflow/features/menu/presentation/view_model/cubit/menu_cubit.dart';
+import 'package:dineflow/core/router/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class MenuView extends StatelessWidget {
   const MenuView({super.key});
@@ -112,7 +114,11 @@ class _MenuViewBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MenuHeader(userName: userName),
+                  MenuHeader(
+                    userName: userName,
+                    onNotificationPressed: () =>
+                        context.goNamed(AppRoutes.customerNotifications),
+                  ),
                   const SizedBox(height: 16),
                   const MenuSearchField(),
                   const SizedBox(height: 20),

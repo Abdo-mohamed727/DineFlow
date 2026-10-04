@@ -12,6 +12,8 @@
 import 'package:dineflow/core/di/router_module.dart' as _i1038;
 import 'package:dineflow/core/di/third_party_module.dart' as _i425;
 import 'package:dineflow/core/router/route_guard.dart' as _i696;
+import 'package:dineflow/core/services/notification/fcm_token_manager.dart'
+    as _i840;
 import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_impl.dart'
     as _i784;
 import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart'
@@ -82,6 +84,26 @@ import 'package:dineflow/features/menu/domain/usecase/search_products_usecase.da
     as _i1028;
 import 'package:dineflow/features/menu/presentation/view_model/cubit/menu_cubit.dart'
     as _i1064;
+import 'package:dineflow/features/notification/data/data_source/notification_data_source_imp.dart'
+    as _i1044;
+import 'package:dineflow/features/notification/data/data_source/notification_data_source_interface.dart'
+    as _i658;
+import 'package:dineflow/features/notification/data/repo/notification_repo_impl.dart'
+    as _i854;
+import 'package:dineflow/features/notification/domain/repo/notification_repo_interface.dart'
+    as _i472;
+import 'package:dineflow/features/notification/domain/usecases/get_notifications_usecase.dart'
+    as _i968;
+import 'package:dineflow/features/notification/domain/usecases/mark_all_notifications_as_read_usecase.dart'
+    as _i305;
+import 'package:dineflow/features/notification/domain/usecases/mark_notification_as_read_usecase.dart'
+    as _i788;
+import 'package:dineflow/features/notification/domain/usecases/register_device_token_usecase.dart'
+    as _i898;
+import 'package:dineflow/features/notification/domain/usecases/unregister_device_token_usecase.dart'
+    as _i1016;
+import 'package:dineflow/features/notification/presentation/view_models/notification_cubit.dart'
+    as _i304;
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_impl.dart'
     as _i240;
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart'
@@ -148,6 +170,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i35.KitchenRepoInterface>(
       () => _i336.KitchenRepoImp(gh<_i136.KitchenRemoteDataSourceInterface>()),
     );
+    gh.lazySingleton<_i658.NotificationDataSourceInterface>(
+      () => _i1044.NotificationDataSourceImp(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i146.OrderRemoteDataSource>(
       () => _i240.OrderRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
@@ -203,6 +228,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1028.SearchProductsUseCase>(
       () => _i1028.SearchProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i472.NotificationRepoInterface>(
+      () => _i854.NotificationRepoImpl(
+        gh<_i658.NotificationDataSourceInterface>(),
+      ),
     );
     gh.lazySingleton<_i440.CreateDineInOrderUsecase>(
       () =>
@@ -269,6 +299,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i427.OrdersCubit>(
       () => _i427.OrdersCubit(gh<_i612.GetOrdersUseCase>()),
     );
+    gh.lazySingleton<_i968.GetNotificationsUseCase>(
+      () =>
+          _i968.GetNotificationsUseCase(gh<_i472.NotificationRepoInterface>()),
+    );
+    gh.lazySingleton<_i305.MarkAllNotificationsAsReadUseCase>(
+      () => _i305.MarkAllNotificationsAsReadUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i788.MarkNotificationAsReadUseCase>(
+      () => _i788.MarkNotificationAsReadUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i898.RegisterDeviceTokenUseCase>(
+      () => _i898.RegisterDeviceTokenUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i1016.UnregisterDeviceTokenUseCase>(
+      () => _i1016.UnregisterDeviceTokenUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
     gh.factory<_i87.ProfileCubit>(
       () => _i87.ProfileCubit(
         gh<_i831.GetProfileUseCase>(),
@@ -283,12 +337,26 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i918.MarkReadyUseCase>(),
       ),
     );
+    gh.lazySingleton<_i840.FcmTokenManager>(
+      () => _i840.FcmTokenManager(
+        gh<_i898.RegisterDeviceTokenUseCase>(),
+        gh<_i1016.UnregisterDeviceTokenUseCase>(),
+      ),
+    );
+    gh.factory<_i304.NotificationCubit>(
+      () => _i304.NotificationCubit(
+        gh<_i968.GetNotificationsUseCase>(),
+        gh<_i788.MarkNotificationAsReadUseCase>(),
+        gh<_i305.MarkAllNotificationsAsReadUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i87.AuthCubit>(
       () => _i87.AuthCubit(
         gh<_i681.LoginUseCase>(),
         gh<_i1.RegisterUseCase>(),
         gh<_i241.LogoutUseCase>(),
         gh<_i1047.GetCurrentUserDataUseCase>(),
+        gh<_i840.FcmTokenManager>(),
       ),
     );
     return this;
