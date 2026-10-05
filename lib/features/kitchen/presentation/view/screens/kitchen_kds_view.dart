@@ -12,7 +12,7 @@ class KitchenKdsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<KitchenCubit>()..fetchOrders(),
+      create: (_) => sl<KitchenCubit>()..start(),
       child: const _KdsBody(),
     );
   }

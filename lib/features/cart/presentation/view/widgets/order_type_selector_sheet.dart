@@ -16,6 +16,7 @@ class OrderTypeSelectorSheet extends StatelessWidget {
   static Future<void> show(BuildContext context, CheckoutCubit checkoutCubit) {
     return showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: AppColors.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(

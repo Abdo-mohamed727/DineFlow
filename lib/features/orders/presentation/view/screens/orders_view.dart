@@ -21,7 +21,7 @@ class OrdersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<OrdersCubit>()..fetchOrders(),
+      create: (_) => sl<OrdersCubit>()..start(),
       child: const _OrdersViewBody(),
     );
   }
