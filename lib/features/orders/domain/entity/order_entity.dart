@@ -43,6 +43,36 @@ class OrderEntity {
     this.updatedAt,
     this.items = const [],
   });
+
+  OrderEntity copyWith({
+    String? id,
+    String? orderNumber,
+    OrderType? orderType,
+    String? tableId,
+    String? tableNumber,
+    OrderStatus? status,
+    int? subtotal,
+    int? tax,
+    int? total,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    List<OrderItemEntity>? items,
+  }) {
+    return OrderEntity(
+      id: id ?? this.id,
+      orderNumber: orderNumber ?? this.orderNumber,
+      orderType: orderType ?? this.orderType,
+      tableId: tableId ?? this.tableId,
+      tableNumber: tableNumber ?? this.tableNumber,
+      status: status ?? this.status,
+      subtotal: subtotal ?? this.subtotal,
+      tax: tax ?? this.tax,
+      total: total ?? this.total,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      items: items ?? this.items,
+    );
+  }
 }
 
 class RestaurantTableEntity {

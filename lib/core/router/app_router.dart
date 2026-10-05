@@ -89,7 +89,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
     initialLocation: AppPaths.splash,
     refreshListenable: notifier,
 
-    // â”€â”€ Global redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     redirect: (BuildContext context, GoRouterState state) {
       return routeGuard(
         currentPath: state.matchedLocation,
@@ -98,14 +97,12 @@ GoRouter createRouter({required RouterNotifier notifier}) {
     },
 
     routes: [
-      // â”€â”€ Splash â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: AppPaths.splash,
         name: AppRoutes.splash,
         builder: (context, state) => const SplashView(),
       ),
 
-      // â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: AppPaths.login,
         name: AppRoutes.login,
@@ -165,7 +162,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         },
       ),
 
-      // â”€â”€ Customer Shell (StatefulShellRoute for indexed tab state) â”€â”€â”€â”€â”€â”€â”€â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return _CustomerShell(navigationShell: navigationShell);
@@ -315,13 +311,11 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         ],
       ),
 
-      // â”€â”€ Waiter Shell (StatefulShellRoute) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return _WaiterShell(navigationShell: navigationShell);
         },
         branches: [
-          // Branch 0: Dashboard
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -365,7 +359,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         ],
       ),
 
-      // â”€â”€ Kitchen Shell (StatefulShellRoute) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return _KitchenShell(navigationShell: navigationShell);

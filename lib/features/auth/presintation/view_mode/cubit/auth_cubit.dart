@@ -1,4 +1,6 @@
 import 'package:dineflow/core/services/notification/fcm_token_manager.dart';
+import 'package:dineflow/core/services/real_time/real_time_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
 import 'package:dineflow/core/usecases/result.dart';
@@ -19,6 +21,7 @@ class AuthCubit extends Cubit<AuthState> {
   final LogoutUseCase _logoutUseCase;
   final GetCurrentUserDataUseCase _getCurrentUserDataUseCase;
   final FcmTokenManager _fcmTokenManager;
+  final RealTimeService _realTimeService;
 
   AuthCubit(
     this._loginUseCase,
@@ -26,7 +29,16 @@ class AuthCubit extends Cubit<AuthState> {
     this._logoutUseCase,
     this._getCurrentUserDataUseCase,
     this._fcmTokenManager,
+    this._realTimeService,
   ) : super(const AuthState.initial());
+
+  Future<void> _connectSocket() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null) {
+      _realTimeService.connect(token: token);
+    }
+  }
 
   Future<void> login(LoginParams params) async {
     emit(const AuthState.loading());
@@ -34,6 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(data: final user):
         _fcmTokenManager.registerFCMToken();
+        await _connectSocket();
         emit(AuthState.authenticated(user));
       case FailureResult(failure: final failure):
         emit(AuthState.error(failure.message));
@@ -46,6 +59,7 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(data: final user):
         _fcmTokenManager.registerFCMToken();
+        await _connectSocket();
         emit(AuthState.authenticated(user));
       case FailureResult(failure: final failure):
         emit(AuthState.error(failure.message));
@@ -58,6 +72,7 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success():
         _fcmTokenManager.unregisterFCMToken();
+        _realTimeService.disconnect();
         emit(const AuthState.unauthenticated());
       case FailureResult(failure: final failure):
         emit(AuthState.error(failure.message));
@@ -71,6 +86,7 @@ class AuthCubit extends Cubit<AuthState> {
       case Success(data: final user):
         if (user != null) {
           _fcmTokenManager.registerFCMToken();
+          await _connectSocket();
           emit(AuthState.authenticated(user));
         } else {
           emit(const AuthState.unauthenticated());

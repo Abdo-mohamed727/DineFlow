@@ -8,6 +8,7 @@ import 'package:dineflow/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart';
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
 import 'package:dineflow/core/services/notification/fcm_token_manager.dart';
+import 'package:dineflow/core/services/real_time/real_time_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeLoginUseCase implements LoginUseCase {
@@ -59,6 +60,14 @@ class FakeFcmTokenManager extends FcmTokenManager {
   void init() {}
 }
 
+class FakeRealTimeService extends RealTimeService {
+  @override
+  void connect({String? token}) {}
+
+  @override
+  void disconnect() {}
+}
+
 void main() {
   late AuthCubit cubit;
   late FakeLoginUseCase fakeLoginUseCase;
@@ -66,6 +75,7 @@ void main() {
   late FakeLogoutUseCase fakeLogoutUseCase;
   late FakeGetCurrentUserDataUseCase fakeGetCurrentUserDataUseCase;
   late FakeFcmTokenManager fakeFcmTokenManager;
+  late FakeRealTimeService fakeRealTimeService;
 
   final tUser = const UserEntity(
     id: '123',
@@ -80,6 +90,7 @@ void main() {
     fakeLogoutUseCase = FakeLogoutUseCase();
     fakeGetCurrentUserDataUseCase = FakeGetCurrentUserDataUseCase();
     fakeFcmTokenManager = FakeFcmTokenManager();
+    fakeRealTimeService = FakeRealTimeService();
 
     cubit = AuthCubit(
       fakeLoginUseCase,
@@ -87,6 +98,7 @@ void main() {
       fakeLogoutUseCase,
       fakeGetCurrentUserDataUseCase,
       fakeFcmTokenManager,
+      fakeRealTimeService,
     );
   });
 
