@@ -57,12 +57,16 @@ android {
 
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
+
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "DineFlow Staging"
+            )
         }
 
         create("production") {
             dimension = "environment"
-
-            applicationIdSuffix = ".production"
 
             resValue(
                 type = "string",
