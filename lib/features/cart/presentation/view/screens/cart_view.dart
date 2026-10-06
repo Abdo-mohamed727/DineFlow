@@ -26,6 +26,12 @@ class _CartViewState extends State<CartView> {
   bool _isPromoApplied = true;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<CartCubit>().getCart();
+  }
+
+  @override
   void dispose() {
     _notesController.dispose();
     _promoController.dispose();

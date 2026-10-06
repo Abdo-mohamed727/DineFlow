@@ -254,11 +254,8 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: AppPaths.customerCart,
                 name: AppRoutes.customerCart,
-                builder: (context, state) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: sl<CartCubit>()..getCart()),
-                    BlocProvider.value(value: sl<CheckoutCubit>()),
-                  ],
+                builder: (context, state) => BlocProvider.value(
+                  value: sl<CheckoutCubit>(),
                   child: const CartView(),
                 ),
               ),
@@ -394,9 +391,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             ],
           ),
 
-          // Branch 1: Notifications
-          // Reuses the existing NotificationCubit + UseCases â€” no Kitchen-specific
-          // data layer is created.
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -411,7 +405,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
       ),
     ],
 
-    // â”€â”€ Error page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     errorBuilder: (context, state) => AppScaffold(
       title: 'Page Not Found',
       showAppBar: true,
@@ -449,30 +442,40 @@ GoRouter createRouter({required RouterNotifier notifier}) {
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Shell wrappers â€” using StatefulNavigationShell & FloatingBottomNavBar
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-class _CustomerShell extends StatelessWidget {
+class _CustomerShell extends StatefulWidget {
   const _CustomerShell({required this.navigationShell});
   final StatefulNavigationShell navigationShell;
 
   @override
+  State<_CustomerShell> createState() => _CustomerShellState();
+}
+
+class _CustomerShellState extends State<_CustomerShell> {
+  late final CartCubit _cartCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cartCubit = sl<CartCubit>()..getCart();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: sl<CartCubit>()..getCart(),
+      value: _cartCubit,
       child: AppScaffold(
         showAppBar: false,
-        body: navigationShell,
+        body: widget.navigationShell,
         bottomNavigationBar: BlocBuilder<CartCubit, CartState>(
           builder: (context, _) {
             return FloatingBottomNavBar(
-              currentIndex: navigationShell.currentIndex,
+              currentIndex: widget.navigationShell.currentIndex,
               accentColor: AppRole.customer.accentColor,
               onTap: (index) {
-                navigationShell.goBranch(
+                widget.navigationShell.goBranch(
                   index,
-                  initialLocation: index == navigationShell.currentIndex,
+                  initialLocation: index == widget.navigationShell.currentIndex,
                 );
               },
               items: [
