@@ -64,18 +64,18 @@ The application provides a complete digital ordering experience for customers wh
 <table>
   <tr>
     <td align="center">
-      <img <img width="1280" height="2856" alt="Screenshot_1786541509" src="https://github.com/user-attachments/assets/aed9178b-be99-4ac4-ae14-59877fd51635" />
- width="220"/><br/>
+      <img width="1280" height="2856" alt="Screenshot_1786541509" src="https://github.com/user-attachments/assets/aed9178b-be99-4ac4-ae14-59877fd51635" />
+ <br/>
       <strong>Splash</strong>
     </td>
     <td align="center">
-      <img  <img width="1280" height="2856" alt="Screenshot_1789932423" src="https://github.com/user-attachments/assets/92384693-0549-4db7-a85a-ac0fd1798edd" />
- width="220"/><br/>
+       <img width="1280" height="2856" alt="Screenshot_1789932423" src="https://github.com/user-attachments/assets/92384693-0549-4db7-a85a-ac0fd1798edd" />
+ <br/>
       <strong>Login</strong>
     </td>
     <td align="center">
-      <img <img width="1280" height="2856" alt="Screenshot_1789932426" src="https://github.com/user-attachments/assets/1f8afaa8-db10-4e8f-a95b-aa90c9a429bf" />
-  width="220"/><br/>
+    <img width="1280" height="2856" alt="Screenshot_1789932426" src="https://github.com/user-attachments/assets/1f8afaa8-db10-4e8f-a95b-aa90c9a429bf" />
+  <br/>
       <strong>Register</strong>
     </td>
   </tr>
@@ -88,49 +88,61 @@ The application provides a complete digital ordering experience for customers wh
 <table>
   <tr>
     <td align="center">
-      <img  <img width="1280" height="2856" alt="Screenshot_1789989194" src="https://github.com/user-attachments/assets/fadd80b4-8d68-4df7-b4b1-e8f19bbd7a2e" />
- width="220"/><br/>
+      <img width="1280" height="2856" alt="Screenshot_1789989194" src="https://github.com/user-attachments/assets/fadd80b4-8d68-4df7-b4b1-e8f19bbd7a2e" />
+  <br/>
       <strong>Menu</strong>
     </td>
     <td align="center">
-      <img  <img width="1344" height="2992" alt="Screenshot_1790079069" src="https://github.com/user-attachments/assets/c8e2a419-2560-45fc-b92f-b063f1069d27" />
- width="220"/><br/>
+   <img width="1344" height="2992" alt="Screenshot_1790079069" src="https://github.com/user-attachments/assets/c8e2a419-2560-45fc-b92f-b063f1069d27" />
+  <br/>
       <strong>Search</strong>
     </td>
     <td align="center">
-      <img  <img width="1344" height="2992" alt="Screenshot_1790079061" src="https://github.com/user-attachments/assets/650e69e7-5120-4a26-81f0-64b42e802bc2" />
- width="220"/><br/>
+         <img width="1344" height="2992" alt="Screenshot_1790079061" src="https://github.com/user-attachments/assets/650e69e7-5120-4a26-81f0-64b42e802bc2" />
+ <br/>
       <strong>Product Details</strong>
-    </td>
+       </td>
      <td align="center">
-      <img   <img width="1280" height="2856" alt="Screenshot_1791294345" src="https://github.com/user-attachments/assets/d91ac952-28b4-4e3a-b652-fcc86842c18e" />
- />
- width="220"/><br/>
-      <strong>Order Tracker</strong>
+        <img width="720" height="1600" alt="WhatsApp Image 2026-10-06 at 21 48 21 (1)" src="https://github.com/user-attachments/assets/64c32998-6c01-4da4-8e5a-c483de6afe42" />
+ 
+ <br/>
+      <strong>Edit Profile</strong>
     </td>
+         <td align="center">
+        <img width="720" height="1600" alt="WhatsApp Image 2026-10-06 at 21 48 21" src="https://github.com/user-attachments/assets/d163a7a6-3ec7-445d-a50e-46542626969a" />
+ <br/>
+      <strong>Profile</strong>
+    </td>
+   
   </tr>
 
   <tr>
+     </td>
+     <td align="center">
+       <img width="1280" height="2856" alt="Screenshot_1791294345" src="https://github.com/user-attachments/assets/d91ac952-28b4-4e3a-b652-fcc86842c18e" />
+ <br/>
+      <strong>Order Tracker</strong>
+    </td>
     <td align="center">
-      <img   <img width="1280" height="2856" alt="Screenshot_1790248540" src="https://github.com/user-attachments/assets/bfb5fcce-7549-4bb5-a5da-6b6b89590e9b" />
- />
- width="220"/><br/>
+     <img width="1280" height="2856" alt="Screenshot_1790248540" src="https://github.com/user-attachments/assets/bfb5fcce-7549-4bb5-a5da-6b6b89590e9b" />
+  
+ <br/>
       <strong>Cart</strong>
     </td>
     <td align="center">
-      <img  <img width="1344" height="2992" alt="Screenshot_1790079045" src="https://github.com/user-attachments/assets/f25f1410-e0f0-4602-a64e-d8a57fc4c2d3" />
- width="220"/><br/>
+     <img width="1344" height="2992" alt="Screenshot_1790079045" src="https://github.com/user-attachments/assets/f25f1410-e0f0-4602-a64e-d8a57fc4c2d3" />
+ <br/>
       <strong>OrderType</strong>
     </td>
     <td align="center">
-      <img  <img width="1280" height="2856" alt="Screenshot_1790248413" src="https://github.com/user-attachments/assets/900599b1-aeb0-49a7-ad50-c36fcc3236f7" />
- width="220"/><br/>
+        <img width="1280" height="2856" alt="Screenshot_1790248413" src="https://github.com/user-attachments/assets/900599b1-aeb0-49a7-ad50-c36fcc3236f7" />
+  <br/>
       <strong>Order Details</strong>
     </td>
     <td align="center">
-      <img  <img width="1280" height="2856" alt="Screenshot_1791115326" src="https://github.com/user-attachments/assets/48fe3fdc-077f-4078-bc78-1e92104ae141" />
-  />
- width="220"/><br/>
+    <img width="1280" height="2856" alt="Screenshot_1791115326" src="https://github.com/user-attachments/assets/48fe3fdc-077f-4078-bc78-1e92104ae141" />
+ 
+ <br/>
       <strong>Notification</strong>
     </td>
   </tr>
