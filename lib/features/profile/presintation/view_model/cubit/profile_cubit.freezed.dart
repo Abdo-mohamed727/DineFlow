@@ -131,14 +131,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( UserEntity user)?  loaded,TResult Function( UserEntity user)?  updateSuccess,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( UserEntity? user,  Uint8List? imagePreview)?  loading,TResult Function( UserEntity user,  Uint8List? imagePreview)?  loaded,TResult Function( UserEntity user)?  updateSuccess,TResult Function( String message,  UserEntity? user,  Uint8List? imagePreview)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.user);case _UpdateSuccess() when updateSuccess != null:
+return loading(_that.user,_that.imagePreview);case _Loaded() when loaded != null:
+return loaded(_that.user,_that.imagePreview);case _UpdateSuccess() when updateSuccess != null:
 return updateSuccess(_that.user);case _Error() when error != null:
-return error(_that.message);case _:
+return error(_that.message,_that.user,_that.imagePreview);case _:
   return orElse();
 
 }
@@ -156,14 +156,14 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( UserEntity user)  loaded,required TResult Function( UserEntity user)  updateSuccess,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( UserEntity? user,  Uint8List? imagePreview)  loading,required TResult Function( UserEntity user,  Uint8List? imagePreview)  loaded,required TResult Function( UserEntity user)  updateSuccess,required TResult Function( String message,  UserEntity? user,  Uint8List? imagePreview)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
-return loaded(_that.user);case _UpdateSuccess():
+return loading(_that.user,_that.imagePreview);case _Loaded():
+return loaded(_that.user,_that.imagePreview);case _UpdateSuccess():
 return updateSuccess(_that.user);case _Error():
-return error(_that.message);case _:
+return error(_that.message,_that.user,_that.imagePreview);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +180,14 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( UserEntity user)?  loaded,TResult? Function( UserEntity user)?  updateSuccess,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( UserEntity? user,  Uint8List? imagePreview)?  loading,TResult? Function( UserEntity user,  Uint8List? imagePreview)?  loaded,TResult? Function( UserEntity user)?  updateSuccess,TResult? Function( String message,  UserEntity? user,  Uint8List? imagePreview)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.user);case _UpdateSuccess() when updateSuccess != null:
+return loading(_that.user,_that.imagePreview);case _Loaded() when loaded != null:
+return loaded(_that.user,_that.imagePreview);case _UpdateSuccess() when updateSuccess != null:
 return updateSuccess(_that.user);case _Error() when error != null:
-return error(_that.message);case _:
+return error(_that.message,_that.user,_that.imagePreview);case _:
   return null;
 
 }
@@ -231,42 +231,79 @@ String toString() {
 
 
 class _Loading implements ProfileState {
-  const _Loading();
+  const _Loading({this.user, this.imagePreview});
   
 
+ final  UserEntity? user;
+ final  Uint8List? imagePreview;
 
-
+/// Create a copy of ProfileState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other.imagePreview, imagePreview));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(imagePreview));
 
 @override
 String toString() {
-  return 'ProfileState.loading()';
+  return 'ProfileState.loading(user: $user, imagePreview: $imagePreview)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$LoadingCopyWith<$Res> implements $ProfileStateCopyWith<$Res> {
+  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
+@useResult
+$Res call({
+ UserEntity? user, Uint8List? imagePreview
+});
 
 
+
+
+}
+/// @nodoc
+class __$LoadingCopyWithImpl<$Res>
+    implements _$LoadingCopyWith<$Res> {
+  __$LoadingCopyWithImpl(this._self, this._then);
+
+  final _Loading _self;
+  final $Res Function(_Loading) _then;
+
+/// Create a copy of ProfileState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = freezed,Object? imagePreview = freezed,}) {
+  return _then(_Loading(
+user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserEntity?,imagePreview: freezed == imagePreview ? _self.imagePreview : imagePreview // ignore: cast_nullable_to_non_nullable
+as Uint8List?,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class _Loaded implements ProfileState {
-  const _Loaded(this.user);
+  const _Loaded(this.user, {this.imagePreview});
   
 
  final  UserEntity user;
+ final  Uint8List? imagePreview;
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -278,16 +315,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other.imagePreview, imagePreview));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user);
+int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(imagePreview));
 
 @override
 String toString() {
-  return 'ProfileState.loaded(user: $user)';
+  return 'ProfileState.loaded(user: $user, imagePreview: $imagePreview)';
 }
 
 
@@ -298,7 +335,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $ProfileStateCopyWith<$Re
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- UserEntity user
+ UserEntity user, Uint8List? imagePreview
 });
 
 
@@ -315,10 +352,11 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? imagePreview = freezed,}) {
   return _then(_Loaded(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity,
+as UserEntity,imagePreview: freezed == imagePreview ? _self.imagePreview : imagePreview // ignore: cast_nullable_to_non_nullable
+as Uint8List?,
   ));
 }
 
@@ -395,10 +433,12 @@ as UserEntity,
 
 
 class _Error implements ProfileState {
-  const _Error(this.message);
+  const _Error(this.message, {this.user, this.imagePreview});
   
 
  final  String message;
+ final  UserEntity? user;
+ final  Uint8List? imagePreview;
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -410,16 +450,16 @@ _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message)&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other.imagePreview, imagePreview));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,message,user,const DeepCollectionEquality().hash(imagePreview));
 
 @override
 String toString() {
-  return 'ProfileState.error(message: $message)';
+  return 'ProfileState.error(message: $message, user: $user, imagePreview: $imagePreview)';
 }
 
 
@@ -430,7 +470,7 @@ abstract mixin class _$ErrorCopyWith<$Res> implements $ProfileStateCopyWith<$Res
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
 @useResult
 $Res call({
- String message
+ String message, UserEntity? user, Uint8List? imagePreview
 });
 
 
@@ -447,10 +487,12 @@ class __$ErrorCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? user = freezed,Object? imagePreview = freezed,}) {
   return _then(_Error(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
+as String,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserEntity?,imagePreview: freezed == imagePreview ? _self.imagePreview : imagePreview // ignore: cast_nullable_to_non_nullable
+as Uint8List?,
   ));
 }
 

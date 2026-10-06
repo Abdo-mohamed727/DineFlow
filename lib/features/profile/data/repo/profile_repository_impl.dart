@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dineflow/core/error/exception.dart';
 import 'package:dineflow/core/error/failure.dart';
 import 'package:dineflow/core/usecases/result.dart';
@@ -19,6 +21,30 @@ class ProfileRepositoryImpl implements ProfileRepositoryInterface {
       return Success(userModel.toEntity());
     } on AuthException catch (e) {
       return FailureResult(AuthFailure(e.message));
+    } on NotFoundException catch (e) {
+      return FailureResult(NotFoundFailure(e.message));
+    } on ServerException catch (e) {
+      return FailureResult(ServerFailure(e.message));
+    } catch (e) {
+      return FailureResult(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Result<UserEntity>> uploadProfileImage(
+    Uint8List bytes,
+    String fileName,
+  ) async {
+    try {
+      final userModel = await _remoteDataSource.uploadProfileImage(
+        bytes,
+        fileName,
+      );
+      return Success(userModel.toEntity());
+    } on AuthException catch (e) {
+      return FailureResult(AuthFailure(e.message));
+    } on NetworkException catch (e) {
+      return FailureResult(NetworkFailure(e.message));
     } on NotFoundException catch (e) {
       return FailureResult(NotFoundFailure(e.message));
     } on ServerException catch (e) {

@@ -140,6 +140,8 @@ import 'package:dineflow/features/profile/domain/usecase/get_profile_usecase.dar
     as _i831;
 import 'package:dineflow/features/profile/domain/usecase/update_profile_usecase.dart'
     as _i922;
+import 'package:dineflow/features/profile/domain/usecase/upload_profile_image_usecase.dart'
+    as _i833;
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
     as _i87;
 import 'package:dio/dio.dart' as _i361;
@@ -301,6 +303,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i922.UpdateProfileUseCase>(
       () => _i922.UpdateProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
     );
+    gh.lazySingleton<_i833.UploadProfileImageUseCase>(
+      () => _i833.UploadProfileImageUseCase(
+        gh<_i995.ProfileRepositoryInterface>(),
+      ),
+    );
     gh.factory<_i427.OrdersCubit>(
       () => _i427.OrdersCubit(
         gh<_i612.GetOrdersUseCase>(),
@@ -342,6 +349,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i87.ProfileCubit(
         gh<_i831.GetProfileUseCase>(),
         gh<_i922.UpdateProfileUseCase>(),
+        gh<_i833.UploadProfileImageUseCase>(),
       ),
     );
     gh.lazySingleton<_i840.FcmTokenManager>(
