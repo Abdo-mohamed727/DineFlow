@@ -53,6 +53,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         name: _nameCtrl.text.trim(),
         phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
       ),
+      user: widget.user,
     );
   }
 
@@ -75,7 +76,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               );
               Navigator.of(context).pop();
             },
-            error: (msg) => ScaffoldMessenger.of(context).showSnackBar(
+            error: (msg, _, _) => ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(msg),
                 backgroundColor: AppColors.errorContainer,
@@ -85,7 +86,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         },
         builder: (context, state) {
           final isLoading = state.maybeWhen(
-            loading: () => true,
+            loading: (_, _) => true,
             orElse: () => false,
           );
 

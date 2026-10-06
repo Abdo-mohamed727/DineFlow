@@ -14,6 +14,7 @@ abstract class ApiConstants {
 
   // Profile Endpoints
   static const String profile = '/api/users/me';
+  static const String profileImage = '/api/users/me/profile-image';
 
   // Cart Endpoints
   static const String cart = '/api/cart';
@@ -37,7 +38,6 @@ abstract class ApiConstants {
   static const String registerDeviceToken = '/api/notifications/device-token';
   static const String unregisterDeviceToken = '/api/notifications/device-token';
 }
-
 
 class RealtimeEvents {
   static const orderCreated = 'order_created';

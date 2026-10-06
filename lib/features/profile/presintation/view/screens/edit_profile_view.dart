@@ -30,12 +30,13 @@ class EditProfileView extends StatelessWidget {
               );
               Navigator.of(context).pop(true);
             },
-            error: (message) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(message),
-                backgroundColor: AppColors.errorContainer,
-              ),
-            ),
+            error: (message, _, _) =>
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                    backgroundColor: AppColors.errorContainer,
+                  ),
+                ),
           );
         },
         child: EditProfileForm(user: user),

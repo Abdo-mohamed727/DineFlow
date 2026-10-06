@@ -29,17 +29,27 @@ class _ProfileViewState extends State<ProfileView> {
     role: AppRole.customer,
     body: BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) => state.whenOrNull(
-        error: (message) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message), backgroundColor: AppColors.errorContainer),
+        error: (message, _, _) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.errorContainer,
+          ),
         ),
       ),
       builder: (context, state) => state.when(
         initial: () => const SizedBox.shrink(),
-        loading: () => const Center(child: AppLoadingIndicator()),
-        loaded: (user) => ProfileContent(user: user),
+        loading: (_, _) => const Center(child: AppLoadingIndicator()),
+        loaded: (user, _) => ProfileContent(user: user),
         updateSuccess: (user) => ProfileContent(user: user),
-        error: (_) => const ProfileContent(
-          user: UserEntity(id: '', name: 'Unavailable', email: 'Unavailable', role: UserRole.customer),
+        error: (_, user, _) => ProfileContent(
+          user:
+              user ??
+              const UserEntity(
+                id: '',
+                name: 'Unavailable',
+                email: 'Unavailable',
+                role: UserRole.customer,
+              ),
         ),
       ),
     ),
