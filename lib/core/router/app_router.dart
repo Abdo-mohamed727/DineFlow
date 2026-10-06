@@ -118,7 +118,10 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         name: AppRoutes.customerProductDetails,
         builder: (context, state) {
           final product = state.extra as ProductEntity;
-          return ProductDetailsView(product: product);
+          return BlocProvider.value(
+            value: sl<CartCubit>(),
+            child: ProductDetailsView(product: product),
+          );
         },
       ),
       GoRoute(
@@ -126,7 +129,10 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         name: AppRoutes.customerSearch,
         builder: (context, state) {
           final query = state.extra as String?;
-          return SearchView(initialQuery: query);
+          return BlocProvider.value(
+            value: sl<CartCubit>(),
+            child: SearchView(initialQuery: query),
+          );
         },
       ),
       GoRoute(
