@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/auth/presintation/view_mode/cubit/auth_cubit.dart';
 import '../theme/app_colors.dart';
 
 enum AppRole { customer, waiter, kitchen }
@@ -257,14 +259,22 @@ class _RolePill extends StatelessWidget {
         children: [
           Icon(role.icon, size: 12, color: accent),
           const SizedBox(width: 4),
-          Text(
-            role.label,
-            style: TextStyle(
-              color: accent,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.4,
-            ),
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              final displayName = state.maybeWhen(
+                authenticated: (user) => user.name.isNotEmpty ? user.name : role.label,
+                orElse: () => role.label,
+              );
+              return Text(
+                displayName,
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.4,
+                ),
+              );
+            },
           ),
         ],
       ),
