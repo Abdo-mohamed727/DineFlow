@@ -106,12 +106,12 @@ The application provides a complete digital ordering experience for customers wh
         <img width="720" height="1600" alt="WhatsApp Image 2026-10-06 at 21 48 21 (1)" src="https://github.com/user-attachments/assets/64c32998-6c01-4da4-8e5a-c483de6afe42" />
  
  <br/>
-      <strong>Edit Profile</strong>
+      <strong> Profile</strong>
     </td>
          <td align="center">
         <img width="720" height="1600" alt="WhatsApp Image 2026-10-06 at 21 48 21" src="https://github.com/user-attachments/assets/d163a7a6-3ec7-445d-a50e-46542626969a" />
  <br/>
-      <strong>Profile</strong>
+      <strong>Edit Profile</strong>
     </td>
    
   </tr>
