@@ -102,6 +102,12 @@ The application provides a complete digital ordering experience for customers wh
  width="220"/><br/>
       <strong>Product Details</strong>
     </td>
+     <td align="center">
+      <img   <img width="1280" height="2856" alt="Screenshot_1791294345" src="https://github.com/user-attachments/assets/d91ac952-28b4-4e3a-b652-fcc86842c18e" />
+ />
+ width="220"/><br/>
+      <strong>Order Tracker</strong>
+    </td>
   </tr>
 
   <tr>
