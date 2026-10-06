@@ -80,16 +80,22 @@ class _EditProfileFormState extends State<EditProfileForm> {
     }
   }
 
+  String _initials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.length >= 2) {
+      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    }
+    return name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : '?';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final initials = widget.user.name.trim().isEmpty
-        ? '?'
-        : widget.user.name.trim()[0].toUpperCase();
     return Form(
       key: _formKey,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(24, 28, 24, 40),
         children: [
+          // ── Avatar ─────────────────────────────────────────────────────────
           BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               final imagePreview = state.maybeWhen(
@@ -98,68 +104,124 @@ class _EditProfileFormState extends State<EditProfileForm> {
                 error: (_, _, imagePreview) => imagePreview,
                 orElse: () => null,
               );
-              return Center(
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundColor: AppColors.primaryContainer,
-                  child: imagePreview != null
-                      ? ClipOval(
-                          child: Image.memory(
-                            imagePreview,
-                            width: 96,
-                            height: 96,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : widget.user.profileImage?.isNotEmpty == true
-                      ? ClipOval(
-                          child: Image.network(
-                            widget.user.profileImage!,
-                            width: 96,
-                            height: 96,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => Text(
-                              initials,
-                              style: const TextStyle(
-                                color: AppColors.onPrimary,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Text(
-                          initials,
-                          style: const TextStyle(
-                            color: AppColors.onPrimary,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 10),
-          BlocBuilder<ProfileCubit, ProfileState>(
-            builder: (context, state) {
               final isSaving = state.maybeWhen(
                 loading: (_, _) => true,
                 orElse: () => false,
               );
-              return Center(
-                child: TextButton.icon(
-                  onPressed: _isPickingImage || isSaving ? null : _pickImage,
-                  icon: _isPickingImage
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.camera_alt_outlined, size: 16),
-                  label: Text(
-                    _isPickingImage ? 'Selecting photo...' : 'Change photo',
+              final initials = _initials(widget.user.name);
+
+              Widget avatarContent;
+              if (imagePreview != null) {
+                // Freshly picked local image
+                avatarContent = Image.memory(
+                  imagePreview,
+                  width: 96,
+                  height: 96,
+                  fit: BoxFit.cover,
+                );
+              } else if (widget.user.profileImage?.isNotEmpty == true) {
+                // Remote profile photo
+                avatarContent = Image.network(
+                  widget.user.profileImage!,
+                  width: 96,
+                  height: 96,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, _) => Center(
+                    child: Text(
+                      initials,
+                      style: const TextStyle(
+                        color: AppColors.onPrimary,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
                   ),
+                );
+              } else {
+                // Fallback: gradient with initials
+                avatarContent = Center(
+                  child: Text(
+                    initials,
+                    style: const TextStyle(
+                      color: AppColors.onPrimary,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                );
+              }
+
+              return Center(
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Main avatar circle
+                    GestureDetector(
+                      onTap: _isPickingImage || isSaving ? null : _pickImage,
+                      child: Container(
+                        width: 96,
+                        height: 96,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const LinearGradient(
+                            colors: [
+                              AppColors.primaryContainer,
+                              AppColors.inversePrimary,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primaryContainer.withValues(
+                                alpha: 0.35,
+                              ),
+                              blurRadius: 20,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(child: avatarContent),
+                      ),
+                    ),
+
+                    // Loading ring while picking / saving
+                    if (_isPickingImage || isSaving)
+                      Positioned.fill(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: AppColors.primaryContainer,
+                        ),
+                      ),
+
+                    // Camera badge
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: _isPickingImage || isSaving ? null : _pickImage,
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryContainer,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.surface,
+                              width: 2,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_outlined,
+                            size: 15,
+                            color: AppColors.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
