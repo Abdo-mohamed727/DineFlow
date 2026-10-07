@@ -144,6 +144,20 @@ import 'package:dineflow/features/profile/domain/usecase/upload_profile_image_us
     as _i833;
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
     as _i87;
+import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_imp.dart'
+    as _i523;
+import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart'
+    as _i463;
+import 'package:dineflow/features/waiter/data/repo/waiter_repo_imp.dart'
+    as _i120;
+import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart'
+    as _i738;
+import 'package:dineflow/features/waiter/domain/use_case/accept_request_use_case.dart'
+    as _i676;
+import 'package:dineflow/features/waiter/domain/use_case/complete_request_use_case.dart'
+    as _i882;
+import 'package:dineflow/features/waiter/domain/use_case/get_pending_requests_use_case.dart'
+    as _i520;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -165,6 +179,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i944.MenuRemoteDataSource>(
       () => _i853.MenuRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.factory<_i463.WaiterDataSource>(
+      () => _i523.WaiterDataSourceImpl(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i207.AuthRemoteDataSource>(
       () => _i784.AuthRemoteDataSourceImpl(gh<_i361.Dio>()),
@@ -197,6 +214,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i491.ProfileRepositoryImpl(
         gh<_i752.ProfileRemoteDataSourceInterface>(),
       ),
+    );
+    gh.factory<_i738.WaiterRepository>(
+      () => _i120.WaiterRepositoryImpl(gh<_i463.WaiterDataSource>()),
     );
     gh.lazySingleton<_i589.AddToCartUseCase>(
       () => _i589.AddToCartUseCase(gh<_i652.CartRepositoryInterface>()),
@@ -238,6 +258,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i854.NotificationRepoImpl(
         gh<_i658.NotificationDataSourceInterface>(),
       ),
+    );
+    gh.lazySingleton<_i676.AcceptRequestUseCase>(
+      () => _i676.AcceptRequestUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i882.CompleteRequestUseCase>(
+      () => _i882.CompleteRequestUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i520.GetPendingRequestsUseCase>(
+      () => _i520.GetPendingRequestsUseCase(gh<_i738.WaiterRepository>()),
     );
     gh.lazySingleton<_i440.CreateDineInOrderUsecase>(
       () =>
