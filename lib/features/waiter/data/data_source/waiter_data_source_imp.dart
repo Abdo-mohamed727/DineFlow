@@ -1,4 +1,5 @@
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart';
+import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -50,4 +51,24 @@ class WaiterDataSourceImpl implements WaiterDataSource {
       response.data['data']['request'],
     );
   }
+  @override
+Future<CreateOrderModel> createDineOrder(
+  String diningSessionId,
+  List<Map<String, dynamic>> items,
+  String? notes,
+) async {
+  final response = await dio.post(
+    ApiConstants.createDineOrder,
+    data: {
+      'orderType': 'DINE_IN',
+      'diningSessionId': diningSessionId,
+      'items': items,
+      'notes': notes,
+    },
+  );
+
+  return CreateOrderModel.fromJson(
+    response.data['data'],
+  );
+}
 }

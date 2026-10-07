@@ -48,6 +48,7 @@ abstract class ApiConstants {
       '/api/waiter-requests/$requestId/accept';
   static String completeRequest(String requestId) =>
       '/api/waiter-requests/$requestId/complete';
+  static const String createDineOrder = '/api/orders';
 }
 
 class RealtimeEvents {
