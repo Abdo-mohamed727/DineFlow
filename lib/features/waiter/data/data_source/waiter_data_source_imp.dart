@@ -67,7 +67,7 @@ class WaiterDataSourceImpl implements WaiterDataSource {
     String? notes,
   ) async {
     final response = await dio.post(
-      ApiConstants.createDineOrder,
+      ApiConstants.createOrder,
       data: {
         'orderType': 'DINE_IN',
         'diningSessionId': diningSessionId,
@@ -80,4 +80,20 @@ class WaiterDataSourceImpl implements WaiterDataSource {
       response.data['data'],
     );
   }
+  @override
+Future<CreateOrderModel> createTakeAwayOrder(
+  List<Map<String, dynamic>> items,
+) async {
+  final response = await dio.post(
+    ApiConstants.createOrder,
+    data: {
+      'orderType': 'TAKEAWAY',
+      'items': items,
+    },
+  );
+
+  return CreateOrderModel.fromJson(
+    response.data['data'],
+  );
+}
 }

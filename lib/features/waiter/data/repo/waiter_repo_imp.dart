@@ -4,6 +4,7 @@ import 'package:dineflow/core/usecases/result.dart';
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_dine_order_params.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart';
+import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_page_entity.dart';
 import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart';
@@ -72,6 +73,29 @@ Future<Result<CreateOrderEntity>> createDineOrder(
     return Success(model.toEntity());
   } on AppException catch (e) {
     return FailureResult(_mapExceptionToFailure(e));
+  }
+}
+
+Future<Result<CreateOrderEntity>> createTakeAwayOrder(
+  CreateTakeAwayOrderParams params,
+) async {
+  try {
+    final model = await dataSource.createTakeAwayOrder(
+      params.items
+          .map(
+            (item) => {
+              'productId': item.productId,
+              'quantity': item.quantity,
+            },
+          )
+          .toList(),
+    );
+
+    return Success(model.toEntity());
+  } on AppException catch (e) {
+    return FailureResult(
+      _mapExceptionToFailure(e),
+    );
   }
 }
 

@@ -19,4 +19,7 @@ abstract interface class WaiterDataSource {
     List<Map<String, dynamic>> items,
     String? notes,
   );
+  Future<CreateOrderModel> createTakeAwayOrder(
+  List<Map<String, dynamic>> items,
+);
 }
