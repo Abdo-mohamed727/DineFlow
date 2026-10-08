@@ -1,4 +1,5 @@
 import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
+import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
 
 import '../models/waiter_request_model.dart';
 import '../models/waiter_request_page_model.dart';
@@ -22,4 +23,5 @@ abstract interface class WaiterDataSource {
   Future<CreateOrderModel> createTakeAwayOrder(
   List<Map<String, dynamic>> items,
 );
+Future<OrdersPageModel> getOrders();
 }

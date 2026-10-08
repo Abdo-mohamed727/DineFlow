@@ -1,5 +1,6 @@
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart';
 import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
+import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -18,46 +19,30 @@ class WaiterDataSourceImpl implements WaiterDataSource {
   Future<WaiterRequestsPageModel> getPendingRequests() async {
     final response = await dio.get(
       ApiConstants.waiterRequests,
-      queryParameters: {
-        'status': 'pending',
-      },
+      queryParameters: {'status': 'pending'},
     );
 
-    return WaiterRequestsPageModel.fromJson(
-      response.data['data'],
-    );
+    return WaiterRequestsPageModel.fromJson(response.data['data']);
   }
 
   @override
-  Future<WaiterRequestModel> acceptRequest(
-    String requestId,
-  ) async {
+  Future<WaiterRequestModel> acceptRequest(String requestId) async {
     final response = await dio.patch(
       ApiConstants.updateWaiterRequestStatus(requestId),
-      data: {
-        'status': 'accepted',
-      },
+      data: {'status': 'accepted'},
     );
 
-    return WaiterRequestModel.fromJson(
-      response.data['data']['request'],
-    );
+    return WaiterRequestModel.fromJson(response.data['data']['request']);
   }
 
   @override
-  Future<WaiterRequestModel> completeRequest(
-    String requestId,
-  ) async {
+  Future<WaiterRequestModel> completeRequest(String requestId) async {
     final response = await dio.patch(
       ApiConstants.updateWaiterRequestStatus(requestId),
-      data: {
-        'status': 'completed',
-      },
+      data: {'status': 'completed'},
     );
 
-    return WaiterRequestModel.fromJson(
-      response.data['data']['request'],
-    );
+    return WaiterRequestModel.fromJson(response.data['data']['request']);
   }
 
   @override
@@ -76,24 +61,25 @@ class WaiterDataSourceImpl implements WaiterDataSource {
       },
     );
 
-    return CreateOrderModel.fromJson(
-      response.data['data'],
-    );
+    return CreateOrderModel.fromJson(response.data['data']);
   }
-  @override
-Future<CreateOrderModel> createTakeAwayOrder(
-  List<Map<String, dynamic>> items,
-) async {
-  final response = await dio.post(
-    ApiConstants.createOrder,
-    data: {
-      'orderType': 'TAKEAWAY',
-      'items': items,
-    },
-  );
 
-  return CreateOrderModel.fromJson(
-    response.data['data'],
-  );
-}
+  @override
+  Future<CreateOrderModel> createTakeAwayOrder(
+    List<Map<String, dynamic>> items,
+  ) async {
+    final response = await dio.post(
+      ApiConstants.createOrder,
+      data: {'orderType': 'TAKEAWAY', 'items': items},
+    );
+
+    return CreateOrderModel.fromJson(response.data['data']);
+  }
+
+  @override
+  Future<OrdersPageModel> getOrders() async {
+    final response = await dio.get(ApiConstants.orders);
+
+    return OrdersPageModel.fromJson(response.data['data']);
+  }
 }

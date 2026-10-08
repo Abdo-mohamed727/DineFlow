@@ -5,6 +5,7 @@ import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_int
 import 'package:dineflow/features/waiter/domain/entity/create_dine_order_params.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
+import 'package:dineflow/features/waiter/domain/entity/orders_page_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_page_entity.dart';
 import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart';
@@ -28,9 +29,7 @@ class WaiterRepositoryImpl implements WaiterRepository {
   }
 
   @override
-  Future<Result<WaiterRequestEntity>> acceptRequest(
-    String requestId,
-  ) async {
+  Future<Result<WaiterRequestEntity>> acceptRequest(String requestId) async {
     try {
       final model = await dataSource.acceptRequest(requestId);
 
@@ -41,9 +40,7 @@ class WaiterRepositoryImpl implements WaiterRepository {
   }
 
   @override
-  Future<Result<WaiterRequestEntity>> completeRequest(
-    String requestId,
-  ) async {
+  Future<Result<WaiterRequestEntity>> completeRequest(String requestId) async {
     try {
       final model = await dataSource.completeRequest(requestId);
 
@@ -52,52 +49,62 @@ class WaiterRepositoryImpl implements WaiterRepository {
       return FailureResult(_mapExceptionToFailure(e));
     }
   }
+
   @override
-Future<Result<CreateOrderEntity>> createDineOrder(
-  CreateDineOrderParams params,
-) async {
-  try {
-    final model = await dataSource.createDineOrder(
-      params.diningSessionId,
-      params.items
-          .map(
-            (item) => {
-              'productId': item.productId,
-              'quantity': item.quantity,
-            },
-          )
-          .toList(),
-      params.notes,
-    );
+  Future<Result<CreateOrderEntity>> createDineOrder(
+    CreateDineOrderParams params,
+  ) async {
+    try {
+      final model = await dataSource.createDineOrder(
+        params.diningSessionId,
+        params.items
+            .map(
+              (item) => {
+                'productId': item.productId,
+                'quantity': item.quantity,
+              },
+            )
+            .toList(),
+        params.notes,
+      );
 
-    return Success(model.toEntity());
-  } on AppException catch (e) {
-    return FailureResult(_mapExceptionToFailure(e));
+      return Success(model.toEntity());
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
   }
-}
 
-Future<Result<CreateOrderEntity>> createTakeAwayOrder(
-  CreateTakeAwayOrderParams params,
-) async {
-  try {
-    final model = await dataSource.createTakeAwayOrder(
-      params.items
-          .map(
-            (item) => {
-              'productId': item.productId,
-              'quantity': item.quantity,
-            },
-          )
-          .toList(),
-    );
+  Future<Result<CreateOrderEntity>> createTakeAwayOrder(
+    CreateTakeAwayOrderParams params,
+  ) async {
+    try {
+      final model = await dataSource.createTakeAwayOrder(
+        params.items
+            .map(
+              (item) => {
+                'productId': item.productId,
+                'quantity': item.quantity,
+              },
+            )
+            .toList(),
+      );
 
-    return Success(model.toEntity());
-  } on AppException catch (e) {
-    return FailureResult(
-      _mapExceptionToFailure(e),
-    );
+      return Success(model.toEntity());
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
   }
-}
+
+  @override
+  Future<Result<OrdersPageEntity>> getOrders() async {
+    try {
+      final model = await dataSource.getOrders();
+
+      return Success(model.toEntity());
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
 
   Failure _mapExceptionToFailure(AppException exception) {
     return switch (exception) {
