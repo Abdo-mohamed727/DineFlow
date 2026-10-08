@@ -5,6 +5,7 @@ import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_int
 import 'package:dineflow/features/waiter/domain/entity/create_dine_order_params.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
+import 'package:dineflow/features/waiter/domain/entity/order_waiter_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/orders_page_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_page_entity.dart';
@@ -112,6 +113,17 @@ class WaiterRepositoryImpl implements WaiterRepository {
       final model = await dataSource.getOrdersByStatus(status);
 
       return Success(model.toEntity());
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Result<OrderWaiterEntity>> getOrderById(String orderId) async {
+    try {
+      final model = await dataSource.getOrderById(orderId);
+
+      return Success(model.toEntity() as OrderWaiterEntity);
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }

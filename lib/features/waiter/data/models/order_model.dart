@@ -43,19 +43,18 @@ class OrderModel {
     return OrderModel(
       id: json['id'] ?? '',
       orderNumber: json['orderNumber'] ?? '',
-      customer: CustomerModel.fromJson(
-        customerData as Map<String, dynamic>,
-      ),
-      diningSessionId: json['diningSessionId'],
+      customer: CustomerModel.fromJson(customerData as Map<String, dynamic>),
+      diningSessionId: json['diningSessionId'] is Map<String, dynamic>
+          ? json['diningSessionId']['id']
+          : json['diningSessionId'],
       table: tableData is Map<String, dynamic>
           ? TableModel.fromJson(tableData)
           : null,
       type: json['type'] ?? '',
       items: (json['items'] as List<dynamic>? ?? [])
           .map(
-            (item) => OrderItemWaiterModel.fromJson(
-              item as Map<String, dynamic>,
-            ),
+            (item) =>
+                OrderItemWaiterModel.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
       status: json['status'] ?? '',

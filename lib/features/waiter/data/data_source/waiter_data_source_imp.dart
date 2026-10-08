@@ -1,3 +1,4 @@
+import 'package:dineflow/features/orders/data/models/order_model.dart';
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart';
 import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
 import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
@@ -92,4 +93,14 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
     return OrdersPageModel.fromJson(response.data['data']);
   }
+  @override
+  Future<OrderModel> getOrderById(String orderId) async {
+  final response = await dio.get(
+    '${ApiConstants.orders}/$orderId',
+  );
+
+  return OrderModel.fromJson(
+    response.data['data']['order'],
+  );
+}
 }
