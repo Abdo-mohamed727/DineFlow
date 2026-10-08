@@ -128,6 +128,24 @@ class WaiterRepositoryImpl implements WaiterRepository {
       return FailureResult(_mapExceptionToFailure(e));
     }
   }
+  @override
+Future<Result<OrderWaiterEntity>> updateOrderStatus(
+  String orderId,
+  String status,
+) async {
+  try {
+    final model = await dataSource.updateOrderStatus(
+      orderId,
+      status,
+    );
+
+    return Success(model.toEntity() as OrderWaiterEntity);
+  } on AppException catch (e) {
+    return FailureResult(
+      _mapExceptionToFailure(e),
+    );
+  }
+}
 
   Failure _mapExceptionToFailure(AppException exception) {
     return switch (exception) {

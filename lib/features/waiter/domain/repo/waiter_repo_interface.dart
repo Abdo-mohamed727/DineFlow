@@ -22,4 +22,12 @@ abstract interface class WaiterRepository {
   Future<Result<OrdersPageEntity>> getOrders();
   Future<Result<OrdersPageEntity>> getOrdersByStatus(String status);
   Future<Result<OrderWaiterEntity>> getOrderById(String orderId);
+  Future<Result<OrderWaiterEntity>> updateOrderStatus(
+  String orderId,
+  String status,
+);
+  
+
+  
+
 }

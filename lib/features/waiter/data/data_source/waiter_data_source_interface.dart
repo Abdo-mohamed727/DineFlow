@@ -23,4 +23,8 @@ abstract interface class WaiterDataSource {
   Future<OrdersPageModel> getOrders();
   Future<OrdersPageModel> getOrdersByStatus(String status);
   Future<OrderModel> getOrderById(String orderId);
+  Future<OrderModel> updateOrderStatus(
+  String orderId,
+  String status,
+);
 }

@@ -93,14 +93,21 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
     return OrdersPageModel.fromJson(response.data['data']);
   }
+
   @override
   Future<OrderModel> getOrderById(String orderId) async {
-  final response = await dio.get(
-    '${ApiConstants.orders}/$orderId',
-  );
+    final response = await dio.get('${ApiConstants.orders}/$orderId');
 
-  return OrderModel.fromJson(
-    response.data['data']['order'],
-  );
-}
+    return OrderModel.fromJson(response.data['data']['order']);
+  }
+
+  @override
+  Future<OrderModel> updateOrderStatus(String orderId, String status) async {
+    final response = await dio.patch(
+      '${ApiConstants.orders}/$orderId/status',
+      data: {'status': status},
+    );
+
+    return OrderModel.fromJson(response.data['data']['order']);
+  }
 }
