@@ -29,9 +29,7 @@ class WaiterRequestModel {
     this.handledAt,
   });
 
-  factory WaiterRequestModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory WaiterRequestModel.fromJson(Map<String, dynamic> json) {
     final customerData = json['customerId'];
     final tableData = json['tableId'];
 
@@ -43,19 +41,22 @@ class WaiterRequestModel {
               id: customerData?.toString() ?? '',
               name: '',
             ),
-      table: tableData is Map<String, dynamic>
-          ? TableModel.fromJson(tableData)
-          : TableModel(
-              id: tableData?.toString() ?? '',
-              tableNumber: 0,
-            ),
-      diningSessionId: json['diningSessionId'] ?? '',
+     table: tableData is Map<String, dynamic>
+    ? TableModel.fromJson(tableData)
+    : TableModel(
+        id: tableData?.toString() ?? '',
+        tableNumber: 0,
+        capacity: 0,
+        status: '',
+        location: '',
+      ),
+      diningSessionId: json['diningSessionId']?.toString() ?? '',
       type: json['type'] ?? '',
       status: json['status'] ?? '',
       message: json['message'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      handledBy: json['handledBy'],
+      handledBy: json['handledBy']?.toString(),
       handledAt: json['handledAt'] != null
           ? DateTime.parse(json['handledAt'])
           : null,
@@ -66,7 +67,7 @@ class WaiterRequestModel {
     return WaiterRequestEntity(
       id: id,
       customer: customer.toEntity(),
-      table: table.toEntity(),
+      table: table.toEntity()as TableEntity,
       diningSessionId: diningSessionId,
       type: type,
       status: status,

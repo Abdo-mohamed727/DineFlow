@@ -128,24 +128,64 @@ class WaiterRepositoryImpl implements WaiterRepository {
       return FailureResult(_mapExceptionToFailure(e));
     }
   }
-  @override
-Future<Result<OrderWaiterEntity>> updateOrderStatus(
-  String orderId,
-  String status,
-) async {
-  try {
-    final model = await dataSource.updateOrderStatus(
-      orderId,
-      status,
-    );
 
-    return Success(model.toEntity() as OrderWaiterEntity);
-  } on AppException catch (e) {
-    return FailureResult(
-      _mapExceptionToFailure(e),
-    );
+  @override
+  Future<Result<OrderWaiterEntity>> updateOrderStatus(
+    String orderId,
+    String status,
+  ) async {
+    try {
+      final model = await dataSource.updateOrderStatus(orderId, status);
+
+      return Success(model.toEntity() as OrderWaiterEntity);
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
   }
-}
+
+  @override
+  Future<Result<TableEntity>> updateTable(String tableId, String status) async {
+    try {
+      final model = await dataSource.updateTable(tableId, status);
+
+      return Success(model.toEntity() as TableEntity);
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Result<TableEntity>> getTables() async {
+    try {
+      final model = await dataSource.getTables();
+
+      return Success(model.toEntity() as TableEntity);
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Result<TableEntity>> getAvailableTables() async {
+    try {
+      final model = await dataSource.getAvailableTables();
+
+      return Success(model.toEntity() as TableEntity);
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Result<TableEntity>> getTableById(String tableId) async {
+    try {
+      final model = await dataSource.getTableById(tableId);
+
+      return Success(model.toEntity() as TableEntity);
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
 
   Failure _mapExceptionToFailure(AppException exception) {
     return switch (exception) {

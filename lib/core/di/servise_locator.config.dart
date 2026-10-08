@@ -156,8 +156,28 @@ import 'package:dineflow/features/waiter/domain/use_case/accept_request_use_case
     as _i676;
 import 'package:dineflow/features/waiter/domain/use_case/complete_request_use_case.dart'
     as _i882;
+import 'package:dineflow/features/waiter/domain/use_case/create_dine_order_use_case.dart'
+    as _i226;
+import 'package:dineflow/features/waiter/domain/use_case/create_takeaway_order_use_case.dart'
+    as _i118;
+import 'package:dineflow/features/waiter/domain/use_case/get_avaliable_table_use_case.dart'
+    as _i572;
+import 'package:dineflow/features/waiter/domain/use_case/get_order_by_id_use_case.dart'
+    as _i300;
+import 'package:dineflow/features/waiter/domain/use_case/get_orders_by_status_use_case.dart'
+    as _i44;
+import 'package:dineflow/features/waiter/domain/use_case/get_orders_use_case.dart'
+    as _i443;
 import 'package:dineflow/features/waiter/domain/use_case/get_pending_requests_use_case.dart'
     as _i520;
+import 'package:dineflow/features/waiter/domain/use_case/get_table_by_id_use_case.dart'
+    as _i813;
+import 'package:dineflow/features/waiter/domain/use_case/get_tables_use_case.dart'
+    as _i280;
+import 'package:dineflow/features/waiter/domain/use_case/update_order_status_use_case.dart'
+    as _i817;
+import 'package:dineflow/features/waiter/domain/use_case/update_table_use_case.dart'
+    as _i850;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -265,8 +285,38 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i882.CompleteRequestUseCase>(
       () => _i882.CompleteRequestUseCase(gh<_i738.WaiterRepository>()),
     );
+    gh.lazySingleton<_i226.CreateDineOrderUseCase>(
+      () => _i226.CreateDineOrderUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i118.CreateTakeAwayOrderUseCase>(
+      () => _i118.CreateTakeAwayOrderUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i572.GetAvailableTablesUseCase>(
+      () => _i572.GetAvailableTablesUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i300.GetOrderByIdUseCase>(
+      () => _i300.GetOrderByIdUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i44.GetOrdersByStatusUseCase>(
+      () => _i44.GetOrdersByStatusUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i443.GetOrdersUseCase>(
+      () => _i443.GetOrdersUseCase(gh<_i738.WaiterRepository>()),
+    );
     gh.lazySingleton<_i520.GetPendingRequestsUseCase>(
       () => _i520.GetPendingRequestsUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i813.GetTableByIdUseCase>(
+      () => _i813.GetTableByIdUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i280.GetTablesUseCase>(
+      () => _i280.GetTablesUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i817.UpdateOrderStatusUseCase>(
+      () => _i817.UpdateOrderStatusUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i850.UpdateTableUseCase>(
+      () => _i850.UpdateTableUseCase(gh<_i738.WaiterRepository>()),
     );
     gh.lazySingleton<_i440.CreateDineInOrderUsecase>(
       () =>

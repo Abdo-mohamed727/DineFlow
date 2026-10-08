@@ -1,4 +1,5 @@
 import 'package:dineflow/features/waiter/domain/entity/order_waiter_entity.dart';
+import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
 
 import 'customer_model.dart';
 import 'table_model.dart';
@@ -39,22 +40,29 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     final customerData = json['customerId'];
     final tableData = json['tableId'];
+    final diningSessionData = json['diningSessionId'];
 
     return OrderModel(
       id: json['id'] ?? '',
       orderNumber: json['orderNumber'] ?? '',
-      customer: CustomerModel.fromJson(customerData as Map<String, dynamic>),
-      diningSessionId: json['diningSessionId'] is Map<String, dynamic>
-          ? json['diningSessionId']['id']
-          : json['diningSessionId'],
+      customer: customerData is Map<String, dynamic>
+          ? CustomerModel.fromJson(customerData)
+          : CustomerModel(
+              id: customerData?.toString() ?? '',
+              name: '',
+            ),
+      diningSessionId: diningSessionData is Map<String, dynamic>
+          ? diningSessionData['id']?.toString()
+          : diningSessionData?.toString(),
       table: tableData is Map<String, dynamic>
           ? TableModel.fromJson(tableData)
           : null,
       type: json['type'] ?? '',
       items: (json['items'] as List<dynamic>? ?? [])
           .map(
-            (item) =>
-                OrderItemWaiterModel.fromJson(item as Map<String, dynamic>),
+            (item) => OrderItemWaiterModel.fromJson(
+              item as Map<String, dynamic>,
+            ),
           )
           .toList(),
       status: json['status'] ?? '',
@@ -73,7 +81,7 @@ class OrderModel {
       orderNumber: orderNumber,
       customer: customer.toEntity(),
       diningSessionId: diningSessionId,
-      table: table?.toEntity(),
+      table: table?.toEntity()as TableEntity,
       type: type,
       items: items.map((item) => item.toEntity()).toList(),
       status: status,

@@ -26,7 +26,16 @@ abstract interface class WaiterRepository {
   String orderId,
   String status,
 );
-  
+  Future<Result<TableEntity>> getTables();
+
+Future<Result<TableEntity>> getAvailableTables();
+
+Future<Result<TableEntity>> getTableById(String tableId);
+
+Future<Result<TableEntity>> updateTable(
+  String tableId,
+  String status,
+);
 
   
 
