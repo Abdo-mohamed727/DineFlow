@@ -9,18 +9,15 @@ import 'package:dineflow/features/waiter/domain/entity/waiter_request_page_entit
 abstract interface class WaiterRepository {
   Future<Result<WaiterRequestsPageEntity>> getPendingRequests();
 
-  Future<Result<WaiterRequestEntity>> acceptRequest(
-    String requestId,
-  );
+  Future<Result<WaiterRequestEntity>> acceptRequest(String requestId);
 
-  Future<Result<WaiterRequestEntity>> completeRequest(
-    String requestId,
-  );
+  Future<Result<WaiterRequestEntity>> completeRequest(String requestId);
   Future<Result<CreateOrderEntity>> createDineOrder(
-  CreateDineOrderParams params,
-);
-Future<Result<CreateOrderEntity>> createTakeAwayOrder(
-  CreateTakeAwayOrderParams params,
-);
-Future<Result<OrdersPageEntity>> getOrders();
+    CreateDineOrderParams params,
+  );
+  Future<Result<CreateOrderEntity>> createTakeAwayOrder(
+    CreateTakeAwayOrderParams params,
+  );
+  Future<Result<OrdersPageEntity>> getOrders();
+  Future<Result<OrdersPageEntity>> getOrdersByStatus(String status);
 }

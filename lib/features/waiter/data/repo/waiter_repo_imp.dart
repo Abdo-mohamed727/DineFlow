@@ -106,6 +106,17 @@ class WaiterRepositoryImpl implements WaiterRepository {
     }
   }
 
+  @override
+  Future<Result<OrdersPageEntity>> getOrdersByStatus(String status) async {
+    try {
+      final model = await dataSource.getOrdersByStatus(status);
+
+      return Success(model.toEntity());
+    } on AppException catch (e) {
+      return FailureResult(_mapExceptionToFailure(e));
+    }
+  }
+
   Failure _mapExceptionToFailure(AppException exception) {
     return switch (exception) {
       ServerException() => ServerFailure(exception.message),

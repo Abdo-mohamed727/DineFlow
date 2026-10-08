@@ -82,4 +82,14 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
     return OrdersPageModel.fromJson(response.data['data']);
   }
+
+  @override
+  Future<OrdersPageModel> getOrdersByStatus(String status) async {
+    final response = await dio.get(
+      ApiConstants.orders,
+      queryParameters: {'status': status},
+    );
+
+    return OrdersPageModel.fromJson(response.data['data']);
+  }
 }

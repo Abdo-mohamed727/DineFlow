@@ -24,4 +24,6 @@ abstract interface class WaiterDataSource {
   List<Map<String, dynamic>> items,
 );
 Future<OrdersPageModel> getOrders();
+Future<OrdersPageModel> getOrdersByStatus(String status);
+
 }
