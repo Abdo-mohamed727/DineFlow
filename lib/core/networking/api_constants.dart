@@ -43,11 +43,10 @@ abstract class ApiConstants {
   static const String unregisterDeviceToken = '/api/notifications/device-token';
 
   // Waiter Endpoints
-  static const String pendingRequests = '/api/waiter-requests?status=pending';
-  static String acceptRequest(String requestId) =>
-      '/api/waiter-requests/$requestId/accept';
-  static String completeRequest(String requestId) =>
-      '/api/waiter-requests/$requestId/complete';
+   static const String waiterRequests = '/api/waiter-requests';
+
+  static String updateWaiterRequestStatus(String requestId) =>
+      '/api/waiter-requests/$requestId/status';
   static const String createDineOrder = '/api/orders';
 }
 

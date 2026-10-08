@@ -8,7 +8,6 @@ import 'package:dineflow/core/networking/api_constants.dart';
 import '../models/waiter_request_model.dart';
 import '../models/waiter_request_page_model.dart';
 
-
 @Injectable(as: WaiterDataSource)
 class WaiterDataSourceImpl implements WaiterDataSource {
   final Dio dio;
@@ -18,7 +17,10 @@ class WaiterDataSourceImpl implements WaiterDataSource {
   @override
   Future<WaiterRequestsPageModel> getPendingRequests() async {
     final response = await dio.get(
-      ApiConstants.pendingRequests,
+      ApiConstants.waiterRequests,
+      queryParameters: {
+        'status': 'pending',
+      },
     );
 
     return WaiterRequestsPageModel.fromJson(
@@ -31,7 +33,10 @@ class WaiterDataSourceImpl implements WaiterDataSource {
     String requestId,
   ) async {
     final response = await dio.patch(
-      ApiConstants.acceptRequest(requestId),
+      ApiConstants.updateWaiterRequestStatus(requestId),
+      data: {
+        'status': 'accepted',
+      },
     );
 
     return WaiterRequestModel.fromJson(
@@ -44,31 +49,35 @@ class WaiterDataSourceImpl implements WaiterDataSource {
     String requestId,
   ) async {
     final response = await dio.patch(
-      ApiConstants.completeRequest(requestId),
+      ApiConstants.updateWaiterRequestStatus(requestId),
+      data: {
+        'status': 'completed',
+      },
     );
 
     return WaiterRequestModel.fromJson(
       response.data['data']['request'],
     );
   }
-  @override
-Future<CreateOrderModel> createDineOrder(
-  String diningSessionId,
-  List<Map<String, dynamic>> items,
-  String? notes,
-) async {
-  final response = await dio.post(
-    ApiConstants.createDineOrder,
-    data: {
-      'orderType': 'DINE_IN',
-      'diningSessionId': diningSessionId,
-      'items': items,
-      'notes': notes,
-    },
-  );
 
-  return CreateOrderModel.fromJson(
-    response.data['data'],
-  );
-}
+  @override
+  Future<CreateOrderModel> createDineOrder(
+    String diningSessionId,
+    List<Map<String, dynamic>> items,
+    String? notes,
+  ) async {
+    final response = await dio.post(
+      ApiConstants.createDineOrder,
+      data: {
+        'orderType': 'DINE_IN',
+        'diningSessionId': diningSessionId,
+        'items': items,
+        'notes': notes,
+      },
+    );
+
+    return CreateOrderModel.fromJson(
+      response.data['data'],
+    );
+  }
 }
