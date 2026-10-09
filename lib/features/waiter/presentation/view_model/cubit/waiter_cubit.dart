@@ -97,6 +97,7 @@ class WaiterCubit extends Cubit<WaiterState> {
     switch (result) {
       case Success(data: final data):
         emit(WaiterState.requestUpdated(data));
+        await getPendingRequests();
       case FailureResult(failure: final failure):
         emit(WaiterState.error(failure.message));
     }
@@ -110,6 +111,7 @@ class WaiterCubit extends Cubit<WaiterState> {
     switch (result) {
       case Success(data: final data):
         emit(WaiterState.requestUpdated(data));
+        await getPendingRequests();
       case FailureResult(failure: final failure):
         emit(WaiterState.error(failure.message));
     }

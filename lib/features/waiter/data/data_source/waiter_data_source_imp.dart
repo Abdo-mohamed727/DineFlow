@@ -4,6 +4,7 @@ import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
 import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
 import 'package:dineflow/features/waiter/data/models/table_model.dart';
 import 'package:dineflow/features/waiter/data/models/tables_model.dart';
+import 'package:dineflow/core/networking/api_error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -20,32 +21,41 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
   @override
   Future<WaiterRequestsPageModel> getPendingRequests() async {
-    final response = await dio.get(
-      ApiConstants.waiterRequests,
-      queryParameters: {'status': 'pending'},
-    );
+    try {
+      final response = await dio.get(ApiConstants.waiterRequests);
 
-    return WaiterRequestsPageModel.fromJson(response.data['data']);
+      return WaiterRequestsPageModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      ApiErrorHandler.throwAppException(e);
+    }
   }
 
   @override
   Future<WaiterRequestModel> acceptRequest(String requestId) async {
-    final response = await dio.patch(
-      ApiConstants.updateWaiterRequestStatus(requestId),
-      data: {'status': 'accepted'},
-    );
+    try {
+      final response = await dio.patch(
+        ApiConstants.updateWaiterRequestStatus(requestId),
+        data: {'status': 'accepted'},
+      );
 
-    return WaiterRequestModel.fromJson(response.data['data']['request']);
+      return WaiterRequestModel.fromJson(response.data['data']['request']);
+    } on DioException catch (e) {
+      ApiErrorHandler.throwAppException(e);
+    }
   }
 
   @override
   Future<WaiterRequestModel> completeRequest(String requestId) async {
-    final response = await dio.patch(
-      ApiConstants.updateWaiterRequestStatus(requestId),
-      data: {'status': 'completed'},
-    );
+    try {
+      final response = await dio.patch(
+        ApiConstants.updateWaiterRequestStatus(requestId),
+        data: {'status': 'completed'},
+      );
 
-    return WaiterRequestModel.fromJson(response.data['data']['request']);
+      return WaiterRequestModel.fromJson(response.data['data']['request']);
+    } on DioException catch (e) {
+      ApiErrorHandler.throwAppException(e);
+    }
   }
 
   @override
@@ -54,29 +64,45 @@ class WaiterDataSourceImpl implements WaiterDataSource {
     List<Map<String, dynamic>> items,
     String? notes,
   ) async {
-    final response = await dio.post(
-      ApiConstants.createOrder,
-      data: {
+    try {
+      final data = <String, dynamic>{
         'orderType': 'DINE_IN',
         'diningSessionId': diningSessionId,
         'items': items,
-        'notes': notes,
-      },
-    );
+      };
 
-    return CreateOrderModel.fromJson(response.data['data']);
+      if (notes != null && notes.trim().isNotEmpty) {
+        data['notes'] = notes.trim();
+      }
+
+      final response = await dio.post(ApiConstants.createOrder, data: data);
+
+      return CreateOrderModel.fromJson(response.data['data']);
+    } catch (error) {
+      ApiErrorHandler.throwAppException(
+        error,
+        fallback: 'Could not create the dine-in order.',
+      );
+    }
   }
 
   @override
   Future<CreateOrderModel> createTakeAwayOrder(
     List<Map<String, dynamic>> items,
   ) async {
-    final response = await dio.post(
-      ApiConstants.createOrder,
-      data: {'orderType': 'TAKEAWAY', 'items': items},
-    );
+    try {
+      final response = await dio.post(
+        ApiConstants.createOrder,
+        data: {'orderType': 'TAKEAWAY', 'items': items},
+      );
 
-    return CreateOrderModel.fromJson(response.data['data']);
+      return CreateOrderModel.fromJson(response.data['data']);
+    } catch (error) {
+      ApiErrorHandler.throwAppException(
+        error,
+        fallback: 'Could not create the takeaway order.',
+      );
+    }
   }
 
   @override
