@@ -1,5 +1,4 @@
 import 'package:dineflow/features/waiter/domain/entity/order_waiter_entity.dart';
-import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
 
 import 'customer_model.dart';
 import 'table_model.dart';
@@ -47,10 +46,7 @@ class OrderModel {
       orderNumber: json['orderNumber'] ?? '',
       customer: customerData is Map<String, dynamic>
           ? CustomerModel.fromJson(customerData)
-          : CustomerModel(
-              id: customerData?.toString() ?? '',
-              name: '',
-            ),
+          : CustomerModel(id: customerData?.toString() ?? '', name: ''),
       diningSessionId: diningSessionData is Map<String, dynamic>
           ? diningSessionData['id']?.toString()
           : diningSessionData?.toString(),
@@ -60,9 +56,8 @@ class OrderModel {
       type: json['type'] ?? '',
       items: (json['items'] as List<dynamic>? ?? [])
           .map(
-            (item) => OrderItemWaiterModel.fromJson(
-              item as Map<String, dynamic>,
-            ),
+            (item) =>
+                OrderItemWaiterModel.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
       status: json['status'] ?? '',
@@ -81,7 +76,7 @@ class OrderModel {
       orderNumber: orderNumber,
       customer: customer.toEntity(),
       diningSessionId: diningSessionId,
-      table: table?.toEntity()as TableEntity,
+      table: table?.toEntity(),
       type: type,
       items: items.map((item) => item.toEntity()).toList(),
       status: status,

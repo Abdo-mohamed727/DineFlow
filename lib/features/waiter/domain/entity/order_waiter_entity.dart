@@ -1,4 +1,5 @@
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
+import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
 
 class OrderItemWaiterEntity {
   final String productId;

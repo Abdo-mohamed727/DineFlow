@@ -7,6 +7,8 @@ import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart'
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
 import 'package:dineflow/features/waiter/domain/entity/order_waiter_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/orders_page_entity.dart';
+import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
+import 'package:dineflow/features/waiter/domain/entity/tables_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_page_entity.dart';
 import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart';
@@ -75,6 +77,7 @@ class WaiterRepositoryImpl implements WaiterRepository {
     }
   }
 
+  @override
   Future<Result<CreateOrderEntity>> createTakeAwayOrder(
     CreateTakeAwayOrderParams params,
   ) async {
@@ -123,7 +126,7 @@ class WaiterRepositoryImpl implements WaiterRepository {
     try {
       final model = await dataSource.getOrderById(orderId);
 
-      return Success(model.toEntity() as OrderWaiterEntity);
+      return Success(model.toEntity());
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }
@@ -137,7 +140,7 @@ class WaiterRepositoryImpl implements WaiterRepository {
     try {
       final model = await dataSource.updateOrderStatus(orderId, status);
 
-      return Success(model.toEntity() as OrderWaiterEntity);
+      return Success(model.toEntity());
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }
@@ -148,29 +151,29 @@ class WaiterRepositoryImpl implements WaiterRepository {
     try {
       final model = await dataSource.updateTable(tableId, status);
 
-      return Success(model.toEntity() as TableEntity);
+      return Success(model.toEntity());
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }
   }
 
   @override
-  Future<Result<TableEntity>> getTables() async {
+  Future<Result<TablesEntity>> getTables() async {
     try {
       final model = await dataSource.getTables();
 
-      return Success(model.toEntity() as TableEntity);
+      return Success(model.toEntity());
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }
   }
 
   @override
-  Future<Result<TableEntity>> getAvailableTables() async {
+  Future<Result<TablesEntity>> getAvailableTables() async {
     try {
       final model = await dataSource.getAvailableTables();
 
-      return Success(model.toEntity() as TableEntity);
+      return Success(model.toEntity());
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }
@@ -181,7 +184,7 @@ class WaiterRepositoryImpl implements WaiterRepository {
     try {
       final model = await dataSource.getTableById(tableId);
 
-      return Success(model.toEntity() as TableEntity);
+      return Success(model.toEntity());
     } on AppException catch (e) {
       return FailureResult(_mapExceptionToFailure(e));
     }

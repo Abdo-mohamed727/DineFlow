@@ -23,6 +23,8 @@ import 'package:dineflow/features/orders/presentation/view/screens/checkout_view
 import 'package:dineflow/features/orders/presentation/view/screens/order_success_view.dart';
 import 'package:dineflow/features/orders/presentation/view/screens/orders_view.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view/screen/waiter_table_screen.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -266,7 +268,8 @@ GoRouter createRouter({required RouterNotifier notifier}) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.customerShell}/${AppPaths.customerNotifications}',
+                path:
+                    '${AppPaths.customerShell}/${AppPaths.customerNotifications}',
                 name: AppRoutes.customerNotifications,
                 builder: (context, state) => BlocProvider(
                   create: (_) => sl<NotificationCubit>()..fetchNotifications(),
@@ -325,7 +328,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterDashboard}',
                 name: AppRoutes.waiterDashboard,
                 builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter Dashboard',
+                  label: 'Waiter - Dashboard',
                   role: AppRole.waiter,
                 ),
               ),
@@ -338,10 +341,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterTables}',
                 name: AppRoutes.waiterTables,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter â€” Tables',
-                  role: AppRole.waiter,
-                ),
+                builder: (context, state) => const WaiterTablesView(),
               ),
             ],
           ),
@@ -394,10 +394,10 @@ GoRouter createRouter({required RouterNotifier notifier}) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.kitchenShell}/${AppPaths.kitchenNotifications}',
+                path:
+                    '${AppPaths.kitchenShell}/${AppPaths.kitchenNotifications}',
                 name: AppRoutes.kitchenNotifications,
-                builder: (context, state) =>
-                    const KitchenNotificationsScreen(),
+                builder: (context, state) => const KitchenNotificationsScreen(),
               ),
             ],
           ),
@@ -441,7 +441,6 @@ GoRouter createRouter({required RouterNotifier notifier}) {
     ),
   );
 }
-
 
 class _CustomerShell extends StatefulWidget {
   const _CustomerShell({required this.navigationShell});
@@ -516,39 +515,43 @@ class _CustomerShellState extends State<_CustomerShell> {
 
 class _WaiterShell extends StatelessWidget {
   const _WaiterShell({required this.navigationShell});
+
   final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      showAppBar: false,
-      body: navigationShell,
-      bottomNavigationBar: FloatingBottomNavBar(
-        currentIndex: navigationShell.currentIndex,
-        accentColor: AppRole.waiter.accentColor,
-        onTap: (index) {
-          navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          );
-        },
-        items: const [
-          FloatingNavItem(
-            icon: Icons.dashboard_outlined,
-            selectedIcon: Icons.dashboard,
-            label: 'Dashboard',
-          ),
-          FloatingNavItem(
-            icon: Icons.table_restaurant_outlined,
-            selectedIcon: Icons.table_restaurant,
-            label: 'Tables',
-          ),
-          FloatingNavItem(
-            icon: Icons.inbox_outlined,
-            selectedIcon: Icons.inbox,
-            label: 'Requests',
-          ),
-        ],
+    return BlocProvider(
+      create: (_) => sl<WaiterCubit>(),
+      child: AppScaffold(
+        showAppBar: false,
+        body: navigationShell,
+        bottomNavigationBar: FloatingBottomNavBar(
+          currentIndex: navigationShell.currentIndex,
+          accentColor: AppRole.waiter.accentColor,
+          onTap: (index) {
+            navigationShell.goBranch(
+              index,
+              initialLocation: index == navigationShell.currentIndex,
+            );
+          },
+          items: const [
+            FloatingNavItem(
+              icon: Icons.dashboard_outlined,
+              selectedIcon: Icons.dashboard,
+              label: 'Dashboard',
+            ),
+            FloatingNavItem(
+              icon: Icons.table_restaurant_outlined,
+              selectedIcon: Icons.table_restaurant,
+              label: 'Tables',
+            ),
+            FloatingNavItem(
+              icon: Icons.inbox_outlined,
+              selectedIcon: Icons.inbox,
+              label: 'Requests',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -567,41 +570,42 @@ class _KitchenShell extends StatelessWidget {
           return AppScaffold(
             showAppBar: false,
             body: navigationShell,
-            bottomNavigationBar: BlocBuilder<NotificationCubit, NotificationState>(
-              builder: (context, notifState) {
-                final unreadCount = notifState.maybeWhen(
-                  loaded: (_, u, _, _, _, _) => u,
-                  orElse: () => 0,
-                );
-                return FloatingBottomNavBar(
-                  currentIndex: navigationShell.currentIndex,
-                  accentColor: AppRole.kitchen.accentColor,
-                  onTap: (index) {
-                    navigationShell.goBranch(
-                      index,
-                      initialLocation: index == navigationShell.currentIndex,
+            bottomNavigationBar:
+                BlocBuilder<NotificationCubit, NotificationState>(
+                  builder: (context, notifState) {
+                    final unreadCount = notifState.maybeWhen(
+                      loaded: (_, u, _, _, _, _) => u,
+                      orElse: () => 0,
+                    );
+                    return FloatingBottomNavBar(
+                      currentIndex: navigationShell.currentIndex,
+                      accentColor: AppRole.kitchen.accentColor,
+                      onTap: (index) {
+                        navigationShell.goBranch(
+                          index,
+                          initialLocation:
+                              index == navigationShell.currentIndex,
+                        );
+                      },
+                      items: [
+                        const FloatingNavItem(
+                          icon: Icons.kitchen_outlined,
+                          selectedIcon: Icons.kitchen,
+                          label: 'KDS',
+                        ),
+                        FloatingNavItem(
+                          icon: Icons.notifications_outlined,
+                          selectedIcon: Icons.notifications_rounded,
+                          label: 'Notifications',
+                          badgeCount: unreadCount > 0 ? unreadCount : null,
+                        ),
+                      ],
                     );
                   },
-                  items: [
-                    const FloatingNavItem(
-                      icon: Icons.kitchen_outlined,
-                      selectedIcon: Icons.kitchen,
-                      label: 'KDS',
-                    ),
-                    FloatingNavItem(
-                      icon: Icons.notifications_outlined,
-                      selectedIcon: Icons.notifications_rounded,
-                      label: 'Notifications',
-                      badgeCount: unreadCount > 0 ? unreadCount : null,
-                    ),
-                  ],
-                );
-              },
-            ),
+                ),
           );
         },
       ),
     );
   }
 }
-

@@ -1,7 +1,8 @@
-import 'package:dineflow/features/orders/data/models/order_model.dart';
+import 'package:dineflow/features/waiter/data/models/order_model.dart';
 import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
 import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
 import 'package:dineflow/features/waiter/data/models/table_model.dart';
+import 'package:dineflow/features/waiter/data/models/tables_model.dart';
 
 import '../models/waiter_request_model.dart';
 import '../models/waiter_request_page_model.dart';
@@ -24,19 +25,12 @@ abstract interface class WaiterDataSource {
   Future<OrdersPageModel> getOrders();
   Future<OrdersPageModel> getOrdersByStatus(String status);
   Future<OrderModel> getOrderById(String orderId);
-  Future<OrderModel> updateOrderStatus(
-  String orderId,
-  String status,
-);
-Future<TableModel> getTables();
+  Future<OrderModel> updateOrderStatus(String orderId, String status);
+  Future<TablesModel> getTables();
 
-Future<TableModel> getAvailableTables();
+  Future<TablesModel> getAvailableTables();
 
-Future<TableModel> getTableById(String tableId);
+  Future<TableModel> getTableById(String tableId);
 
-Future<TableModel> updateTable(
-  String tableId,
-  String status,
-);
-
+  Future<TableModel> updateTable(String tableId, String status);
 }

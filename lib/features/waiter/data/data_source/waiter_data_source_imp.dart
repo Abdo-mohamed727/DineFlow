@@ -1,8 +1,9 @@
-import 'package:dineflow/features/orders/data/models/order_model.dart';
+import 'package:dineflow/features/waiter/data/models/order_model.dart';
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart';
 import 'package:dineflow/features/waiter/data/models/create_order_model.dart';
 import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
 import 'package:dineflow/features/waiter/data/models/table_model.dart';
+import 'package:dineflow/features/waiter/data/models/tables_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -111,55 +112,38 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
     return OrderModel.fromJson(response.data['data']['order']);
   }
+
   @override
-Future<TableModel> getTables() async {
-  final response = await dio.get(
-    ApiConstants.tables,
-  );
+  Future<TablesModel> getTables() async {
+    final response = await dio.get(ApiConstants.tables);
 
-  return TableModel.fromJson(
-    response.data['data'],
-  );
-}
-@override
-Future<TableModel> getAvailableTables() async {
-  final response = await dio.get(
-    ApiConstants.tables,
-    queryParameters: {
-      'status': 'available',
-    },
-  );
+    return TablesModel.fromJson(response.data['data']);
+  }
 
-  return TableModel.fromJson(
-    response.data['data'],
-  );
-}
-@override
-Future<TableModel> getTableById(String tableId) async {
-  final response = await dio.get(
-    '${ApiConstants.tables}/$tableId',
-  );
+  @override
+  Future<TablesModel> getAvailableTables() async {
+    final response = await dio.get(
+      ApiConstants.tables,
+      queryParameters: {'status': 'available'},
+    );
 
-  return TableModel.fromJson(
-    response.data['data']['table'],
-  );
-}
+    return TablesModel.fromJson(response.data['data']);
+  }
 
-@override
-Future<TableModel> updateTable(
-  String tableId,
-  String status,
-) async {
-  final response = await dio.patch(
-    '${ApiConstants.tables}/$tableId',
-    data: {
-      'status': status,
-    },
-  );
+  @override
+  Future<TableModel> getTableById(String tableId) async {
+    final response = await dio.get('${ApiConstants.tables}/$tableId');
 
-  return TableModel.fromJson(
-    response.data['data']['table'],
-  );
-}
+    return TableModel.fromJson(response.data['data']['table']);
+  }
 
+  @override
+  Future<TableModel> updateTable(String tableId, String status) async {
+    final response = await dio.patch(
+      '${ApiConstants.tables}/$tableId',
+      data: {'status': status},
+    );
+
+    return TableModel.fromJson(response.data['data']['table']);
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/app_colors.dart';
 
- 
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
     super.key,
@@ -18,9 +18,9 @@ class AppIconButton extends StatelessWidget {
     this.tooltip,
     this.badge,
   }) : assert(
-          icon != null || iconData != null,
-          'Either icon or iconData must be provided',
-        );
+         icon != null || iconData != null,
+         'Either icon or iconData must be provided',
+       );
 
   final Widget? icon;
   final IconData? iconData;
@@ -43,19 +43,14 @@ class AppIconButton extends StatelessWidget {
 
     final Widget renderedIcon = isLoading
         ? SizedBox(
-            width: iconSize,
-            height: iconSize,
+            width: iconSize.w,
+            height: iconSize.w,
             child: CircularProgressIndicator(
               strokeWidth: 2.0,
               valueColor: AlwaysStoppedAnimation<Color>(effectiveIconColor),
             ),
           )
-        : icon ??
-            Icon(
-              iconData,
-              size: iconSize,
-              color: effectiveIconColor,
-            );
+        : icon ?? Icon(iconData, size: iconSize.r, color: effectiveIconColor);
 
     Widget content = Center(child: renderedIcon);
 
@@ -64,23 +59,19 @@ class AppIconButton extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           content,
-          Positioned(
-            top: -2.0,
-            right: -2.0,
-            child: badge!,
-          ),
+          Positioned(top: -2.h, right: -2.w, child: badge!),
         ],
       );
     }
 
     final buttonWidget = Container(
-      width: size,
-      height: size,
+      width: size.w,
+      height: size.w,
       decoration: BoxDecoration(
         color: isInteractive
             ? effectiveBgColor
             : effectiveBgColor.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(borderRadius.r),
         border: borderColor != null
             ? Border.all(
                 color: isInteractive
@@ -94,17 +85,14 @@ class AppIconButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: isInteractive ? onPressed : null,
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(borderRadius.r),
           child: content,
         ),
       ),
     );
 
     if (tooltip != null) {
-      return Tooltip(
-        message: tooltip!,
-        child: buttonWidget,
-      );
+      return Tooltip(message: tooltip!, child: buttonWidget);
     }
 
     return buttonWidget;

@@ -1,3 +1,5 @@
+import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
+
 class WaiterRequestEntity {
   final String id;
   final CustomerEntity customer;
@@ -30,18 +32,5 @@ class CustomerEntity {
   final String id;
   final String name;
 
-  const CustomerEntity({
-    required this.id,
-    required this.name,
-  });
-}
-
-class TableEntity {
-  final String id;
-  final int tableNumber;
-
-  const TableEntity({
-    required this.id,
-    required this.tableNumber,
-  });
+  const CustomerEntity({required this.id, required this.name});
 }

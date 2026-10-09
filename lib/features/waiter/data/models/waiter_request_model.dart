@@ -37,19 +37,16 @@ class WaiterRequestModel {
       id: json['id'] ?? '',
       customer: customerData is Map<String, dynamic>
           ? CustomerModel.fromJson(customerData)
-          : CustomerModel(
-              id: customerData?.toString() ?? '',
-              name: '',
+          : CustomerModel(id: customerData?.toString() ?? '', name: ''),
+      table: tableData is Map<String, dynamic>
+          ? TableModel.fromJson(tableData)
+          : TableModel(
+              id: tableData?.toString() ?? '',
+              tableNumber: 0,
+              capacity: 0,
+              status: '',
+              location: '',
             ),
-     table: tableData is Map<String, dynamic>
-    ? TableModel.fromJson(tableData)
-    : TableModel(
-        id: tableData?.toString() ?? '',
-        tableNumber: 0,
-        capacity: 0,
-        status: '',
-        location: '',
-      ),
       diningSessionId: json['diningSessionId']?.toString() ?? '',
       type: json['type'] ?? '',
       status: json['status'] ?? '',
@@ -67,7 +64,7 @@ class WaiterRequestModel {
     return WaiterRequestEntity(
       id: id,
       customer: customer.toEntity(),
-      table: table.toEntity()as TableEntity,
+      table: table.toEntity(),
       diningSessionId: diningSessionId,
       type: type,
       status: status,

@@ -7,6 +7,7 @@ import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class CheckoutView extends StatelessWidget {
@@ -35,7 +36,7 @@ class CheckoutView extends StatelessWidget {
           final isDineIn = selection.orderType == OrderType.dineIn;
 
           return ListView(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
             children: [
               // ── Order type ────────────────────────────────────────────
               _ReviewRow(
@@ -48,7 +49,7 @@ class CheckoutView extends StatelessWidget {
 
               // ── Table & session (DINE_IN only) ────────────────────────
               if (isDineIn) ...[
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _ReviewRow(
                   icon: Icons.chair_outlined,
                   label: 'Table',
@@ -56,7 +57,7 @@ class CheckoutView extends StatelessWidget {
                       selection.selectedTableId ??
                       'Not selected',
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _ReviewRow(
                   icon: Icons.check_circle_outline,
                   label: 'Dining Session',
@@ -73,13 +74,13 @@ class CheckoutView extends StatelessWidget {
 
               // ── Error ─────────────────────────────────────────────────
               if (errorMessage != null && errorMessage.isNotEmpty) ...[
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   errorMessage,
-                  style: const TextStyle(color: AppColors.error),
+                  style: TextStyle(color: AppColors.error, fontSize: 14.sp),
                 ),
               ],
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // ── Place Order ───────────────────────────────────────────
               AppPrimaryButton(
@@ -113,36 +114,36 @@ class _ReviewRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
           color: AppColors.surfaceContainerHigh.withValues(alpha: 0.5),
         ),
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.primaryContainer, size: 22),
-          const SizedBox(width: 12),
+          Icon(icon, color: AppColors.primaryContainer, size: 22.r),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   value,
                   style: TextStyle(
                     color: valueColor ?? AppColors.onSurface,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
