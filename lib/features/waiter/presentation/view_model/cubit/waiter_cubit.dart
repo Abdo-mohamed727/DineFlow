@@ -1,4 +1,3 @@
-import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart';
 import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
@@ -50,34 +49,21 @@ class WaiterCubit extends Cubit<WaiterState> {
   final GetAvailableWaiterTablesUseCase _getAvailableTablesUseCase;
   final GetTableByIdUseCase _getTableByIdUseCase;
   final UpdateTableUseCase _updateTableUseCase;
-  WaiterCubit({
-    required GetPendingRequestsUseCase getPendingRequestsUseCase,
-    required AcceptRequestUseCase acceptRequestUseCase,
-    required CompleteRequestUseCase completeRequestUseCase,
-    required CreateDineOrderUseCase createDineOrderUseCase,
-    required CreateTakeAwayOrderUseCase createTakeawayOrderUseCase,
-    required GetOrdersUseCase getOrdersUseCase,
-    required GetOrdersByStatusUseCase getOrdersByStatusUseCase,
-    required GetOrderByIdUseCase getOrderByIdUseCase,
-    required UpdateOrderStatusUseCase updateOrderStatusUseCase,
-    required GetTablesUseCase getTablesUseCase,
-    required GetAvailableWaiterTablesUseCase getAvailableTablesUseCase,
-    required GetTableByIdUseCase getTableByIdUseCase,
-    required UpdateTableUseCase updateTableUseCase,
-  }) : _getPendingRequestsUseCase = getPendingRequestsUseCase,
-       _acceptRequestUseCase = acceptRequestUseCase,
-       _completeRequestUseCase = completeRequestUseCase,
-       _createDineOrderUseCase = createDineOrderUseCase,
-       _createTakeawayOrderUseCase = createTakeawayOrderUseCase,
-       _getOrdersUseCase = getOrdersUseCase,
-       _getOrdersByStatusUseCase = getOrdersByStatusUseCase,
-       _getOrderByIdUseCase = getOrderByIdUseCase,
-       _updateOrderStatusUseCase = updateOrderStatusUseCase,
-       _getTablesUseCase = getTablesUseCase,
-       _getAvailableTablesUseCase = getAvailableTablesUseCase,
-       _getTableByIdUseCase = getTableByIdUseCase,
-       _updateTableUseCase = updateTableUseCase,
-       super(const WaiterState.initial());
+  WaiterCubit(
+    this._getPendingRequestsUseCase,
+    this._acceptRequestUseCase,
+    this._completeRequestUseCase,
+    this._createDineOrderUseCase,
+    this._createTakeawayOrderUseCase,
+    this._getOrdersUseCase,
+    this._getOrdersByStatusUseCase,
+    this._getOrderByIdUseCase,
+    this._updateOrderStatusUseCase,
+    this._getTablesUseCase,
+    this._getAvailableTablesUseCase,
+    this._getTableByIdUseCase,
+    this._updateTableUseCase,
+  ) : super(const WaiterState.initial());
   Future<void> getPendingRequests() async {
     emit(const WaiterState.loading());
     final result = await _getPendingRequestsUseCase(const NoParams());
