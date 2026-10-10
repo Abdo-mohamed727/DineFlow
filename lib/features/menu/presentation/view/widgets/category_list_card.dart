@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/menu/domain/entity/category_entity.dart';
 import 'package:flutter/material.dart';
@@ -39,10 +40,13 @@ class CategoryListCard extends StatelessWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                child: Image.network(
-                  bgImage,
+                child: CachedNetworkImage(
+                  imageUrl: bgImage,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
+                  placeholder: (context, url) => Container(
+                    color: AppColors.surfaceContainerHigh,
+                  ),
+                  errorWidget: (context, url, error) => Container(
                     color: AppColors.surfaceContainerHigh,
                     child: const Icon(
                       Icons.fastfood_rounded,

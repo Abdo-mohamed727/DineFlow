@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +44,22 @@ class ProfileHeader extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           alignment: Alignment.center,
           child: hasProfileImage
-              ? Image.network(
-                  user.profileImage!,
+              ? CachedNetworkImage(
+                  imageUrl: user.profileImage!,
                   fit: BoxFit.cover,
                   width: 90,
                   height: 90,
-                  errorBuilder: (context, error, stackTrace) => Text(
+                  placeholder: (context, url) => const SizedBox(
+                    width: 90,
+                    height: 90,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.onPrimary,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Text(
                     _initials,
                     style: const TextStyle(
                       color: AppColors.onPrimary,
