@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../features/auth/presintation/view_mode/cubit/auth_cubit.dart';
 import '../theme/app_colors.dart';
 
@@ -107,7 +108,7 @@ class AppScaffold extends StatelessWidget {
     final canPop = Navigator.of(context).canPop();
 
     return PreferredSize(
-      preferredSize: const Size.fromHeight(kToolbarHeight + 1),
+      preferredSize: Size.fromHeight(56.h + 1.h),
       child: _FrostedAppBar(
         title: title,
         titleWidget: titleWidget,
@@ -164,7 +165,7 @@ class _FrostedAppBar extends StatelessWidget {
                 systemOverlayStyle: SystemUiOverlayStyle.light,
                 leading: leading != null
                     ? Padding(
-                        padding: const EdgeInsets.only(left: 8),
+                        padding: EdgeInsets.only(left: 8.w),
                         child: leading,
                       )
                     : null,
@@ -173,12 +174,12 @@ class _FrostedAppBar extends StatelessWidget {
                 actions: actions != null
                     ? [
                         ...actions!,
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                       ]
                     : null,
               ),
               Container(
-                height: 1,
+                height: 1.h,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -228,7 +229,7 @@ class _AppBarTitle extends StatelessWidget {
             ),
           ),
         if (role != null) ...[
-          if (title != null) const SizedBox(width: 8),
+          if (title != null) SizedBox(width: 8.w),
           _RolePill(role: role!, accent: accent),
         ],
       ],
@@ -245,10 +246,10 @@ class _RolePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: role.pillBackground,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: accent.withValues(alpha: 0.3),
           width: 0.8,
@@ -257,8 +258,8 @@ class _RolePill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(role.icon, size: 12, color: accent),
-          const SizedBox(width: 4),
+          Icon(role.icon, size: 12.r, color: accent),
+          SizedBox(width: 4.w),
           BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               final displayName = state.maybeWhen(

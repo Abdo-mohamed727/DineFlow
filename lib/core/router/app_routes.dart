@@ -25,6 +25,7 @@ abstract final class AppRoutes {
   static const String waiterTables = 'waiter-tables';
   static const String waiterRequests = 'waiter-requests';
 
+  static const String waiterCreateOrder = 'waiter-create-order';
   // ── Kitchen shell ────────────────────────────────────────────────────────
   static const String kitchenShell = 'kitchen-shell';
   static const String kitchenKds = 'kitchen-kds';
@@ -62,6 +63,7 @@ abstract final class AppPaths {
   static const String waiterTables = 'tables';
   static const String waiterRequests = 'requests';
 
+  static const String waiterCreateOrder = 'create-order';
   // Kitchen
   static const String kitchenShell = '/kitchen';
   static const String kitchenKds = 'kds';

@@ -6,6 +6,7 @@ import 'package:dineflow/core/services/notification/notification_handler.dart';
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'app_config.dart';
 import 'core/router/app_router.dart';
@@ -69,14 +70,19 @@ class _DineFlowAppState extends State<DineFlowApp> {
       value: _authCubit,
       child: BlocListener<AuthCubit, AuthState>(
         listener: _onAuthStateChanged,
-        child: MaterialApp.router(
-          title: 'DineFlow',
-          debugShowCheckedModeBanner: true,
-          theme: ThemeData(
-            colorSchemeSeed: const Color(0xFFE85D04),
-            useMaterial3: true,
+        child: ScreenUtilInit(
+          designSize: const Size(375, 812),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (_, child) => MaterialApp.router(
+            title: 'DineFlow',
+            debugShowCheckedModeBanner: true,
+            theme: ThemeData(
+              colorSchemeSeed: const Color(0xFFE85D04),
+              useMaterial3: true,
+            ),
+            routerConfig: _router,
           ),
-          routerConfig: _router,
         ),
       ),
     );

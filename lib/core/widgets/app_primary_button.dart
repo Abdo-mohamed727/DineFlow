@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/app_colors.dart';
 
  class AppPrimaryButton extends StatelessWidget {
@@ -44,23 +45,23 @@ import '../theme/app_colors.dart';
       children: [
         if (isLoading) ...[
           SizedBox(
-            width: 20.0,
-            height: 20.0,
+            width: 20.w,
+            height: 20.w,
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
               valueColor: AlwaysStoppedAnimation<Color>(effectiveTextColor),
             ),
           ),
-          const SizedBox(width: 10.0),
+          SizedBox(width: 10.w),
         ] else if (icon != null) ...[
           icon!,
-          const SizedBox(width: 8.0),
+          SizedBox(width: 8.w),
         ],
         Text(
           text,
           style: TextStyle(
             color: effectiveTextColor,
-            fontSize: fontSize,
+            fontSize: fontSize.sp,
             fontWeight: fontWeight,
           ),
         ),
@@ -75,12 +76,12 @@ import '../theme/app_colors.dart';
         disabledBackgroundColor: effectiveBgColor.withValues(alpha: 0.4),
         disabledForegroundColor: effectiveTextColor.withValues(alpha: 0.4),
         elevation: 0.0,
-        padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(borderRadius.r),
         ),
-        minimumSize: Size(fullWidth ? double.infinity : 0.0, height),
-        maximumSize: Size(fullWidth ? double.infinity : double.infinity, height),
+        minimumSize: Size(fullWidth ? double.infinity : 0.0, height.h),
+        maximumSize: Size(fullWidth ? double.infinity : double.infinity, height.h),
       ),
       child: childContent,
     );

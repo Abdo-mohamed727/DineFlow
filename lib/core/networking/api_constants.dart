@@ -1,6 +1,10 @@
 abstract class ApiConstants {
-  static const String baseUrl = 'http://192.168.1.9:3000';
-  static const String socketUrl = 'http://192.168.1.9:3000';
+  // static const String baseUrl = 'http://192.168.1.9:3000';
+  static const String baseUrl = 'http://192.168.1.12:3000';
+  static const String socketUrl = 'http://192.168.1.12:3000';
+
+
+  // static const String socketUrl = 'http://192.168.1.9:3000';
 
   // Auth Endpoints
   static const String login = '/api/auth/login';
@@ -37,6 +41,15 @@ abstract class ApiConstants {
       '/api/notifications/$id/read';
   static const String registerDeviceToken = '/api/notifications/device-token';
   static const String unregisterDeviceToken = '/api/notifications/device-token';
+
+  // Waiter Endpoints
+   static const String waiterRequests = '/api/waiter-requests';
+
+  static String updateWaiterRequestStatus(String requestId) =>
+      '/api/waiter-requests/$requestId/status';
+  static const String createOrder = '/api/orders';
+ 
+  
 }
 
 class RealtimeEvents {

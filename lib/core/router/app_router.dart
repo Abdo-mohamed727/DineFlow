@@ -1,74 +1,131 @@
 import 'package:dineflow/core/di/servise_locator.dart';
+
 import 'package:dineflow/core/widgets/floating_bottom_nav_bar.dart';
+
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
+
 import 'package:dineflow/features/auth/presintation/view/screens/login_view.dart';
+
 import 'package:dineflow/features/auth/presintation/view/screens/register_view.dart';
+
 import 'package:dineflow/features/auth/presintation/view/screens/splash_view.dart';
+
 import 'package:dineflow/features/menu/domain/entity/product_entity.dart';
+
 import 'package:dineflow/features/menu/presentation/view/screens/categories_view.dart';
+
 import 'package:dineflow/features/menu/presentation/view/screens/menu_view.dart';
+
 import 'package:dineflow/features/menu/presentation/view/screens/product_details_view.dart';
+
 import 'package:dineflow/features/menu/presentation/view/screens/search_view.dart';
+
 import 'package:dineflow/features/profile/presintation/view/screens/edit_profile_view.dart';
+
 import 'package:dineflow/features/profile/presintation/view/screens/profile_view.dart';
+
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart';
+
 import 'package:dineflow/features/cart/presentation/view/screens/cart_view.dart';
+
 import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart';
+
 import 'package:dineflow/features/kitchen/presentation/view/screens/kitchen_kds_view.dart';
+
 import 'package:dineflow/features/kitchen/presentation/view/screens/kitchen_notifications_screen.dart';
+
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
+
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
+
 import 'package:dineflow/core/theme/app_colors.dart';
+
 import 'package:dineflow/features/orders/presentation/view/screens/checkout_view.dart';
+
 import 'package:dineflow/features/orders/presentation/view/screens/order_success_view.dart';
+
 import 'package:dineflow/features/orders/presentation/view/screens/orders_view.dart';
+
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
+
+import 'package:dineflow/features/waiter/presentation/view/screen/waiter_table_screen.dart';
+
+import 'package:dineflow/features/waiter/presentation/view/screen/waiter_requests_screen.dart';
+
+import 'package:dineflow/features/waiter/presentation/view/screen/create_order_screen.dart';
+
+import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart';
+
+import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart';
+
+import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:dineflow/features/notification/presentation/pages/notification_screen.dart';
 import 'package:dineflow/features/notification/presentation/view_models/notification_cubit.dart';
+
 import '../widgets/app_scaffold.dart';
+
 import 'app_routes.dart';
+
 import 'route_guard.dart';
 
 // ---------------------------------------------------------------------------
+
 // Placeholder screens
+
 // ---------------------------------------------------------------------------
+
 class _PlaceholderScreen extends StatelessWidget {
   const _PlaceholderScreen({required this.label, this.role});
+
   final String label;
+
   final AppRole? role;
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       title: label,
+
       role: role,
       showAppBar: true,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
             Icon(
               Icons.construction_rounded,
+
               size: 48,
+
               color: (role?.accentColor ?? const Color(0xFFFF6B35)).withValues(
                 alpha: 0.5,
               ),
             ),
+
             const SizedBox(height: 16),
+
             Text(
               label,
+
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: const Color(0xFFE5E2E1),
+
                 fontWeight: FontWeight.w600,
               ),
             ),
+
             const SizedBox(height: 8),
+
             Text(
               'Coming soon',
+
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: const Color(0xFFE5E2E1).withValues(alpha: 0.4),
               ),
@@ -81,89 +138,124 @@ class _PlaceholderScreen extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
+
 // Router factory
+
 // ---------------------------------------------------------------------------
+
 GoRouter createRouter({required RouterNotifier notifier}) {
   return GoRouter(
     debugLogDiagnostics: true,
+
     initialLocation: AppPaths.splash,
+
     refreshListenable: notifier,
 
     redirect: (BuildContext context, GoRouterState state) {
       return routeGuard(
         currentPath: state.matchedLocation,
+
         status: notifier.status,
       );
     },
-
     routes: [
       GoRoute(
         path: AppPaths.splash,
+
         name: AppRoutes.splash,
+
         builder: (context, state) => const SplashView(),
       ),
 
       GoRoute(
         path: AppPaths.login,
+
         name: AppRoutes.login,
+
         builder: (context, state) => const LoginView(),
       ),
+
       GoRoute(
         path: AppPaths.register,
+
         name: AppRoutes.register,
+
         builder: (context, state) => const RegisterView(),
       ),
+
       GoRoute(
         path: AppPaths.customerProductDetails,
+
         name: AppRoutes.customerProductDetails,
+
         builder: (context, state) {
           final product = state.extra as ProductEntity;
+
           return BlocProvider.value(
             value: sl<CartCubit>(),
+
             child: ProductDetailsView(product: product),
           );
         },
       ),
+
       GoRoute(
         path: AppPaths.customerSearch,
+
         name: AppRoutes.customerSearch,
+
         builder: (context, state) {
           final query = state.extra as String?;
+
           return BlocProvider.value(
             value: sl<CartCubit>(),
+
             child: SearchView(initialQuery: query),
           );
         },
       ),
+
       GoRoute(
         path: AppPaths.customerCheckout,
+
         name: AppRoutes.customerCheckout,
+
         builder: (context, state) {
           final arguments = state.extra as OrderNavigationArguments?;
+
           debugPrint(
             'ROUTE EXTRA (Point 5): '
             'sessionId=${arguments?.sessionId}, '
             'tableId=${arguments?.tableId}, '
             'orderType=${arguments?.orderType}',
           );
+
           final checkoutCubit = sl<CheckoutCubit>();
+
           if (arguments != null) {
             checkoutCubit.restoreOrderSelection(arguments);
           }
+
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(value: sl<CartCubit>()),
+
               BlocProvider.value(value: checkoutCubit),
             ],
+
             child: const CheckoutView(),
           );
         },
       ),
+
       GoRoute(
         path: AppPaths.customerOrderSuccess,
+
         name: AppRoutes.customerOrderSuccess,
+
         builder: (context, state) {
           final order = state.extra as OrderEntity;
+
           return OrderSuccessView(order: order);
         },
       ),
@@ -172,18 +264,25 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         builder: (context, state, navigationShell) {
           return _CustomerShell(navigationShell: navigationShell);
         },
+
         branches: [
           // Branch 0: Menu
+
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerMenu}',
+
                 name: AppRoutes.customerMenu,
+
                 builder: (context, state) => const MenuView(),
+
                 routes: [
                   GoRoute(
                     path: AppPaths.customerCategories,
+
                     name: AppRoutes.customerCategories,
+
                     builder: (context, state) => const CategoriesView(),
                   ),
                 ],
@@ -196,44 +295,65 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             routes: [
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerOrders}',
+
                 name: AppRoutes.customerOrders,
+
                 builder: (context, state) => const OrdersView(),
+
                 routes: [
                   GoRoute(
                     path: AppPaths.customerOrderTracking,
+
                     name: AppRoutes.customerOrderTracking,
+
                     builder: (context, state) {
                       final orderId = state.pathParameters['orderId'];
+
                       return AppScaffold(
                         title: 'Order Details',
+
                         role: AppRole.customer,
+
                         showAppBar: true,
+
                         body: Center(
                           child: Padding(
                             padding: const EdgeInsets.all(24),
+
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
+
                               children: [
                                 const Icon(
                                   Icons.receipt_long_rounded,
+
                                   size: 48,
+
                                   color: AppColors.primaryContainer,
                                 ),
+
                                 const SizedBox(height: 16),
+
                                 Text(
                                   'Order $orderId',
+
                                   style: Theme.of(context).textTheme.titleLarge
                                       ?.copyWith(
                                         color: AppColors.onSurface,
+
                                         fontWeight: FontWeight.w700,
                                       ),
                                 ),
+
                                 const SizedBox(height: 8),
+
                                 const Text(
                                   'Detailed tracking is not yet available in this build.',
+
                                   style: TextStyle(
                                     color: AppColors.onSurfaceVariant,
                                   ),
+
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -253,9 +373,12 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             routes: [
               GoRoute(
                 path: AppPaths.customerCart,
+
                 name: AppRoutes.customerCart,
+
                 builder: (context, state) => BlocProvider.value(
                   value: sl<CheckoutCubit>(),
+
                   child: const CartView(),
                 ),
               ),
@@ -266,10 +389,14 @@ GoRouter createRouter({required RouterNotifier notifier}) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.customerShell}/${AppPaths.customerNotifications}',
+                path:
+                    '${AppPaths.customerShell}/${AppPaths.customerNotifications}',
+
                 name: AppRoutes.customerNotifications,
+
                 builder: (context, state) => BlocProvider(
                   create: (_) => sl<NotificationCubit>()..fetchNotifications(),
+
                   child: const NotificationView(),
                 ),
               ),
@@ -281,26 +408,37 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             routes: [
               GoRoute(
                 path: '${AppPaths.customerShell}/${AppPaths.customerProfile}',
+
                 name: AppRoutes.customerProfile,
+
                 builder: (context, state) => BlocProvider(
                   create: (_) => sl<ProfileCubit>(),
+
                   child: const ProfileView(),
                 ),
+
                 routes: [
                   GoRoute(
                     path: AppPaths.customerEditProfile,
+
                     name: AppRoutes.customerEditProfile,
+
                     builder: (context, state) {
                       final user = state.extra as UserEntity?;
+
                       return BlocProvider(
                         create: (_) => sl<ProfileCubit>(),
+
                         child: EditProfileView(
                           user:
                               user ??
                               const UserEntity(
                                 id: '',
+
                                 name: '',
+
                                 email: '',
+
                                 role: UserRole.customer,
                               ),
                         ),
@@ -318,14 +456,18 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         builder: (context, state, navigationShell) {
           return _WaiterShell(navigationShell: navigationShell);
         },
+
         branches: [
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterDashboard}',
+
                 name: AppRoutes.waiterDashboard,
+
                 builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter Dashboard',
+                  label: 'Waiter - Dashboard',
+
                   role: AppRole.waiter,
                 ),
               ),
@@ -337,10 +479,13 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             routes: [
               GoRoute(
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterTables}',
+
                 name: AppRoutes.waiterTables,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter â€” Tables',
-                  role: AppRole.waiter,
+
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<WaiterCubit>(),
+
+                  child: const WaiterTablesView(),
                 ),
               ),
             ],
@@ -351,10 +496,30 @@ GoRouter createRouter({required RouterNotifier notifier}) {
             routes: [
               GoRoute(
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterRequests}',
+
                 name: AppRoutes.waiterRequests,
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter â€” Requests',
-                  role: AppRole.waiter,
+
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<WaiterCubit>(),
+
+                  child: const WaiterRequestsView(),
+                ),
+              ),
+            ],
+          ),
+
+          // Branch 3: Create order
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '${AppPaths.waiterShell}/${AppPaths.waiterCreateOrder}',
+                name: AppRoutes.waiterCreateOrder,
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<WaiterCubit>(),
+                  child: CreateOrderScreen(
+                    getProductsUseCase: sl<GetProductsUseCase>(),
+                    getCategoriesUseCase: sl<GetCategoriesUseCase>(),
+                  ),
                 ),
               ),
             ],
@@ -366,22 +531,31 @@ GoRouter createRouter({required RouterNotifier notifier}) {
         builder: (context, state, navigationShell) {
           return _KitchenShell(navigationShell: navigationShell);
         },
+
         branches: [
           // Branch 0: KDS
+
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '${AppPaths.kitchenShell}/${AppPaths.kitchenKds}',
+
                 name: AppRoutes.kitchenKds,
+
                 builder: (context, state) => const KitchenKdsView(),
+
                 routes: [
                   GoRoute(
                     path: AppPaths.kitchenOrderDetail,
+
                     name: AppRoutes.kitchenOrderDetail,
+
                     builder: (context, state) {
                       final orderId = state.pathParameters['orderId']!;
+
                       return _PlaceholderScreen(
                         label: 'Kitchen Order Detail â€” $orderId',
+
                         role: AppRole.kitchen,
                       );
                     },
@@ -394,10 +568,12 @@ GoRouter createRouter({required RouterNotifier notifier}) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '${AppPaths.kitchenShell}/${AppPaths.kitchenNotifications}',
+                path:
+                    '${AppPaths.kitchenShell}/${AppPaths.kitchenNotifications}',
+
                 name: AppRoutes.kitchenNotifications,
-                builder: (context, state) =>
-                    const KitchenNotificationsScreen(),
+
+                builder: (context, state) => const KitchenNotificationsScreen(),
               ),
             ],
           ),
@@ -407,32 +583,47 @@ GoRouter createRouter({required RouterNotifier notifier}) {
 
     errorBuilder: (context, state) => AppScaffold(
       title: 'Page Not Found',
+
       showAppBar: true,
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
             const Icon(
               Icons.warning_amber_rounded,
+
               size: 64,
+
               color: Color(0xFFFFB4AB),
             ),
+
             const SizedBox(height: 16),
+
             Text(
               'Page not found',
+
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: const Color(0xFFE5E2E1),
               ),
             ),
+
             const SizedBox(height: 8),
+
             Text(
               state.error?.message ?? state.uri.toString(),
+
               style: const TextStyle(color: Color(0xFFA98A80)),
+
               textAlign: TextAlign.center,
             ),
+
             const SizedBox(height: 24),
+
             FilledButton(
               onPressed: () => context.go(AppPaths.splash),
+
               child: const Text('Go Home'),
             ),
           ],
@@ -442,9 +633,9 @@ GoRouter createRouter({required RouterNotifier notifier}) {
   );
 }
 
-
 class _CustomerShell extends StatefulWidget {
   const _CustomerShell({required this.navigationShell});
+
   final StatefulNavigationShell navigationShell;
 
   @override
@@ -457,6 +648,7 @@ class _CustomerShellState extends State<_CustomerShell> {
   @override
   void initState() {
     super.initState();
+
     _cartCubit = sl<CartCubit>()..getCart();
   }
 
@@ -464,45 +656,67 @@ class _CustomerShellState extends State<_CustomerShell> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _cartCubit,
+
       child: AppScaffold(
         showAppBar: false,
+
         body: widget.navigationShell,
+
         bottomNavigationBar: BlocBuilder<CartCubit, CartState>(
           builder: (context, _) {
             return FloatingBottomNavBar(
               currentIndex: widget.navigationShell.currentIndex,
+
               accentColor: AppRole.customer.accentColor,
+
               onTap: (index) {
                 widget.navigationShell.goBranch(
                   index,
+
                   initialLocation: index == widget.navigationShell.currentIndex,
                 );
               },
+
               items: [
                 const FloatingNavItem(
                   icon: Icons.restaurant_menu_outlined,
+
                   selectedIcon: Icons.restaurant_menu,
+
                   label: 'Home',
                 ),
+
                 const FloatingNavItem(
                   icon: Icons.shopping_bag_outlined,
+
                   selectedIcon: Icons.shopping_bag_rounded,
+
                   label: 'Orders',
                 ),
+
                 FloatingNavItem(
                   icon: Icons.shopping_cart_outlined,
+
                   selectedIcon: Icons.shopping_cart_rounded,
+
                   label: 'Cart',
+
                   badgeCount: context.read<CartCubit>().totalQuantity,
                 ),
+
                 const FloatingNavItem(
                   icon: Icons.notifications_outlined,
+
                   selectedIcon: Icons.notifications_rounded,
+
                   label: 'Notifications',
                 ),
+
                 const FloatingNavItem(
                   icon: Icons.person_outline_rounded,
+
                   selectedIcon: Icons.person_rounded,
+
                   label: 'Profile',
                 ),
               ],
@@ -516,6 +730,7 @@ class _CustomerShellState extends State<_CustomerShell> {
 
 class _WaiterShell extends StatelessWidget {
   const _WaiterShell({required this.navigationShell});
+
   final StatefulNavigationShell navigationShell;
 
   @override
@@ -548,6 +763,11 @@ class _WaiterShell extends StatelessWidget {
             selectedIcon: Icons.inbox,
             label: 'Requests',
           ),
+          FloatingNavItem(
+            icon: Icons.add_shopping_cart_outlined,
+            selectedIcon: Icons.add_shopping_cart,
+            label: 'Create Order',
+          ),
         ],
       ),
     );
@@ -556,52 +776,69 @@ class _WaiterShell extends StatelessWidget {
 
 class _KitchenShell extends StatelessWidget {
   const _KitchenShell({required this.navigationShell});
+
   final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<NotificationCubit>()..fetchNotifications(),
+
       child: Builder(
         builder: (context) {
           return AppScaffold(
             showAppBar: false,
+
             body: navigationShell,
-            bottomNavigationBar: BlocBuilder<NotificationCubit, NotificationState>(
-              builder: (context, notifState) {
-                final unreadCount = notifState.maybeWhen(
-                  loaded: (_, u, _, _, _, _) => u,
-                  orElse: () => 0,
-                );
-                return FloatingBottomNavBar(
-                  currentIndex: navigationShell.currentIndex,
-                  accentColor: AppRole.kitchen.accentColor,
-                  onTap: (index) {
-                    navigationShell.goBranch(
-                      index,
-                      initialLocation: index == navigationShell.currentIndex,
+
+            bottomNavigationBar:
+                BlocBuilder<NotificationCubit, NotificationState>(
+                  builder: (context, notifState) {
+                    final unreadCount = notifState.maybeWhen(
+                      loaded: (_, u, _, _, _, _) => u,
+
+                      orElse: () => 0,
+                    );
+
+                    return FloatingBottomNavBar(
+                      currentIndex: navigationShell.currentIndex,
+
+                      accentColor: AppRole.kitchen.accentColor,
+
+                      onTap: (index) {
+                        navigationShell.goBranch(
+                          index,
+
+                          initialLocation:
+                              index == navigationShell.currentIndex,
+                        );
+                      },
+
+                      items: [
+                        const FloatingNavItem(
+                          icon: Icons.kitchen_outlined,
+
+                          selectedIcon: Icons.kitchen,
+
+                          label: 'KDS',
+                        ),
+
+                        FloatingNavItem(
+                          icon: Icons.notifications_outlined,
+
+                          selectedIcon: Icons.notifications_rounded,
+
+                          label: 'Notifications',
+
+                          badgeCount: unreadCount > 0 ? unreadCount : null,
+                        ),
+                      ],
                     );
                   },
-                  items: [
-                    const FloatingNavItem(
-                      icon: Icons.kitchen_outlined,
-                      selectedIcon: Icons.kitchen,
-                      label: 'KDS',
-                    ),
-                    FloatingNavItem(
-                      icon: Icons.notifications_outlined,
-                      selectedIcon: Icons.notifications_rounded,
-                      label: 'Notifications',
-                      badgeCount: unreadCount > 0 ? unreadCount : null,
-                    ),
-                  ],
-                );
-              },
-            ),
+                ),
           );
         },
       ),
     );
   }
 }
-
