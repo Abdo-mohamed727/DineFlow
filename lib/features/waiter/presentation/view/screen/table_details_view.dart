@@ -77,7 +77,7 @@ class _TableDetailsViewState extends State<TableDetailsView> {
               child: const Icon(
                 Icons.table_restaurant,
                 size: 52,
-                color: AppColors.primaryContainer,
+                color: AppColors.waiterPrimary,
               ),
             ),
           ),
@@ -153,7 +153,7 @@ class _DetailTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.primaryContainer, size: 24),
+          Icon(icon, color: AppColors.waiterPrimary, size: 24),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

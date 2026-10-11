@@ -10,8 +10,8 @@ enum AppRole { customer, waiter, kitchen }
 
 extension AppRoleX on AppRole {
   Color get accentColor => switch (this) {
-        AppRole.customer => AppColors.primaryContainer,   
-        AppRole.waiter   => const Color(0xFF64B5F6),     
+        AppRole.customer => AppColors.primaryContainer,
+        AppRole.waiter   => AppColors.waiterPrimary,
         AppRole.kitchen  => const Color(0xFF81C784),     
       };
 
@@ -33,7 +33,7 @@ extension AppRoleX on AppRole {
         AppRole.kitchen  => Icons.kitchen_rounded,
       };
 }
- 
+
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
     super.key,
