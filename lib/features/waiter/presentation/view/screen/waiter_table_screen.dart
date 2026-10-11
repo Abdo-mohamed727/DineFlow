@@ -41,7 +41,12 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
 
   Future<void> _openTableDetails(TableEntity table) async {
     await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => TableDetailsView(tableId: table.id)),
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: context.read<WaiterCubit>(),
+          child: TableDetailsView(tableId: table.id),
+        ),
+      ),
     );
 
     if (mounted) {
