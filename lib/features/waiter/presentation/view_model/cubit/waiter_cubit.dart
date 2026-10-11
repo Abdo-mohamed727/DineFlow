@@ -51,33 +51,20 @@ class WaiterCubit extends Cubit<WaiterState> {
   final GetTableByIdUseCase _getTableByIdUseCase;
   final UpdateTableUseCase _updateTableUseCase;
   WaiterCubit({
-    required GetPendingRequestsUseCase getPendingRequestsUseCase,
-    required AcceptRequestUseCase acceptRequestUseCase,
-    required CompleteRequestUseCase completeRequestUseCase,
-    required CreateDineOrderUseCase createDineOrderUseCase,
-    required CreateTakeAwayOrderUseCase createTakeawayOrderUseCase,
-    required GetOrdersUseCase getOrdersUseCase,
-    required GetOrdersByStatusUseCase getOrdersByStatusUseCase,
-    required GetOrderByIdUseCase getOrderByIdUseCase,
-    required UpdateOrderStatusUseCase updateOrderStatusUseCase,
-    required GetTablesUseCase getTablesUseCase,
-    required GetAvailableWaiterTablesUseCase getAvailableTablesUseCase,
-    required GetTableByIdUseCase getTableByIdUseCase,
-    required UpdateTableUseCase updateTableUseCase,
-  }) : _getPendingRequestsUseCase = getPendingRequestsUseCase,
-       _acceptRequestUseCase = acceptRequestUseCase,
-       _completeRequestUseCase = completeRequestUseCase,
-       _createDineOrderUseCase = createDineOrderUseCase,
-       _createTakeawayOrderUseCase = createTakeawayOrderUseCase,
-       _getOrdersUseCase = getOrdersUseCase,
-       _getOrdersByStatusUseCase = getOrdersByStatusUseCase,
-       _getOrderByIdUseCase = getOrderByIdUseCase,
-       _updateOrderStatusUseCase = updateOrderStatusUseCase,
-       _getTablesUseCase = getTablesUseCase,
-       _getAvailableTablesUseCase = getAvailableTablesUseCase,
-       _getTableByIdUseCase = getTableByIdUseCase,
-       _updateTableUseCase = updateTableUseCase,
-       super(const WaiterState.initial());
+    required this._getPendingRequestsUseCase,
+    required this._acceptRequestUseCase,
+    required this._completeRequestUseCase,
+    required this._createDineOrderUseCase,
+    required this._createTakeawayOrderUseCase,
+    required this._getOrdersUseCase,
+    required this._getOrdersByStatusUseCase,
+    required this._getOrderByIdUseCase,
+    required this._updateOrderStatusUseCase,
+    required this._getTablesUseCase,
+    required this._getAvailableTablesUseCase,
+    required this._getTableByIdUseCase,
+    required this._updateTableUseCase,
+  }) : super(const WaiterState.initial());
   Future<void> getPendingRequests() async {
     emit(const WaiterState.loading());
     final result = await _getPendingRequestsUseCase(const NoParams());
