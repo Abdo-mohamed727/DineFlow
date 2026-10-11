@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_primary_button.dart';
 import 'package:dineflow/core/widgets/app_text_form_field.dart';
@@ -113,12 +114,18 @@ class _EditProfileFormState extends State<EditProfileForm> {
                         )
                       : widget.user.profileImage?.isNotEmpty == true
                       ? ClipOval(
-                          child: Image.network(
-                            widget.user.profileImage!,
+                          child: CachedNetworkImage(
+                            imageUrl: widget.user.profileImage!,
                             width: 96,
                             height: 96,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => Text(
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.onPrimary,
+                              ),
+                            ),
+                            errorWidget: (_, __, ___) => Text(
                               initials,
                               style: const TextStyle(
                                 color: AppColors.onPrimary,

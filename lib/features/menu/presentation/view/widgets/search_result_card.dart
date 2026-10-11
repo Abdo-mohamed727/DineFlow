@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/menu/domain/entity/product_entity.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +46,12 @@ class SearchResultCard extends StatelessWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: product.image.isNotEmpty
-                      ? Image.network(
-                          product.image,
+                      ? CachedNetworkImage(
+                          imageUrl: product.image,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
+                          placeholder: (context, url) =>
+                              _buildPlaceholder(),
+                          errorWidget: (context, url, error) =>
                               _buildPlaceholder(),
                         )
                       : _buildPlaceholder(),

@@ -389,27 +389,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i995.ProfileRepositoryInterface>(),
       ),
     );
-    gh.factory<_i598.WaiterCubit>(
-      () => _i598.WaiterCubit(
-        getPendingRequestsUseCase: gh<_i520.GetPendingRequestsUseCase>(),
-        acceptRequestUseCase: gh<_i676.AcceptRequestUseCase>(),
-        completeRequestUseCase: gh<_i882.CompleteRequestUseCase>(),
-        createDineOrderUseCase: gh<_i226.CreateDineOrderUseCase>(),
-        createTakeawayOrderUseCase: gh<_i118.CreateTakeAwayOrderUseCase>(),
-        getOrdersUseCase: gh<_i612.GetOrdersUseCase>(),
-        getOrdersByStatusUseCase: gh<_i44.GetOrdersByStatusUseCase>(),
-        getOrderByIdUseCase: gh<_i300.GetOrderByIdUseCase>(),
-        updateOrderStatusUseCase: gh<_i817.UpdateOrderStatusUseCase>(),
-        getTablesUseCase: gh<_i280.GetTablesUseCase>(),
-        getAvailableTablesUseCase: gh<_i572.GetAvailableWaiterTablesUseCase>(),
-        getTableByIdUseCase: gh<_i813.GetTableByIdUseCase>(),
-        updateTableUseCase: gh<_i850.UpdateTableUseCase>(),
-      ),
-    );
     gh.factory<_i427.OrdersCubit>(
       () => _i427.OrdersCubit(
         gh<_i612.GetOrdersUseCase>(),
         gh<_i1052.RealTimeService>(),
+      ),
+    );
+    gh.factory<_i598.WaiterCubit>(
+      () => _i598.WaiterCubit(
+        gh<_i520.GetPendingRequestsUseCase>(),
+        gh<_i676.AcceptRequestUseCase>(),
+        gh<_i882.CompleteRequestUseCase>(),
+        gh<_i226.CreateDineOrderUseCase>(),
+        gh<_i118.CreateTakeAwayOrderUseCase>(),
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i44.GetOrdersByStatusUseCase>(),
+        gh<_i300.GetOrderByIdUseCase>(),
+        gh<_i817.UpdateOrderStatusUseCase>(),
+        gh<_i280.GetTablesUseCase>(),
+        gh<_i572.GetAvailableWaiterTablesUseCase>(),
+        gh<_i813.GetTableByIdUseCase>(),
+        gh<_i850.UpdateTableUseCase>(),
       ),
     );
     gh.factory<_i1064.MenuCubit>(

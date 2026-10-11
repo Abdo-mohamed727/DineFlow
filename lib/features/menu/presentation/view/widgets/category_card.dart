@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/menu/domain/entity/category_entity.dart';
 import 'package:flutter/material.dart';
@@ -41,10 +42,13 @@ class CategoryCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: category.imageUrl != null &&
                       category.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      category.imageUrl!,
+                  ? CachedNetworkImage(
+                      imageUrl: category.imageUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      errorWidget: (context, url, error) =>
                           _buildDefaultIcon(),
                     )
                   : _buildDefaultIcon(),

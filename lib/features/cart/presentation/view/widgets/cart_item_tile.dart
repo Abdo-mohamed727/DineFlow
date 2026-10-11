@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/cart/domain/entites/cart_entity.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +48,11 @@ class CartItemTile extends StatelessWidget {
               width: 76,
               height: 76,
               child: product.image.isNotEmpty
-                  ? Image.network(
-                      product.image,
+                  ? CachedNetworkImage(
+                      imageUrl: product.image,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _placeholder(),
+                      placeholder: (_, __) => _placeholder(),
+                      errorWidget: (_, __, ___) => _placeholder(),
                     )
                   : _placeholder(),
             ),

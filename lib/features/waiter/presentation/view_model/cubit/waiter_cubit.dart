@@ -1,4 +1,3 @@
-import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart';
 import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class SpecialBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         color: AppColors.surfaceContainerLow,
         image: const DecorationImage(
-          image: NetworkImage(
+          image: CachedNetworkImageProvider(
             'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop',
           ),
           fit: BoxFit.cover,
