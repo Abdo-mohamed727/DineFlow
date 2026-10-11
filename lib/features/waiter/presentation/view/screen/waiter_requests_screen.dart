@@ -87,7 +87,7 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
 
   Widget _buildRequestsList(List<WaiterRequestEntity> requests) {
     return RefreshIndicator(
-      color: AppColors.primaryContainer,
+      color: AppColors.waiterPrimary,
       backgroundColor: AppColors.surfaceContainer,
       onRefresh: () async => _loadRequests(),
       child: ListView.separated(
@@ -245,7 +245,7 @@ class _RequestStatusBadge extends StatelessWidget {
     final normalized = status.toLowerCase();
     final color = normalized == 'accepted'
         ? const Color(0xFF81C784)
-        : AppColors.primary;
+        : AppColors.waiterPrimary;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -288,8 +288,8 @@ class _RequestActionButton extends StatelessWidget {
       icon: Icon(icon, size: 18),
       label: Text(label),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryContainer,
-        foregroundColor: AppColors.onPrimaryContainer,
+        backgroundColor: AppColors.waiterPrimary,
+        foregroundColor: Colors.white,
         elevation: 0,
         minimumSize: const Size(132, 44),
         padding: const EdgeInsets.symmetric(horizontal: 18),

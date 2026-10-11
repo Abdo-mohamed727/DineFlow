@@ -1,4 +1,3 @@
-
 import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,8 +22,7 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  final TextEditingController _searchController =
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   String _selectedFilter = 'all';
   String _searchQuery = '';
@@ -63,9 +61,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     }
   }
 
-  List<OrderWaiterEntity> _filterOrders(
-    List<OrderWaiterEntity> orders,
-  ) {
+  List<OrderWaiterEntity> _filterOrders(List<OrderWaiterEntity> orders) {
     final query = _searchQuery.trim().toLowerCase();
 
     if (query.isEmpty) return orders;
@@ -100,9 +96,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   if (_selectedFilter == 'all') {
                     context.read<WaiterCubit>().getOrders();
                   } else {
-                    context
-                        .read<WaiterCubit>()
-                        .getOrdersByStatus(_selectedFilter);
+                    context.read<WaiterCubit>().getOrdersByStatus(
+                      _selectedFilter,
+                    );
                   }
                 },
               ),
@@ -152,15 +148,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final orders = _filterOrders(page.items);
 
     return RefreshIndicator(
-      color: AppColors.primaryContainer,
+      color: AppColors.waiterPrimary,
       backgroundColor: AppColors.surfaceContainer,
       onRefresh: () async {
         if (_selectedFilter == 'all') {
           await context.read<WaiterCubit>().getOrders();
         } else {
-          await context
-              .read<WaiterCubit>()
-              .getOrdersByStatus(_selectedFilter);
+          await context.read<WaiterCubit>().getOrdersByStatus(_selectedFilter);
         }
       },
       child: ListView(
@@ -202,8 +196,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               padding: EdgeInsets.only(top: 36),
               child: AppEmptyState(
                 title: 'No orders found',
-                message:
-                    'Orders matching your search will appear here.',
+                message: 'Orders matching your search will appear here.',
                 iconData: Icons.receipt_long_outlined,
               ),
             )
@@ -261,7 +254,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               Text(
                 '$total total orders',
                 style: const TextStyle(
-                  color: AppColors.primary,
+                  color: AppColors.waiterPrimary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -273,14 +266,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
           iconData: Icons.refresh_rounded,
           tooltip: 'Refresh orders',
           backgroundColor: AppColors.surfaceContainer,
-          iconColor: AppColors.primary,
+          iconColor: AppColors.waiterPrimary,
           onPressed: () {
             if (_selectedFilter == 'all') {
               context.read<WaiterCubit>().getOrders();
             } else {
-              context
-                  .read<WaiterCubit>()
-                  .getOrdersByStatus(_selectedFilter);
+              context.read<WaiterCubit>().getOrdersByStatus(_selectedFilter);
             }
           },
         ),
@@ -291,13 +282,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget _buildSummary(OrdersPageEntity page) {
     final inProgress = page.items.where((order) {
       final status = _normalize(order.status);
-      return status == 'accepted' ||
-          status == 'preparing';
+      return status == 'accepted' || status == 'preparing';
     }).length;
 
-    final pending = page.items.where(
-      (order) => _normalize(order.status) == 'pending',
-    ).length;
+    final pending = page.items
+        .where((order) => _normalize(order.status) == 'pending')
+        .length;
 
     final completed = page.items.where((order) {
       final status = _normalize(order.status);
@@ -344,10 +334,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           _searchQuery = value;
         });
       },
-      style: const TextStyle(
-        color: AppColors.onSurface,
-        fontSize: 14,
-      ),
+      style: const TextStyle(color: AppColors.onSurface, fontSize: 14),
       decoration: InputDecoration(
         hintText: 'Search order, customer, table...',
         hintStyle: const TextStyle(
@@ -391,9 +378,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: AppColors.primaryContainer,
-          ),
+          borderSide: const BorderSide(color: AppColors.waiterPrimary),
         ),
       ),
     );
@@ -419,12 +404,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: selected
-                    ? AppColors.primaryContainer
+                    ? AppColors.waiterPrimary.withValues(alpha: 0.2)
                     : AppColors.surfaceContainer,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: selected
-                      ? AppColors.primaryContainer
+                      ? AppColors.waiterPrimary
                       : AppColors.outlineVariant,
                   width: 0.7,
                 ),
@@ -433,11 +418,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 filter['label']!,
                 style: TextStyle(
                   color: selected
-                      ? AppColors.onPrimaryContainer
+                      ? AppColors.waiterPrimary
                       : AppColors.onSurfaceVariant,
                   fontSize: 12,
-                  fontWeight:
-                      selected ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ),
@@ -453,9 +437,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       isScrollControlled: true,
       backgroundColor: AppColors.surfaceContainerLow,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(24),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
         return SafeArea(
@@ -502,27 +484,21 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   Text(
                     order.orderNumber,
                     style: const TextStyle(
-                      color: AppColors.primary,
+                      color: AppColors.waiterPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 18),
                   _detailRow('Customer', order.customer.name),
-                  _detailRow(
-                    'Order type',
-                    _typeLabel(order.type),
-                  ),
+                  _detailRow('Order type', _typeLabel(order.type)),
                   _detailRow(
                     'Table',
                     order.table == null
                         ? 'No table assigned'
                         : 'Table ${order.table!.tableNumber}',
                   ),
-                  _detailRow(
-                    'Created',
-                    _formatDate(order.createdAt),
-                  ),
+                  _detailRow('Created', _formatDate(order.createdAt)),
                   const SizedBox(height: 20),
                   const Text(
                     'Items',
@@ -541,8 +517,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         children: [
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   item.productName,
@@ -578,18 +553,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     const SizedBox(height: 8),
                     _detailRow('Notes', order.notes!),
                   ],
-                  const Divider(
-                    height: 28,
-                    color: AppColors.outlineVariant,
-                  ),
-                  _detailRow(
-                    'Subtotal',
-                    order.subtotal.toStringAsFixed(2),
-                  ),
-                  _detailRow(
-                    'Tax',
-                    order.tax.toStringAsFixed(2),
-                  ),
+                  const Divider(height: 28, color: AppColors.outlineVariant),
+                  _detailRow('Subtotal', order.subtotal.toStringAsFixed(2)),
+                  _detailRow('Tax', order.tax.toStringAsFixed(2)),
                   const SizedBox(height: 8),
                   _detailRow(
                     'Total',
@@ -605,11 +571,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  Widget _detailRow(
-    String label,
-    String value, {
-    bool isTotal = false,
-  }) {
+  Widget _detailRow(String label, String value, {bool isTotal = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -623,8 +585,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     ? AppColors.onSurface
                     : AppColors.onSurfaceVariant,
                 fontSize: isTotal ? 15 : 13,
-                fontWeight:
-                    isTotal ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isTotal ? FontWeight.w700 : FontWeight.w400,
               ),
             ),
           ),
@@ -634,12 +595,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
               value,
               textAlign: TextAlign.end,
               style: TextStyle(
-                color: isTotal
-                    ? AppColors.primary
-                    : AppColors.onSurface,
+                color: isTotal ? AppColors.waiterPrimary : AppColors.onSurface,
                 fontSize: isTotal ? 17 : 13,
-                fontWeight:
-                    isTotal ? FontWeight.w800 : FontWeight.w600,
+                fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
               ),
             ),
           ),
@@ -697,19 +655,12 @@ class _SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.outlineVariant,
-          width: 0.6,
-        ),
+        border: Border.all(color: AppColors.outlineVariant, width: 0.6),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 19,
-            color: AppColors.primary,
-          ),
+          Icon(icon, size: 19, color: AppColors.waiterPrimary),
           const SizedBox(height: 14),
           Text(
             value,
@@ -739,10 +690,7 @@ class _OrderCard extends StatelessWidget {
   final OrderWaiterEntity order;
   final VoidCallback onTap;
 
-  const _OrderCard({
-    required this.order,
-    required this.onTap,
-  });
+  const _OrderCard({required this.order, required this.onTap});
 
   String _normalize(String value) {
     return value
@@ -816,10 +764,7 @@ class _OrderCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.outlineVariant,
-              width: 0.7,
-            ),
+            border: Border.all(color: AppColors.outlineVariant, width: 0.7),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -831,14 +776,12 @@ class _OrderCard extends StatelessWidget {
                     width: 46,
                     height: 46,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryContainer.withValues(
-                        alpha: 0.13,
-                      ),
+                      color: AppColors.waiterPrimary.withValues(alpha: 0.13),
                       borderRadius: BorderRadius.circular(13),
                     ),
                     child: const Icon(
                       Icons.receipt_long_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.waiterPrimary,
                       size: 23,
                     ),
                   ),
@@ -897,10 +840,7 @@ class _OrderCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              const Divider(
-                height: 1,
-                color: AppColors.outlineVariant,
-              ),
+              const Divider(height: 1, color: AppColors.outlineVariant),
               const SizedBox(height: 14),
               Row(
                 children: [
@@ -921,7 +861,7 @@ class _OrderCard extends StatelessWidget {
                         Text(
                           order.total.toStringAsFixed(2),
                           style: const TextStyle(
-                            color: AppColors.primary,
+                            color: AppColors.waiterPrimary,
                             fontSize: 19,
                             fontWeight: FontWeight.w800,
                           ),
@@ -943,7 +883,7 @@ class _OrderCard extends StatelessWidget {
                       SizedBox(width: 4),
                       Icon(
                         Icons.arrow_forward_ios_rounded,
-                        color: AppColors.primary,
+                        color: AppColors.waiterPrimary,
                         size: 12,
                       ),
                     ],
@@ -962,21 +902,14 @@ class _InfoLabel extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _InfoLabel({
-    required this.icon,
-    required this.text,
-  });
+  const _InfoLabel({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          size: 15,
-          color: AppColors.onSurfaceVariant,
-        ),
+        Icon(icon, size: 15, color: AppColors.onSurfaceVariant),
         const SizedBox(width: 5),
         Text(
           text,

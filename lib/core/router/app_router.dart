@@ -735,40 +735,52 @@ class _WaiterShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      showAppBar: false,
-      body: navigationShell,
-      bottomNavigationBar: FloatingBottomNavBar(
-        currentIndex: navigationShell.currentIndex,
-        accentColor: AppRole.waiter.accentColor,
-        onTap: (index) {
-          navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          );
-        },
-        items: const [
-          FloatingNavItem(
-            icon: Icons.dashboard_outlined,
-            selectedIcon: Icons.dashboard,
-            label: 'Dashboard',
-          ),
-          FloatingNavItem(
-            icon: Icons.table_restaurant_outlined,
-            selectedIcon: Icons.table_restaurant,
-            label: 'Tables',
-          ),
-          FloatingNavItem(
-            icon: Icons.inbox_outlined,
-            selectedIcon: Icons.inbox,
-            label: 'Requests',
-          ),
-          FloatingNavItem(
-            icon: Icons.add_shopping_cart_outlined,
-            selectedIcon: Icons.add_shopping_cart,
-            label: 'Create Order',
-          ),
-        ],
+    final waiterAccent = AppRole.waiter.accentColor;
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+          primary: waiterAccent,
+          onPrimary: Colors.white,
+          secondary: waiterAccent,
+          onSecondary: Colors.white,
+        ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(color: waiterAccent),
+      ),
+      child: AppScaffold(
+        showAppBar: false,
+        body: navigationShell,
+        bottomNavigationBar: FloatingBottomNavBar(
+          currentIndex: navigationShell.currentIndex,
+          accentColor: waiterAccent,
+          onTap: (index) {
+            navigationShell.goBranch(
+              index,
+              initialLocation: index == navigationShell.currentIndex,
+            );
+          },
+          items: const [
+            FloatingNavItem(
+              icon: Icons.dashboard_outlined,
+              selectedIcon: Icons.dashboard,
+              label: 'Dashboard',
+            ),
+            FloatingNavItem(
+              icon: Icons.table_restaurant_outlined,
+              selectedIcon: Icons.table_restaurant,
+              label: 'Tables',
+            ),
+            FloatingNavItem(
+              icon: Icons.inbox_outlined,
+              selectedIcon: Icons.inbox,
+              label: 'Requests',
+            ),
+            FloatingNavItem(
+              icon: Icons.add_shopping_cart_outlined,
+              selectedIcon: Icons.add_shopping_cart,
+              label: 'Create Order',
+            ),
+          ],
+        ),
       ),
     );
   }

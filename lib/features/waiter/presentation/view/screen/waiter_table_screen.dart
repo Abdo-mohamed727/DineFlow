@@ -153,7 +153,7 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
 
   Widget _buildTablesList(List<TableEntity> tables) {
     return RefreshIndicator(
-      color: AppColors.primaryContainer,
+      color: AppColors.waiterPrimary,
       backgroundColor: AppColors.surfaceContainer,
       onRefresh: () async {
         _getTables();
@@ -268,7 +268,7 @@ class _FilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected
-          ? AppColors.primaryContainer
+          ? AppColors.waiterPrimary.withValues(alpha: 0.2)
           : AppColors.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
@@ -281,16 +281,14 @@ class _FilterButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: selected
-                  ? AppColors.primaryContainer
+                  ? AppColors.waiterPrimary
                   : AppColors.outlineVariant,
             ),
           ),
           child: Text(
             label,
             style: TextStyle(
-              color: selected
-                  ? AppColors.onPrimaryContainer
-                  : AppColors.onSurface,
+              color: selected ? AppColors.waiterPrimary : AppColors.onSurface,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -327,12 +325,12 @@ class _StatusOption extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primaryContainer.withValues(alpha: 0.12)
+                ? AppColors.waiterPrimary.withValues(alpha: 0.12)
                 : AppColors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
-                  ? AppColors.primaryContainer
+                  ? AppColors.waiterPrimary
                   : AppColors.outlineVariant,
             ),
           ),
@@ -341,7 +339,7 @@ class _StatusOption extends StatelessWidget {
               Icon(
                 icon,
                 color: isSelected
-                    ? AppColors.primaryContainer
+                    ? AppColors.waiterPrimary
                     : AppColors.onSurfaceVariant,
               ),
               const SizedBox(width: 12),
@@ -356,10 +354,7 @@ class _StatusOption extends StatelessWidget {
                 ),
               ),
               if (isSelected)
-                const Icon(
-                  Icons.check_circle,
-                  color: AppColors.primaryContainer,
-                ),
+                const Icon(Icons.check_circle, color: AppColors.waiterPrimary),
             ],
           ),
         ),

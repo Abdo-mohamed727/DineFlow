@@ -33,12 +33,12 @@ class TableCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                  color: AppColors.waiterPrimary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.table_restaurant,
-                  color: AppColors.primaryContainer,
+                  color: AppColors.waiterPrimary,
                   size: 26,
                 ),
               ),
@@ -103,6 +103,8 @@ class TableCard extends StatelessWidget {
                     text: 'Update Status',
                     fullWidth: true,
                     height: 44,
+                    backgroundColor: AppColors.waiterPrimary,
+                    textColor: Colors.white,
                     icon: const Icon(Icons.edit_outlined, size: 18),
                     onPressed: onUpdateStatus,
                   ),

@@ -272,7 +272,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 child: _isLoadingProducts
                     ? const Center(
                         child: CircularProgressIndicator(
-                          color: AppColors.primaryContainer,
+                          color: AppColors.waiterPrimary,
                         ),
                       )
                     : _loadError != null
@@ -332,7 +332,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             child: Text(
               '$_totalQuantity items',
               style: const TextStyle(
-                color: AppColors.primary,
+                color: AppColors.waiterPrimary,
                 fontWeight: FontWeight.w700,
                 fontSize: 12,
               ),
@@ -451,7 +451,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 13),
           decoration: BoxDecoration(
-            color: selected ? AppColors.primaryContainer : Colors.transparent,
+            color: selected
+                ? AppColors.waiterPrimary.withValues(alpha: 0.2)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(11),
           ),
           child: Row(
@@ -461,7 +463,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 icon,
                 size: 17,
                 color: selected
-                    ? AppColors.onPrimaryContainer
+                    ? AppColors.waiterPrimary
                     : AppColors.onSurfaceVariant,
               ),
               const SizedBox(width: 7),
@@ -469,7 +471,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 label,
                 style: TextStyle(
                   color: selected
-                      ? AppColors.onPrimaryContainer
+                      ? AppColors.waiterPrimary
                       : AppColors.onSurfaceVariant,
                   fontWeight: FontWeight.w700,
                   fontSize: 12,
@@ -550,7 +552,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
-              borderSide: const BorderSide(color: AppColors.primaryContainer),
+              borderSide: const BorderSide(color: AppColors.waiterPrimary),
             ),
           ),
         ),
@@ -561,7 +563,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   Widget _buildCategories() {
     if (_isLoadingCategories) {
       return const LinearProgressIndicator(
-        color: AppColors.primaryContainer,
+        color: AppColors.waiterPrimary,
         backgroundColor: AppColors.surfaceContainer,
       );
     }
@@ -597,12 +599,12 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           decoration: BoxDecoration(
             color: selected
-                ? AppColors.primaryContainer
+                ? AppColors.waiterPrimary.withValues(alpha: 0.2)
                 : AppColors.surfaceContainer,
             borderRadius: BorderRadius.circular(11),
             border: Border.all(
               color: selected
-                  ? AppColors.primaryContainer
+                  ? AppColors.waiterPrimary
                   : AppColors.outlineVariant,
               width: 0.6,
             ),
@@ -611,7 +613,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             label,
             style: TextStyle(
               color: selected
-                  ? AppColors.onPrimaryContainer
+                  ? AppColors.waiterPrimary
                   : AppColors.onSurfaceVariant,
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -633,7 +635,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: quantity > 0
-              ? AppColors.primaryContainer
+              ? AppColors.waiterPrimary
               : AppColors.outlineVariant,
           width: quantity > 0 ? 1 : 0.6,
         ),
@@ -655,12 +657,12 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => const Icon(
                         Icons.restaurant_rounded,
-                        color: AppColors.primary,
+                        color: AppColors.waiterPrimary,
                       ),
                     )
                   : const Icon(
                       Icons.restaurant_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.waiterPrimary,
                     ),
             ),
           ),
@@ -693,7 +695,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 Text(
                   product.price.toString(),
                   style: const TextStyle(
-                    color: AppColors.primary,
+                    color: AppColors.waiterPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                   ),
@@ -706,8 +708,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             IconButton.filled(
               onPressed: () => _changeQuantity(product, 1),
               style: IconButton.styleFrom(
-                backgroundColor: AppColors.primaryContainer,
-                foregroundColor: AppColors.onPrimaryContainer,
+                backgroundColor: AppColors.waiterPrimary,
+                foregroundColor: Colors.white,
               ),
               icon: const Icon(Icons.add_rounded),
             )
@@ -839,8 +841,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               child: FilledButton.icon(
                 onPressed: _isSubmitting ? null : _submitOrder,
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryContainer,
-                  foregroundColor: AppColors.onPrimaryContainer,
+                  backgroundColor: AppColors.waiterPrimary,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(13),
@@ -852,7 +854,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         height: 17,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppColors.onPrimaryContainer,
+                          color: Colors.white,
                         ),
                       )
                     : const Icon(Icons.check_rounded, size: 19),

@@ -4,6 +4,7 @@ abstract class AppColors {
   AppColors._();
 
   static const Color primary = Color(0xFFFFB59D);
+  static const Color waiterPrimary = Color(0xFF64B5F6);
 
   static const Color onPrimary = Color(0xFF5D1900);
 
