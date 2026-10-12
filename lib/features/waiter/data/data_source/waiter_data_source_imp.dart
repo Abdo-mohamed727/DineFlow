@@ -98,6 +98,8 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
       return CreateOrderModel.fromJson(response.data['data']);
     } catch (error) {
+      print('Error creating takeaway order: $error');
+      print(StackTrace.current);
       ApiErrorHandler.throwAppException(
         error,
         fallback: 'Could not create the takeaway order.',
