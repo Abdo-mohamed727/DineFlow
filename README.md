@@ -265,6 +265,7 @@ lib/
 │
 ├── core/
 │   ├── constants/
+|   ├── di/
 │   ├── errors/
 │   ├── network/
 │   ├── router/
@@ -277,12 +278,15 @@ lib/
 │   ├── search/
 │   ├── cart/
 │   ├── orders/
+|   ├── notifications/
+|   ├── profile/
 │   ├── waiter/
 │   └── kitchen/
 │
 ├── injection/
 │
-└── main_dev.dart
+├── main_dev.dart
+└── main_prod.dart
 ```
 
 Each feature follows:
@@ -415,8 +419,8 @@ Additional technical documentation covers:
 
 # 🚀 Roadmap
 
-* [ ] Push notifications
-* [ ] Enhanced order tracking
+* [✅] Push notifications
+* [✅] Enhanced order tracking
 * [ ] Offline support
 * [ ] Expanded test coverage
 * [ ] Performance optimization
