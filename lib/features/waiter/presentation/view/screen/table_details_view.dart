@@ -1,4 +1,5 @@
-
+import 'package:dineflow/features/waiter/presentation/view_model/table/table_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/table/table_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,13 +7,9 @@ import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_error_state.dart';
 import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
-import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
 
 class TableDetailsView extends StatefulWidget {
-  const TableDetailsView({
-    super.key,
-    required this.tableId,
-  });
+  const TableDetailsView({super.key, required this.tableId});
 
   final String tableId;
 
@@ -24,7 +21,7 @@ class _TableDetailsViewState extends State<TableDetailsView> {
   @override
   void initState() {
     super.initState();
-    context.read<WaiterCubit>().getTableById(widget.tableId);
+    context.read<TableCubit>().getTableById(widget.tableId);
   }
 
   @override
@@ -36,25 +33,24 @@ class _TableDetailsViewState extends State<TableDetailsView> {
         foregroundColor: AppColors.onSurface,
         title: const Text('Table Details'),
       ),
-      body: BlocBuilder<WaiterCubit, WaiterState>(
+      body: BlocBuilder<TableCubit, TableState>(
         builder: (context, state) {
-          return state.maybeWhen(
-            loading: () => const AppLoadingIndicator(
-              message: 'Loading table details...',
-            ),
-            error: (message) => AppErrorState(
-              message: message,
+          final table = state.selectedTable;
+
+          if (table != null) {
+            return _buildDetails(table);
+          }
+
+          if (state.status == TableStatus.failure) {
+            return AppErrorState(
+              message: state.errorMessage ?? 'Something went wrong',
               onRetry: () {
-                context.read<WaiterCubit>().getTableById(
-                      widget.tableId,
-                    );
+                context.read<TableCubit>().getTableById(widget.tableId);
               },
-            ),
-            tableLoaded: (table) => _buildDetails(table),
-            orElse: () => const AppLoadingIndicator(
-              message: 'Loading table details...',
-            ),
-          );
+            );
+          }
+
+          return const AppLoadingIndicator(message: 'Loading table details...');
         },
       ),
     );
@@ -93,9 +89,7 @@ class _TableDetailsViewState extends State<TableDetailsView> {
             ),
           ),
           const SizedBox(height: 8),
-          Center(
-            child: _StatusBadge(status: table.status),
-          ),
+          Center(child: _StatusBadge(status: table.status)),
           const SizedBox(height: 28),
           _DetailTile(
             icon: Icons.people_outline,
@@ -201,10 +195,7 @@ class _StatusBadge extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
@@ -213,10 +204,7 @@ class _StatusBadge extends StatelessWidget {
         status.isEmpty
             ? 'Unknown'
             : '${status[0].toUpperCase()}${status.substring(1)}',
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w600,
-        ),
+        style: TextStyle(color: color, fontWeight: FontWeight.w600),
       ),
     );
   }

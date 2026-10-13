@@ -1,6 +1,6 @@
 import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart';
 import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart';
-import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/cubit/order_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -173,7 +173,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         )
         .toList();
 
-    final cubit = context.read<WaiterCubit>();
+    final cubit = context.read<OrderCubit>();
 
     if (_orderType == 'dineIn') {
       await cubit.createDineOrder(
@@ -250,7 +250,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<WaiterCubit, WaiterState>(
+    return BlocListener<OrderCubit, OrderState>(
       listener: (context, state) {
         state.maybeWhen(
           orderCreated: (order) {
