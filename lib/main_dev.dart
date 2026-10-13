@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'app_config.dart';
-import 'core/router/app_router.dart';
-import 'core/router/route_guard.dart';
+import 'package:dineflow/app_config.dart';
+import 'package:dineflow/core/router/app_router.dart';
+import 'package:dineflow/core/router/route_guard.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:dineflow/firebase_options.dart';

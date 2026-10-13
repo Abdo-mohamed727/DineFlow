@@ -1,4 +1,4 @@
-import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/cubit/order_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,7 +40,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<WaiterCubit>().getOrders();
+    context.read<OrderCubit>().getOrders();
   }
 
   @override
@@ -55,9 +55,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
     });
 
     if (value == 'all') {
-      context.read<WaiterCubit>().getOrders();
+      context.read<OrderCubit>().getOrders();
     } else {
-      context.read<WaiterCubit>().getOrdersByStatus(value);
+      context.read<OrderCubit>().getOrdersByStatus(value);
     }
   }
 
@@ -78,7 +78,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: BlocBuilder<WaiterCubit, WaiterState>(
+        child: BlocBuilder<OrderCubit, OrderState>(
           builder: (context, state) {
             return state.when(
               initial: () => const AppLoadingIndicator(
@@ -94,9 +94,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 message: message,
                 onRetry: () {
                   if (_selectedFilter == 'all') {
-                    context.read<WaiterCubit>().getOrders();
+                    context.read<OrderCubit>().getOrders();
                   } else {
-                    context.read<WaiterCubit>().getOrdersByStatus(
+                    context.read<OrderCubit>().getOrdersByStatus(
                       _selectedFilter,
                     );
                   }
@@ -112,11 +112,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 message: 'Refreshing orders...',
                 center: true,
               ),
-              requestsLoaded: (_) => _buildUnexpectedState(),
-              requestUpdated: (_) => _buildUnexpectedState(),
-              tablesLoaded: (_) => _buildUnexpectedState(),
-              tableLoaded: (_) => _buildUnexpectedState(),
-              tableUpdated: (_) => _buildUnexpectedState(),
+
             );
           },
         ),
@@ -128,7 +124,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return AppErrorState(
       title: 'Orders unavailable',
       message: 'Reload the orders list to continue.',
-      onRetry: () => context.read<WaiterCubit>().getOrders(),
+      onRetry: () => context.read<OrderCubit>().getOrders(),
     );
   }
 
@@ -152,9 +148,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
       backgroundColor: AppColors.surfaceContainer,
       onRefresh: () async {
         if (_selectedFilter == 'all') {
-          await context.read<WaiterCubit>().getOrders();
+          await context.read<OrderCubit>().getOrders();
         } else {
-          await context.read<WaiterCubit>().getOrdersByStatus(_selectedFilter);
+          await context.read<OrderCubit>().getOrdersByStatus(_selectedFilter);
         }
       },
       child: ListView(
@@ -269,9 +265,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
           iconColor: AppColors.waiterPrimary,
           onPressed: () {
             if (_selectedFilter == 'all') {
-              context.read<WaiterCubit>().getOrders();
+              context.read<OrderCubit>().getOrders();
             } else {
-              context.read<WaiterCubit>().getOrdersByStatus(_selectedFilter);
+              context.read<OrderCubit>().getOrdersByStatus(_selectedFilter);
             }
           },
         ),

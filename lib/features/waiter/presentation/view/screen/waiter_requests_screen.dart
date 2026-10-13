@@ -1,3 +1,4 @@
+import 'package:dineflow/features/waiter/presentation/view_model/request_cubit/request_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,7 +7,6 @@ import 'package:dineflow/core/widgets/app_empty_state.dart';
 import 'package:dineflow/core/widgets/app_error_state.dart';
 import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
-import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
 
 class WaiterRequestsView extends StatefulWidget {
   const WaiterRequestsView({super.key});
@@ -23,7 +23,7 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
   }
 
   void _loadRequests() {
-    context.read<WaiterCubit>().getPendingRequests();
+    context.read<RequestCubit>().getPendingRequests();
   }
 
   @override
@@ -49,7 +49,7 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
           ),
         ],
       ),
-      body: BlocBuilder<WaiterCubit, WaiterState>(
+      body: BlocBuilder<RequestCubit, RequestState>(
         builder: (context, state) {
           return state.when(
             initial: () =>
@@ -70,15 +70,10 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
               }
               return _buildRequestsList(requests.items);
             },
-            requestUpdated: (_) =>
-                const AppLoadingIndicator(message: 'Updating requests...'),
-            tablesLoaded: (_) => const SizedBox.shrink(),
-            tableLoaded: (_) => const SizedBox.shrink(),
-            tableUpdated: (_) => const SizedBox.shrink(),
-            ordersLoaded: (_) => const SizedBox.shrink(),
-            orderLoaded: (_) => const SizedBox.shrink(),
-            orderCreated: (_) => const SizedBox.shrink(),
-            orderStatusUpdated: (_) => const SizedBox.shrink(),
+            requestUpdated: (_) {
+              _loadRequests();
+              return const AppLoadingIndicator(message: 'Updating requests...');
+            },
           );
         },
       ),
@@ -97,9 +92,9 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
         itemBuilder: (context, index) => _RequestCard(
           request: requests[index],
           onAccept: () =>
-              context.read<WaiterCubit>().acceptRequest(requests[index].id),
+              context.read<RequestCubit>().acceptRequest(requests[index].id),
           onComplete: () =>
-              context.read<WaiterCubit>().completeRequest(requests[index].id),
+              context.read<RequestCubit>().completeRequest(requests[index].id),
         ),
       ),
     );

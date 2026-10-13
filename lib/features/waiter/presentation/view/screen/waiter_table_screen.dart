@@ -1,5 +1,6 @@
 import 'package:dineflow/features/waiter/presentation/view/screen/table_details_view.dart';
 import 'package:dineflow/features/waiter/presentation/view/widget/table_card.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/table/table_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
@@ -8,7 +9,7 @@ import 'package:dineflow/core/widgets/app_error_state.dart';
 import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
 
-import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/table/table_state.dart';
 
 class WaiterTablesView extends StatefulWidget {
   const WaiterTablesView({super.key});
@@ -21,14 +22,14 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
   @override
   void initState() {
     super.initState();
-    context.read<WaiterCubit>().getTables();
+    context.read<TableCubit>().getTables();
   }
 
   void _getTables() {
     if (_showAvailableOnly) {
-      context.read<WaiterCubit>().getAvailableTables();
+      context.read<TableCubit>().getAvailableTables();
     } else {
-      context.read<WaiterCubit>().getTables();
+      context.read<TableCubit>().getTables();
     }
   }
 
@@ -43,7 +44,7 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
-          value: context.read<WaiterCubit>(),
+          value: context.read<TableCubit>(),
           child: TableDetailsView(tableId: table.id),
         ),
       ),
@@ -80,44 +81,43 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
         children: [
           _buildFilters(),
           Expanded(
-            child: BlocBuilder<WaiterCubit, WaiterState>(
+            child: BlocBuilder<TableCubit, TableState>(
               builder: (context, state) {
-                return state.when(
-                  initial: () =>
-                      const AppLoadingIndicator(message: 'Loading tables...'),
-                  loading: () =>
-                      const AppLoadingIndicator(message: 'Loading tables...'),
-                  error: (message) =>
-                      AppErrorState(message: message, onRetry: _getTables),
-                  tablesLoaded: (tables) {
-                    if (tables.tables.isEmpty) {
-                      return AppEmptyState(
-                        title: _showAvailableOnly
-                            ? 'No available tables'
-                            : 'No tables found',
-                        message: _showAvailableOnly
-                            ? 'There are no available tables right now.'
-                            : 'There are no tables to display.',
-                        iconData: Icons.table_restaurant_outlined,
-                        onAction: _getTables,
-                        actionText: 'Refresh',
-                      );
-                    }
-                    return _buildTablesList(tables.tables);
-                  },
-                  tableLoaded: (table) {
-                    return _buildSingleTable(table);
-                  },
-                  tableUpdated: (table) {
-                    return _buildSingleTable(table);
-                  },
-                  requestsLoaded: (_) => const SizedBox.shrink(),
-                  requestUpdated: (_) => const SizedBox.shrink(),
-                  ordersLoaded: (_) => const SizedBox.shrink(),
-                  orderLoaded: (_) => const SizedBox.shrink(),
-                  orderCreated: (_) => const SizedBox.shrink(),
-                  orderStatusUpdated: (_) => const SizedBox.shrink(),
-                );
+                if (state.status == TableStatus.loading ||
+                    state.status == TableStatus.initial) {
+                  return const AppLoadingIndicator(message: 'Loading tables...');
+                }
+
+                if (state.status == TableStatus.failure) {
+                  return AppErrorState(
+                    message: state.errorMessage ?? 'Something went wrong',
+                    onRetry: _getTables,
+                  );
+                }
+
+                final allTables = state.tables.tables;
+                final tables = _showAvailableOnly
+                    ? allTables
+                        .where((t) =>
+                            t.status.toLowerCase() == 'available')
+                        .toList()
+                    : allTables;
+
+                if (tables.isEmpty) {
+                  return AppEmptyState(
+                    title: _showAvailableOnly
+                        ? 'No available tables'
+                        : 'No tables found',
+                    message: _showAvailableOnly
+                        ? 'There are no available tables right now.'
+                        : 'There are no tables to display.',
+                    iconData: Icons.table_restaurant_outlined,
+                    onAction: _getTables,
+                    actionText: 'Refresh',
+                  );
+                }
+
+                return _buildTablesList(tables);
               },
             ),
           ),
@@ -170,17 +170,6 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
             onUpdateStatus: () => _showUpdateStatusSheet(table),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildSingleTable(TableEntity table) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: TableCard(
-        table: table,
-        onView: () => _openTableDetails(table),
-        onUpdateStatus: () => _showUpdateStatusSheet(table),
       ),
     );
   }
@@ -247,7 +236,7 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
     if (!mounted || status == null || status == table.status) {
       return;
     }
-    await context.read<WaiterCubit>().updateTable(
+    await context.read<TableCubit>().updateTable(
       table.id,
       status,
       availableOnly: _showAvailableOnly,

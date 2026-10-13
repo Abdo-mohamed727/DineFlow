@@ -57,8 +57,10 @@ import 'package:dineflow/features/waiter/presentation/view/screen/create_order_s
 import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart';
 
 import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/cubit/order_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/request_cubit/request_cubit.dart';
 
-import 'package:dineflow/features/waiter/presentation/view_model/cubit/waiter_cubit.dart';
+import 'package:dineflow/features/waiter/presentation/view_model/table/table_cubit.dart';
 
 import 'package:flutter/material.dart';
 
@@ -483,7 +485,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 name: AppRoutes.waiterTables,
 
                 builder: (context, state) => BlocProvider(
-                  create: (_) => sl<WaiterCubit>(),
+                  create: (_) => sl<TableCubit>(),
 
                   child: const WaiterTablesView(),
                 ),
@@ -500,7 +502,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 name: AppRoutes.waiterRequests,
 
                 builder: (context, state) => BlocProvider(
-                  create: (_) => sl<WaiterCubit>(),
+                  create: (_) => sl<RequestCubit>(),
 
                   child: const WaiterRequestsView(),
                 ),
@@ -515,7 +517,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterCreateOrder}',
                 name: AppRoutes.waiterCreateOrder,
                 builder: (context, state) => BlocProvider(
-                  create: (_) => sl<WaiterCubit>(),
+                  create: (_) => sl<OrderCubit>(),
                   child: CreateOrderScreen(
                     getProductsUseCase: sl<GetProductsUseCase>(),
                     getCategoriesUseCase: sl<GetCategoriesUseCase>(),
