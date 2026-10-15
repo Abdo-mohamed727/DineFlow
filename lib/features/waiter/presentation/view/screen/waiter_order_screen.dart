@@ -30,7 +30,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   final List<Map<String, String>> _filters = const [
     {'label': 'All Orders', 'value': 'all'},
     {'label': 'Pending', 'value': 'pending'},
-    {'label': 'Accepted', 'value': 'accepted'},
+    
     {'label': 'Preparing', 'value': 'preparing'},
     {'label': 'Ready', 'value': 'ready'},
     {'label': 'Completed', 'value': 'completed'},
@@ -102,8 +102,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   }
                 },
               ),
-              ordersLoaded: (page) => _buildOrdersContent(page),
-              orderLoaded: (order) => _buildOrdersContentFromSingle(order),
+              ordersLoaded: (OrdersPageEntity page) =>
+                  _buildOrdersContent(page),
+              orderLoaded: (OrderWaiterEntity order) =>
+                  _buildOrdersContentFromSingle(order),
               orderCreated: (_) => const AppLoadingIndicator(
                 message: 'Refreshing orders...',
                 center: true,
@@ -112,19 +114,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 message: 'Refreshing orders...',
                 center: true,
               ),
-
             );
           },
         ),
       ),
-    );
-  }
-
-  Widget _buildUnexpectedState() {
-    return AppErrorState(
-      title: 'Orders unavailable',
-      message: 'Reload the orders list to continue.',
-      onRetry: () => context.read<OrderCubit>().getOrders(),
     );
   }
 
@@ -386,7 +379,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: _filters.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final filter = _filters[index];
           final selected = _selectedFilter == filter['value'];

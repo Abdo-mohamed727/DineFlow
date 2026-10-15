@@ -290,12 +290,12 @@ _$OrderLoadedCopyWith<_OrderLoaded> get copyWith => __$OrderLoadedCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderLoaded&&(identical(other.order, order) || other.order == order));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderLoaded&&const DeepCollectionEquality().equals(other.order, order));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,order);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(order));
 
 @override
 String toString() {
@@ -327,9 +327,9 @@ class __$OrderLoadedCopyWithImpl<$Res>
 
 /// Create a copy of OrderState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? order = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? order = freezed,}) {
   return _then(_OrderLoaded(
-null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as OrderWaiterEntity,
   ));
 }
@@ -356,12 +356,12 @@ _$OrdersLoadedCopyWith<_OrdersLoaded> get copyWith => __$OrdersLoadedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrdersLoaded&&(identical(other.orders, orders) || other.orders == orders));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrdersLoaded&&const DeepCollectionEquality().equals(other.orders, orders));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,orders);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(orders));
 
 @override
 String toString() {
@@ -393,9 +393,9 @@ class __$OrdersLoadedCopyWithImpl<$Res>
 
 /// Create a copy of OrderState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? orders = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? orders = freezed,}) {
   return _then(_OrdersLoaded(
-null == orders ? _self.orders : orders // ignore: cast_nullable_to_non_nullable
+freezed == orders ? _self.orders : orders // ignore: cast_nullable_to_non_nullable
 as OrdersPageEntity,
   ));
 }
@@ -422,12 +422,12 @@ _$OrderStatusUpdatedCopyWith<_OrderStatusUpdated> get copyWith => __$OrderStatus
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderStatusUpdated&&(identical(other.order, order) || other.order == order));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderStatusUpdated&&const DeepCollectionEquality().equals(other.order, order));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,order);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(order));
 
 @override
 String toString() {
@@ -459,9 +459,9 @@ class __$OrderStatusUpdatedCopyWithImpl<$Res>
 
 /// Create a copy of OrderState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? order = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? order = freezed,}) {
   return _then(_OrderStatusUpdated(
-null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as OrderWaiterEntity,
   ));
 }
