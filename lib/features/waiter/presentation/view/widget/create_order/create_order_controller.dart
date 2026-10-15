@@ -6,16 +6,23 @@ import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dar
 import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_dine_order_params.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
+import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
+import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart';
 import 'package:dineflow/features/waiter/presentation/view_model/cubit/order_cubit.dart';
 import 'package:flutter/material.dart';
 
 class CreateOrderController extends ChangeNotifier {
   final GetProductsUseCase getProductsUseCase;
   final GetCategoriesUseCase getCategoriesUseCase;
+  final StartDiningUseCase startDiningUseCase;
   final searchController = TextEditingController();
-  final sessionController = TextEditingController();
   final notesController = TextEditingController();
   final Map<String, int> quantities = {};
+
+  RestaurantTableEntity? selectedTable;
+  String? sessionId; // set after startDining succeeds
+  bool isStartingSession = false;
+  String? sessionError;
 
   List<ProductEntity> products = [];
   List<CategoryEntity> categories = [];
@@ -31,6 +38,7 @@ class CreateOrderController extends ChangeNotifier {
   CreateOrderController({
     required this.getProductsUseCase,
     required this.getCategoriesUseCase,
+    required this.startDiningUseCase,
   });
 
   Future<void> initialize() async {
@@ -85,7 +93,41 @@ class CreateOrderController extends ChangeNotifier {
     (total, product) => total + product.price * (quantities[product.id] ?? 0),
   );
 
-  void setOrderType(String value) => _update(() => orderType = value);
+  void setOrderType(String value) => _update(() {
+    orderType = value;
+    // Clear table + session when switching away from dine-in.
+    if (value != 'dineIn') {
+      selectedTable = null;
+      sessionId = null;
+      sessionError = null;
+    }
+  });
+
+  /// Called when the waiter picks a table from the bottom sheet.
+  /// Immediately starts a dining session for that table.
+  Future<void> setSelectedTable(RestaurantTableEntity table) async {
+    _update(() {
+      selectedTable = table;
+      sessionId = null;
+      sessionError = null;
+      isStartingSession = true;
+    });
+    final result = await startDiningUseCase(table.id);
+    if (_disposed) return;
+    switch (result) {
+      case Success(data: final id):
+        _update(() {
+          sessionId = id;
+          isStartingSession = false;
+        });
+      case FailureResult(failure: final failure):
+        _update(() {
+          sessionError = failure.message;
+          isStartingSession = false;
+          selectedTable = null; // reset so the user can try again
+        });
+    }
+  }
 
   void setCategory(String? id) => _update(() => selectedCategoryId = id);
 
@@ -103,8 +145,16 @@ class CreateOrderController extends ChangeNotifier {
 
   Future<String?> submitOrder(OrderCubit cubit) async {
     if (totalQuantity == 0) return 'Add at least one product to the order.';
-    if (orderType == 'dineIn' && sessionController.text.trim().isEmpty) {
-      return 'Enter the dining session ID.';
+    if (orderType == 'dineIn') {
+      if (selectedTable == null) {
+        return 'Please select a table for the dine-in order.';
+      }
+      if (isStartingSession) {
+        return 'Please wait — starting dining session...';
+      }
+      if (sessionId == null) {
+        return sessionError ?? 'Could not start dining session. Tap the table field to retry.';
+      }
     }
     isSubmitting = true;
     _notify();
@@ -119,7 +169,7 @@ class CreateOrderController extends ChangeNotifier {
         final notes = notesController.text.trim();
         await cubit.createDineOrder(
           CreateDineOrderParams(
-            diningSessionId: sessionController.text.trim(),
+            diningSessionId: sessionId!,
             items: items,
             notes: notes.isEmpty ? null : notes,
           ),
@@ -139,7 +189,9 @@ class CreateOrderController extends ChangeNotifier {
   void resetAfterOrderCreated() {
     quantities.clear();
     notesController.clear();
-    sessionController.clear();
+    selectedTable = null;
+    sessionId = null;
+    sessionError = null;
     _notify();
   }
 
@@ -156,7 +208,6 @@ class CreateOrderController extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     searchController.dispose();
-    sessionController.dispose();
     notesController.dispose();
     super.dispose();
   }

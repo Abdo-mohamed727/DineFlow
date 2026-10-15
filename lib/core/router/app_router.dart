@@ -47,6 +47,7 @@ import 'package:dineflow/features/orders/presentation/view/screens/order_success
 import 'package:dineflow/features/orders/presentation/view/screens/orders_view.dart';
 
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
+import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart';
 
 import 'package:dineflow/features/waiter/presentation/view/screen/waiter_table_screen.dart';
 
@@ -516,11 +517,15 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               GoRoute(
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterCreateOrder}',
                 name: AppRoutes.waiterCreateOrder,
-                builder: (context, state) => BlocProvider(
-                  create: (_) => sl<OrderCubit>(),
+                builder: (context, state) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (_) => sl<OrderCubit>()),
+                    BlocProvider(create: (_) => sl<TableCubit>()),
+                  ],
                   child: CreateOrderScreen(
                     getProductsUseCase: sl<GetProductsUseCase>(),
                     getCategoriesUseCase: sl<GetCategoriesUseCase>(),
+                    startDiningUseCase: sl<StartDiningUseCase>(),
                   ),
                 ),
               ),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart';
 import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart';
+import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart';
 import 'package:dineflow/features/waiter/presentation/view/widget/create_order/create_order_body.dart';
 import 'package:dineflow/features/waiter/presentation/view/widget/create_order/create_order_controller.dart';
 import 'package:dineflow/features/waiter/presentation/view/widget/create_order/order_created_dialog.dart';
@@ -13,11 +14,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CreateOrderScreen extends StatefulWidget {
   final GetProductsUseCase getProductsUseCase;
   final GetCategoriesUseCase getCategoriesUseCase;
+  final StartDiningUseCase startDiningUseCase;
 
   const CreateOrderScreen({
     super.key,
     required this.getProductsUseCase,
     required this.getCategoriesUseCase,
+    required this.startDiningUseCase,
   });
 
   @override
@@ -33,6 +36,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     _controller = CreateOrderController(
       getProductsUseCase: widget.getProductsUseCase,
       getCategoriesUseCase: widget.getCategoriesUseCase,
+      startDiningUseCase: widget.startDiningUseCase,
     );
     _controller.initialize();
   }

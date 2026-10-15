@@ -5,13 +5,12 @@ import 'package:dineflow/features/waiter/data/models/orders_page_model.dart';
 import 'package:dineflow/features/waiter/data/models/table_model.dart';
 import 'package:dineflow/features/waiter/data/models/tables_model.dart';
 import 'package:dineflow/core/networking/api_error_handler.dart';
+import 'package:dineflow/features/waiter/data/models/waiter_request_model.dart';
+import 'package:dineflow/features/waiter/data/models/waiter_request_page_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:dineflow/core/networking/api_constants.dart';
-
-import '../models/waiter_request_model.dart';
-import '../models/waiter_request_page_model.dart';
 
 @Injectable(as: WaiterDataSource)
 class WaiterDataSourceImpl implements WaiterDataSource {
