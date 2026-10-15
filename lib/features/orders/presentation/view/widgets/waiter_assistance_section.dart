@@ -71,7 +71,10 @@ class WaiterAssistanceSection extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => _AssistanceActionsSheet(order: order),
+      builder: (_) => BlocProvider.value(
+        value: context.read<OrdersCubit>(),
+        child: _AssistanceActionsSheet(order: order),
+      ),
     );
   }
 }
