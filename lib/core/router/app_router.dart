@@ -48,6 +48,7 @@ import 'package:dineflow/features/orders/presentation/view/screens/orders_view.d
 
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart';
 import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart';
+import 'package:dineflow/features/waiter/presentation/view/screen/waiter_order_screen.dart';
 
 import 'package:dineflow/features/waiter/presentation/view/screen/waiter_table_screen.dart';
 
@@ -468,10 +469,8 @@ GoRouter createRouter({required RouterNotifier notifier}) {
 
                 name: AppRoutes.waiterDashboard,
 
-                builder: (context, state) => const _PlaceholderScreen(
-                  label: 'Waiter - Dashboard',
-
-                  role: AppRole.waiter,
+                builder: (context, state) => BlocProvider(create: (context) => sl<OrderCubit>(),
+                  child: const OrdersScreen(),
                 ),
               ),
             ],

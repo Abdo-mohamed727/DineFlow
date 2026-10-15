@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
 import 'package:dineflow/core/usecases/result.dart';
-import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_dine_order_params.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_order_takeaway.dart';
@@ -12,12 +11,12 @@ import 'package:dineflow/features/waiter/domain/use_case/create_takeaway_order_u
 import 'package:dineflow/features/waiter/domain/use_case/get_order_by_id_use_case.dart';
 import 'package:dineflow/features/waiter/domain/use_case/get_orders_by_status_params.dart';
 import 'package:dineflow/features/waiter/domain/use_case/get_orders_by_status_use_case.dart';
+import 'package:dineflow/features/waiter/domain/use_case/get_orders_use_case.dart';
 import 'package:dineflow/features/waiter/domain/use_case/order_id_params.dart';
 import 'package:dineflow/features/waiter/domain/use_case/update_order_status_params.dart';
 import 'package:dineflow/features/waiter/domain/use_case/update_order_status_use_case.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-
 part 'order_state.dart';
 part 'order_cubit.freezed.dart';
 
@@ -25,7 +24,7 @@ part 'order_cubit.freezed.dart';
 class OrderCubit extends Cubit<OrderState> {
   final CreateDineOrderUseCase _createDineOrderUseCase;
   final CreateTakeAwayOrderUseCase _createTakeawayOrderUseCase;
-  final GetOrdersUseCase _getOrdersUseCase;
+  final GetOrdersUseCaseWaiter _getOrdersUseCase;
   final GetOrdersByStatusUseCase _getOrdersByStatusUseCase;
   final GetOrderByIdUseCase _getOrderByIdUseCase;
   final UpdateOrderStatusUseCase _updateOrderStatusUseCase;
@@ -64,7 +63,7 @@ class OrderCubit extends Cubit<OrderState> {
     final result = await _getOrdersUseCase(const NoParams());
     switch (result) {
       case Success(data: final data):
-        emit(OrderState.ordersLoaded(data as OrdersPageEntity));
+        emit(OrderState.ordersLoaded(data));
       case FailureResult(failure: final failure):
         emit(OrderState.error(failure.message));
     }

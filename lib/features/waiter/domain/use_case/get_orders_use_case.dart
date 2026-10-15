@@ -7,10 +7,10 @@ import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart'
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetOrdersUseCase implements UseCase<Result<OrdersPageEntity>, NoParams> {
+class GetOrdersUseCaseWaiter implements UseCase<Result<OrdersPageEntity>, NoParams> {
   final WaiterRepository _repository;
 
-  const GetOrdersUseCase(this._repository);
+  const GetOrdersUseCaseWaiter(this._repository);
 
   @override
   Future<Result<OrdersPageEntity>> call(NoParams params) {
