@@ -187,23 +187,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
     required String diningSessionId,
   }) async {
     try {
-      final requestData = request.data?.request;
-      final type = requestData?.type?.trim();
-      final tableId = requestData?.tableId?.trim();
-      if (type == null || type.isEmpty) {
-        throw const ServerException('Request type is required.');
-      }
-      if (tableId == null || tableId.isEmpty) {
-        throw const ServerException('Table ID is required.');
-      }
-
-      final payload = <String, dynamic>{
-        'diningSessionId': diningSessionId,
-        'type': type,
-        'tableId': tableId,
-        if (requestData?.message?.isNotEmpty ?? false)
-          'message': requestData!.message,
-      };
+      final payload = {...request.toJson(), 'diningSessionId': diningSessionId};
       final response = await _dio.post(
         ApiConstants.waiterRequests,
         data: payload,
