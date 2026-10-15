@@ -123,6 +123,8 @@ import 'package:dineflow/features/orders/domain/usecase/get_available_tables_use
     as _i181;
 import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart'
     as _i612;
+import 'package:dineflow/features/orders/domain/usecase/request_waiter_usecase.dart'
+    as _i930;
 import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart'
     as _i279;
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart'
@@ -340,6 +342,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i612.GetOrdersUseCase>(
       () => _i612.GetOrdersUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i930.RequestWaiterUseCase>(
+      () => _i930.RequestWaiterUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
     gh.lazySingleton<_i279.StartDiningUseCase>(
       () => _i279.StartDiningUseCase(gh<_i300.OrderRepositoryInterface>()),
