@@ -1,4 +1,5 @@
 import 'package:dineflow/features/orders/data/models/order_model.dart';
+import 'package:dineflow/features/orders/data/models/request_waiter_model.dart';
 
 abstract interface class OrderRemoteDataSource {
   Future<List<OrderModel>> getOrders();
@@ -12,4 +13,9 @@ abstract interface class OrderRemoteDataSource {
   Future<List<RestaurantTableModel>> getTables();
 
   Future<String> startDining(String tableId);
+
+  Future<RequestModel> requestWaiter(
+    RequestModel request, {
+    required String diningSessionId,
+  });
 }

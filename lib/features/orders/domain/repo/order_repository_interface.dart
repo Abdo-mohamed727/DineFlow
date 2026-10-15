@@ -2,6 +2,7 @@ import 'package:dineflow/core/usecases/result.dart';
 import 'package:dineflow/features/orders/data/models/order_request.dart';
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
+import 'package:dineflow/features/orders/domain/entity/request_waiter_entity.dart';
 
 abstract interface class OrderRepositoryInterface {
   Future<Result<List<OrderEntity>>> getOrders();
@@ -13,4 +14,9 @@ abstract interface class OrderRepositoryInterface {
   Future<Result<List<RestaurantTableEntity>>> getAvailableTables();
 
   Future<Result<SessionId>> startDining(String tableId);
+
+  Future<Result<RequestWaiterEntity>> requestWaiter(
+    RequestWaiterEntity request, {
+    required String diningSessionId,
+  });
 }

@@ -3,6 +3,7 @@ import 'package:dineflow/core/networking/api_constants.dart';
 import 'package:dineflow/core/networking/api_error_handler.dart';
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart';
 import 'package:dineflow/features/orders/data/models/order_model.dart';
+import 'package:dineflow/features/orders/data/models/request_waiter_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -135,28 +136,28 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
     throw const ServerException('Unexpected order response.');
   }
 
-String? _sessionIdFrom(dynamic data) {
-  if (data is! Map) return null;
+  String? _sessionIdFrom(dynamic data) {
+    if (data is! Map) return null;
 
-  final map = Map<String, dynamic>.from(data);
-  final dataObject = map['data'];
+    final map = Map<String, dynamic>.from(data);
+    final dataObject = map['data'];
 
-  if (dataObject is! Map) return null;
+    if (dataObject is! Map) return null;
 
-  final dataMap = Map<String, dynamic>.from(dataObject);
-  final session = dataMap['session'];
+    final dataMap = Map<String, dynamic>.from(dataObject);
+    final session = dataMap['session'];
 
-  if (session is! Map) return null;
+    if (session is! Map) return null;
 
-  final sessionMap = Map<String, dynamic>.from(session);
-  final sessionId = sessionMap['id'] ?? sessionMap['_id'];
+    final sessionMap = Map<String, dynamic>.from(session);
+    final sessionId = sessionMap['id'] ?? sessionMap['_id'];
 
-  if (sessionId == null || sessionId.toString().isEmpty) {
-    return null;
+    if (sessionId == null || sessionId.toString().isEmpty) {
+      return null;
+    }
+
+    return sessionId.toString();
   }
-
-  return sessionId.toString();
-}
 
   @override
   Future<OrderModel> createDineInOrder(
@@ -176,6 +177,31 @@ String? _sessionIdFrom(dynamic data) {
       ApiErrorHandler.throwAppException(
         e,
         fallback: 'Could not place your order. Please try again.',
+      );
+    }
+  }
+
+  @override
+  Future<RequestModel> requestWaiter(
+    RequestModel request, {
+    required String diningSessionId,
+  }) async {
+    try {
+      final payload = {...request.toJson(), 'diningSessionId': diningSessionId};
+      final response = await _dio.post(
+        ApiConstants.waiterRequests,
+        data: payload,
+      );
+      if (response.data == null) {
+        throw const ServerException('Request was not created.');
+      }
+      return RequestModel.fromJson(_asMap(response.data));
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      ApiErrorHandler.throwAppException(
+        e,
+        fallback: 'Could not send your request. Please try again.',
       );
     }
   }
