@@ -14,30 +14,62 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OrdersState {
 
-
+ WaiterRequestStatus get waiterRequestStatus; String get waiterRequestMessage;
+/// Create a copy of OrdersState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OrdersStateCopyWith<OrdersState> get copyWith => _$OrdersStateCopyWithImpl<OrdersState>(this as OrdersState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrdersState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrdersState&&(identical(other.waiterRequestStatus, waiterRequestStatus) || other.waiterRequestStatus == waiterRequestStatus)&&(identical(other.waiterRequestMessage, waiterRequestMessage) || other.waiterRequestMessage == waiterRequestMessage));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,waiterRequestStatus,waiterRequestMessage);
 
 @override
 String toString() {
-  return 'OrdersState()';
+  return 'OrdersState(waiterRequestStatus: $waiterRequestStatus, waiterRequestMessage: $waiterRequestMessage)';
 }
 
 
 }
 
 /// @nodoc
-class $OrdersStateCopyWith<$Res>  {
-$OrdersStateCopyWith(OrdersState _, $Res Function(OrdersState) __);
+abstract mixin class $OrdersStateCopyWith<$Res>  {
+  factory $OrdersStateCopyWith(OrdersState value, $Res Function(OrdersState) _then) = _$OrdersStateCopyWithImpl;
+@useResult
+$Res call({
+ WaiterRequestStatus waiterRequestStatus, String waiterRequestMessage
+});
+
+
+
+
+}
+/// @nodoc
+class _$OrdersStateCopyWithImpl<$Res>
+    implements $OrdersStateCopyWith<$Res> {
+  _$OrdersStateCopyWithImpl(this._self, this._then);
+
+  final OrdersState _self;
+  final $Res Function(OrdersState) _then;
+
+/// Create a copy of OrdersState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? waiterRequestStatus = null,Object? waiterRequestMessage = null,}) {
+  return _then(_self.copyWith(
+waiterRequestStatus: null == waiterRequestStatus ? _self.waiterRequestStatus : waiterRequestStatus // ignore: cast_nullable_to_non_nullable
+as WaiterRequestStatus,waiterRequestMessage: null == waiterRequestMessage ? _self.waiterRequestMessage : waiterRequestMessage // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
 }
 
 
@@ -131,14 +163,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<OrderEntity> allOrders,  List<OrderEntity> filteredOrders,  OrderStatus? selectedStatus)?  loaded,TResult Function( List<OrderEntity> allOrders,  OrderStatus? selectedStatus,  String message)?  empty,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  initial,TResult Function( WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  loading,TResult Function( List<OrderEntity> allOrders,  List<OrderEntity> filteredOrders,  OrderStatus? selectedStatus,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  loaded,TResult Function( List<OrderEntity> allOrders,  OrderStatus? selectedStatus,  String message,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  empty,TResult Function( String message,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.allOrders,_that.filteredOrders,_that.selectedStatus);case _Empty() when empty != null:
-return empty(_that.allOrders,_that.selectedStatus,_that.message);case _Error() when error != null:
-return error(_that.message);case _:
+return initial(_that.waiterRequestStatus,_that.waiterRequestMessage);case _Loading() when loading != null:
+return loading(_that.waiterRequestStatus,_that.waiterRequestMessage);case _Loaded() when loaded != null:
+return loaded(_that.allOrders,_that.filteredOrders,_that.selectedStatus,_that.waiterRequestStatus,_that.waiterRequestMessage);case _Empty() when empty != null:
+return empty(_that.allOrders,_that.selectedStatus,_that.message,_that.waiterRequestStatus,_that.waiterRequestMessage);case _Error() when error != null:
+return error(_that.message,_that.waiterRequestStatus,_that.waiterRequestMessage);case _:
   return orElse();
 
 }
@@ -156,14 +188,14 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<OrderEntity> allOrders,  List<OrderEntity> filteredOrders,  OrderStatus? selectedStatus)  loaded,required TResult Function( List<OrderEntity> allOrders,  OrderStatus? selectedStatus,  String message)  empty,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)  initial,required TResult Function( WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)  loading,required TResult Function( List<OrderEntity> allOrders,  List<OrderEntity> filteredOrders,  OrderStatus? selectedStatus,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)  loaded,required TResult Function( List<OrderEntity> allOrders,  OrderStatus? selectedStatus,  String message,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)  empty,required TResult Function( String message,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial();case _Loading():
-return loading();case _Loaded():
-return loaded(_that.allOrders,_that.filteredOrders,_that.selectedStatus);case _Empty():
-return empty(_that.allOrders,_that.selectedStatus,_that.message);case _Error():
-return error(_that.message);case _:
+return initial(_that.waiterRequestStatus,_that.waiterRequestMessage);case _Loading():
+return loading(_that.waiterRequestStatus,_that.waiterRequestMessage);case _Loaded():
+return loaded(_that.allOrders,_that.filteredOrders,_that.selectedStatus,_that.waiterRequestStatus,_that.waiterRequestMessage);case _Empty():
+return empty(_that.allOrders,_that.selectedStatus,_that.message,_that.waiterRequestStatus,_that.waiterRequestMessage);case _Error():
+return error(_that.message,_that.waiterRequestStatus,_that.waiterRequestMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +212,14 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<OrderEntity> allOrders,  List<OrderEntity> filteredOrders,  OrderStatus? selectedStatus)?  loaded,TResult? Function( List<OrderEntity> allOrders,  OrderStatus? selectedStatus,  String message)?  empty,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  initial,TResult? Function( WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  loading,TResult? Function( List<OrderEntity> allOrders,  List<OrderEntity> filteredOrders,  OrderStatus? selectedStatus,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  loaded,TResult? Function( List<OrderEntity> allOrders,  OrderStatus? selectedStatus,  String message,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  empty,TResult? Function( String message,  WaiterRequestStatus waiterRequestStatus,  String waiterRequestMessage)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.allOrders,_that.filteredOrders,_that.selectedStatus);case _Empty() when empty != null:
-return empty(_that.allOrders,_that.selectedStatus,_that.message);case _Error() when error != null:
-return error(_that.message);case _:
+return initial(_that.waiterRequestStatus,_that.waiterRequestMessage);case _Loading() when loading != null:
+return loading(_that.waiterRequestStatus,_that.waiterRequestMessage);case _Loaded() when loaded != null:
+return loaded(_that.allOrders,_that.filteredOrders,_that.selectedStatus,_that.waiterRequestStatus,_that.waiterRequestMessage);case _Empty() when empty != null:
+return empty(_that.allOrders,_that.selectedStatus,_that.message,_that.waiterRequestStatus,_that.waiterRequestMessage);case _Error() when error != null:
+return error(_that.message,_that.waiterRequestStatus,_that.waiterRequestMessage);case _:
   return null;
 
 }
@@ -199,71 +231,143 @@ return error(_that.message);case _:
 
 
 class _Initial implements OrdersState {
-  const _Initial();
+  const _Initial({this.waiterRequestStatus = WaiterRequestStatus.idle, this.waiterRequestMessage = ''});
   
 
+@override@JsonKey() final  WaiterRequestStatus waiterRequestStatus;
+@override@JsonKey() final  String waiterRequestMessage;
 
-
+/// Create a copy of OrdersState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.waiterRequestStatus, waiterRequestStatus) || other.waiterRequestStatus == waiterRequestStatus)&&(identical(other.waiterRequestMessage, waiterRequestMessage) || other.waiterRequestMessage == waiterRequestMessage));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,waiterRequestStatus,waiterRequestMessage);
 
 @override
 String toString() {
-  return 'OrdersState.initial()';
+  return 'OrdersState.initial(waiterRequestStatus: $waiterRequestStatus, waiterRequestMessage: $waiterRequestMessage)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$InitialCopyWith<$Res> implements $OrdersStateCopyWith<$Res> {
+  factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
+@override @useResult
+$Res call({
+ WaiterRequestStatus waiterRequestStatus, String waiterRequestMessage
+});
 
 
+
+
+}
+/// @nodoc
+class __$InitialCopyWithImpl<$Res>
+    implements _$InitialCopyWith<$Res> {
+  __$InitialCopyWithImpl(this._self, this._then);
+
+  final _Initial _self;
+  final $Res Function(_Initial) _then;
+
+/// Create a copy of OrdersState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? waiterRequestStatus = null,Object? waiterRequestMessage = null,}) {
+  return _then(_Initial(
+waiterRequestStatus: null == waiterRequestStatus ? _self.waiterRequestStatus : waiterRequestStatus // ignore: cast_nullable_to_non_nullable
+as WaiterRequestStatus,waiterRequestMessage: null == waiterRequestMessage ? _self.waiterRequestMessage : waiterRequestMessage // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class _Loading implements OrdersState {
-  const _Loading();
+  const _Loading({this.waiterRequestStatus = WaiterRequestStatus.idle, this.waiterRequestMessage = ''});
   
 
+@override@JsonKey() final  WaiterRequestStatus waiterRequestStatus;
+@override@JsonKey() final  String waiterRequestMessage;
 
-
+/// Create a copy of OrdersState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.waiterRequestStatus, waiterRequestStatus) || other.waiterRequestStatus == waiterRequestStatus)&&(identical(other.waiterRequestMessage, waiterRequestMessage) || other.waiterRequestMessage == waiterRequestMessage));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,waiterRequestStatus,waiterRequestMessage);
 
 @override
 String toString() {
-  return 'OrdersState.loading()';
+  return 'OrdersState.loading(waiterRequestStatus: $waiterRequestStatus, waiterRequestMessage: $waiterRequestMessage)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$LoadingCopyWith<$Res> implements $OrdersStateCopyWith<$Res> {
+  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
+@override @useResult
+$Res call({
+ WaiterRequestStatus waiterRequestStatus, String waiterRequestMessage
+});
 
 
+
+
+}
+/// @nodoc
+class __$LoadingCopyWithImpl<$Res>
+    implements _$LoadingCopyWith<$Res> {
+  __$LoadingCopyWithImpl(this._self, this._then);
+
+  final _Loading _self;
+  final $Res Function(_Loading) _then;
+
+/// Create a copy of OrdersState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? waiterRequestStatus = null,Object? waiterRequestMessage = null,}) {
+  return _then(_Loading(
+waiterRequestStatus: null == waiterRequestStatus ? _self.waiterRequestStatus : waiterRequestStatus // ignore: cast_nullable_to_non_nullable
+as WaiterRequestStatus,waiterRequestMessage: null == waiterRequestMessage ? _self.waiterRequestMessage : waiterRequestMessage // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class _Loaded implements OrdersState {
-  const _Loaded({required final  List<OrderEntity> allOrders, required final  List<OrderEntity> filteredOrders, this.selectedStatus}): _allOrders = allOrders,_filteredOrders = filteredOrders;
+  const _Loaded({required final  List<OrderEntity> allOrders, required final  List<OrderEntity> filteredOrders, this.selectedStatus, this.waiterRequestStatus = WaiterRequestStatus.idle, this.waiterRequestMessage = ''}): _allOrders = allOrders,_filteredOrders = filteredOrders;
   
 
  final  List<OrderEntity> _allOrders;
@@ -281,10 +385,12 @@ class _Loaded implements OrdersState {
 }
 
  final  OrderStatus? selectedStatus;
+@override@JsonKey() final  WaiterRequestStatus waiterRequestStatus;
+@override@JsonKey() final  String waiterRequestMessage;
 
 /// Create a copy of OrdersState
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
+@override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
 
@@ -292,16 +398,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._allOrders, _allOrders)&&const DeepCollectionEquality().equals(other._filteredOrders, _filteredOrders)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._allOrders, _allOrders)&&const DeepCollectionEquality().equals(other._filteredOrders, _filteredOrders)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.waiterRequestStatus, waiterRequestStatus) || other.waiterRequestStatus == waiterRequestStatus)&&(identical(other.waiterRequestMessage, waiterRequestMessage) || other.waiterRequestMessage == waiterRequestMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_allOrders),const DeepCollectionEquality().hash(_filteredOrders),selectedStatus);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_allOrders),const DeepCollectionEquality().hash(_filteredOrders),selectedStatus,waiterRequestStatus,waiterRequestMessage);
 
 @override
 String toString() {
-  return 'OrdersState.loaded(allOrders: $allOrders, filteredOrders: $filteredOrders, selectedStatus: $selectedStatus)';
+  return 'OrdersState.loaded(allOrders: $allOrders, filteredOrders: $filteredOrders, selectedStatus: $selectedStatus, waiterRequestStatus: $waiterRequestStatus, waiterRequestMessage: $waiterRequestMessage)';
 }
 
 
@@ -310,9 +416,9 @@ String toString() {
 /// @nodoc
 abstract mixin class _$LoadedCopyWith<$Res> implements $OrdersStateCopyWith<$Res> {
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
-@useResult
+@override @useResult
 $Res call({
- List<OrderEntity> allOrders, List<OrderEntity> filteredOrders, OrderStatus? selectedStatus
+ List<OrderEntity> allOrders, List<OrderEntity> filteredOrders, OrderStatus? selectedStatus, WaiterRequestStatus waiterRequestStatus, String waiterRequestMessage
 });
 
 
@@ -329,12 +435,14 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of OrdersState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? allOrders = null,Object? filteredOrders = null,Object? selectedStatus = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? allOrders = null,Object? filteredOrders = null,Object? selectedStatus = freezed,Object? waiterRequestStatus = null,Object? waiterRequestMessage = null,}) {
   return _then(_Loaded(
 allOrders: null == allOrders ? _self._allOrders : allOrders // ignore: cast_nullable_to_non_nullable
 as List<OrderEntity>,filteredOrders: null == filteredOrders ? _self._filteredOrders : filteredOrders // ignore: cast_nullable_to_non_nullable
 as List<OrderEntity>,selectedStatus: freezed == selectedStatus ? _self.selectedStatus : selectedStatus // ignore: cast_nullable_to_non_nullable
-as OrderStatus?,
+as OrderStatus?,waiterRequestStatus: null == waiterRequestStatus ? _self.waiterRequestStatus : waiterRequestStatus // ignore: cast_nullable_to_non_nullable
+as WaiterRequestStatus,waiterRequestMessage: null == waiterRequestMessage ? _self.waiterRequestMessage : waiterRequestMessage // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -345,7 +453,7 @@ as OrderStatus?,
 
 
 class _Empty implements OrdersState {
-  const _Empty({final  List<OrderEntity> allOrders = const [], this.selectedStatus, this.message = 'No orders found'}): _allOrders = allOrders;
+  const _Empty({final  List<OrderEntity> allOrders = const [], this.selectedStatus, this.message = 'No orders found', this.waiterRequestStatus = WaiterRequestStatus.idle, this.waiterRequestMessage = ''}): _allOrders = allOrders;
   
 
  final  List<OrderEntity> _allOrders;
@@ -357,10 +465,12 @@ class _Empty implements OrdersState {
 
  final  OrderStatus? selectedStatus;
 @JsonKey() final  String message;
+@override@JsonKey() final  WaiterRequestStatus waiterRequestStatus;
+@override@JsonKey() final  String waiterRequestMessage;
 
 /// Create a copy of OrdersState
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
+@override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$EmptyCopyWith<_Empty> get copyWith => __$EmptyCopyWithImpl<_Empty>(this, _$identity);
 
@@ -368,16 +478,16 @@ _$EmptyCopyWith<_Empty> get copyWith => __$EmptyCopyWithImpl<_Empty>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Empty&&const DeepCollectionEquality().equals(other._allOrders, _allOrders)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Empty&&const DeepCollectionEquality().equals(other._allOrders, _allOrders)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.message, message) || other.message == message)&&(identical(other.waiterRequestStatus, waiterRequestStatus) || other.waiterRequestStatus == waiterRequestStatus)&&(identical(other.waiterRequestMessage, waiterRequestMessage) || other.waiterRequestMessage == waiterRequestMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_allOrders),selectedStatus,message);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_allOrders),selectedStatus,message,waiterRequestStatus,waiterRequestMessage);
 
 @override
 String toString() {
-  return 'OrdersState.empty(allOrders: $allOrders, selectedStatus: $selectedStatus, message: $message)';
+  return 'OrdersState.empty(allOrders: $allOrders, selectedStatus: $selectedStatus, message: $message, waiterRequestStatus: $waiterRequestStatus, waiterRequestMessage: $waiterRequestMessage)';
 }
 
 
@@ -386,9 +496,9 @@ String toString() {
 /// @nodoc
 abstract mixin class _$EmptyCopyWith<$Res> implements $OrdersStateCopyWith<$Res> {
   factory _$EmptyCopyWith(_Empty value, $Res Function(_Empty) _then) = __$EmptyCopyWithImpl;
-@useResult
+@override @useResult
 $Res call({
- List<OrderEntity> allOrders, OrderStatus? selectedStatus, String message
+ List<OrderEntity> allOrders, OrderStatus? selectedStatus, String message, WaiterRequestStatus waiterRequestStatus, String waiterRequestMessage
 });
 
 
@@ -405,11 +515,13 @@ class __$EmptyCopyWithImpl<$Res>
 
 /// Create a copy of OrdersState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? allOrders = null,Object? selectedStatus = freezed,Object? message = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? allOrders = null,Object? selectedStatus = freezed,Object? message = null,Object? waiterRequestStatus = null,Object? waiterRequestMessage = null,}) {
   return _then(_Empty(
 allOrders: null == allOrders ? _self._allOrders : allOrders // ignore: cast_nullable_to_non_nullable
 as List<OrderEntity>,selectedStatus: freezed == selectedStatus ? _self.selectedStatus : selectedStatus // ignore: cast_nullable_to_non_nullable
 as OrderStatus?,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,waiterRequestStatus: null == waiterRequestStatus ? _self.waiterRequestStatus : waiterRequestStatus // ignore: cast_nullable_to_non_nullable
+as WaiterRequestStatus,waiterRequestMessage: null == waiterRequestMessage ? _self.waiterRequestMessage : waiterRequestMessage // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -421,14 +533,16 @@ as String,
 
 
 class _Error implements OrdersState {
-  const _Error(this.message);
+  const _Error(this.message, {this.waiterRequestStatus = WaiterRequestStatus.idle, this.waiterRequestMessage = ''});
   
 
  final  String message;
+@override@JsonKey() final  WaiterRequestStatus waiterRequestStatus;
+@override@JsonKey() final  String waiterRequestMessage;
 
 /// Create a copy of OrdersState
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
+@override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$identity);
 
@@ -436,16 +550,16 @@ _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message)&&(identical(other.waiterRequestStatus, waiterRequestStatus) || other.waiterRequestStatus == waiterRequestStatus)&&(identical(other.waiterRequestMessage, waiterRequestMessage) || other.waiterRequestMessage == waiterRequestMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,message,waiterRequestStatus,waiterRequestMessage);
 
 @override
 String toString() {
-  return 'OrdersState.error(message: $message)';
+  return 'OrdersState.error(message: $message, waiterRequestStatus: $waiterRequestStatus, waiterRequestMessage: $waiterRequestMessage)';
 }
 
 
@@ -454,9 +568,9 @@ String toString() {
 /// @nodoc
 abstract mixin class _$ErrorCopyWith<$Res> implements $OrdersStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
-@useResult
+@override @useResult
 $Res call({
- String message
+ String message, WaiterRequestStatus waiterRequestStatus, String waiterRequestMessage
 });
 
 
@@ -473,9 +587,11 @@ class __$ErrorCopyWithImpl<$Res>
 
 /// Create a copy of OrdersState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? waiterRequestStatus = null,Object? waiterRequestMessage = null,}) {
   return _then(_Error(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,waiterRequestStatus: null == waiterRequestStatus ? _self.waiterRequestStatus : waiterRequestStatus // ignore: cast_nullable_to_non_nullable
+as WaiterRequestStatus,waiterRequestMessage: null == waiterRequestMessage ? _self.waiterRequestMessage : waiterRequestMessage // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

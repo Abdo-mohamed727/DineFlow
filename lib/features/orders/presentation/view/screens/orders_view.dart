@@ -1,5 +1,6 @@
 import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:dineflow/core/enums/order_status.dart';
+import 'package:dineflow/core/enums/order_type.dart';
 import 'package:dineflow/core/router/app_routes.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_error_state.dart';
@@ -10,6 +11,7 @@ import 'package:dineflow/features/orders/presentation/view/widgets/orders_shimme
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/active_order_card.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/order_history_section.dart';
+import 'package:dineflow/features/orders/presentation/view/widgets/waiter_assistance_section.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/orders_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,23 +39,41 @@ class _OrdersViewBody extends StatefulWidget {
 class _OrdersViewBodyState extends State<_OrdersViewBody> {
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      showAppBar: false,
-      body: SafeArea(
-        child: BlocBuilder<OrdersCubit, OrdersState>(
-          builder: (context, state) {
-            return state.when(
-              initial: () => const OrdersShimmerLoading(),
-              loading: () => const OrdersShimmerLoading(),
-              loaded: (allOrders, filteredOrders, selectedStatus) {
-                return _OrdersContent(allOrders: allOrders);
-              },
-              empty: (allOrders, selectedStatus, message) {
-                return _OrdersContent(allOrders: const []);
-              },
-              error: (message) => _ErrorBody(message: message),
-            );
-          },
+    return BlocListener<OrdersCubit, OrdersState>(
+      listenWhen: (previous, current) =>
+          previous.waiterRequestStatus != current.waiterRequestStatus ||
+          previous.waiterRequestMessage != current.waiterRequestMessage,
+      listener: (context, state) {
+        final message = switch (state.waiterRequestStatus) {
+          WaiterRequestStatus.success =>
+            'Your request has been sent to the team.',
+          WaiterRequestStatus.failure => state.waiterRequestMessage,
+          _ => null,
+        };
+        if (message == null) return;
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      },
+      child: AppScaffold(
+        showAppBar: false,
+        body: SafeArea(
+          child: BlocBuilder<OrdersCubit, OrdersState>(
+            builder: (context, state) {
+              return state.map(
+                initial: (_) => const OrdersShimmerLoading(),
+                loading: (_) => const OrdersShimmerLoading(),
+                loaded: (state) {
+                  return _OrdersContent(allOrders: state.allOrders);
+                },
+                empty: (_) {
+                  return _OrdersContent(allOrders: const []);
+                },
+                error: (state) => _ErrorBody(message: state.message),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -109,6 +129,15 @@ class _OrdersContent extends StatelessWidget {
     final historyOrders = allOrders
         .where((o) => _historyStatuses.contains(o.status))
         .toList();
+    OrderEntity? assistanceOrder;
+    for (final order in activeOrders) {
+      if (order.orderType == OrderType.dineIn &&
+          (order.diningSessionId?.isNotEmpty ?? false) &&
+          (order.tableId?.isNotEmpty ?? false)) {
+        assistanceOrder = order;
+        break;
+      }
+    }
 
     return RefreshIndicator(
       onRefresh: () => context.read<OrdersCubit>().refreshOrders(),
@@ -146,6 +175,11 @@ class _OrdersContent extends StatelessWidget {
                 ),
                 childCount: activeOrders.length,
               ),
+            ),
+
+          if (assistanceOrder != null)
+            SliverToBoxAdapter(
+              child: WaiterAssistanceSection(order: assistanceOrder),
             ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 8)),

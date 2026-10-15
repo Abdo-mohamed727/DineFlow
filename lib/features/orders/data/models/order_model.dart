@@ -46,6 +46,7 @@ class OrderModel {
   String? orderType;
   String? tableId;
   String? tableNumber;
+  String? diningSessionId;
   String? status;
   int? subtotal;
   int? tax;
@@ -60,6 +61,7 @@ class OrderModel {
     this.orderType,
     this.tableId,
     this.tableNumber,
+    this.diningSessionId,
     this.status,
     this.subtotal,
     this.tax,
@@ -81,7 +83,11 @@ class OrderModel {
         : <OrderItemModel>[];
 
     // Extract table number from nested table object if present
-    final tableObj = payload['table'];
+    final tableObj = payload['table'] ?? payload['tableId'];
+    final diningSession =
+        payload['diningSessionId'] ??
+        payload['diningSession'] ??
+        payload['session'];
     final tableNumber = (tableObj is Map)
         ? (tableObj['tableNumber'] ?? tableObj['number'] ?? tableObj['name'])?.toString()
         : null;
@@ -93,9 +99,11 @@ class OrderModel {
           payload['number']?.toString(),
       orderType:
           payload['orderType']?.toString() ?? payload['type']?.toString(),
-      tableId:
-          payload['tableId']?.toString() ?? (tableObj is Map ? tableObj['id']?.toString() : null),
+      tableId: _objectIdFrom(payload['tableId']) ?? _objectIdFrom(tableObj),
       tableNumber: tableNumber ?? payload['tableNumber']?.toString(),
+      diningSessionId: diningSession is Map
+          ? (diningSession['id'] ?? diningSession['_id'])?.toString()
+          : diningSession?.toString(),
       status: payload['status']?.toString(),
       subtotal: _asInt(payload['subtotal']),
       tax: _asInt(payload['tax']),
@@ -115,6 +123,7 @@ class OrderModel {
       orderType: OrderTypeX.fromApi(orderType),
       tableId: tableId,
       tableNumber: tableNumber,
+      diningSessionId: diningSessionId,
       status: _parseStatus(status),
       subtotal: subtotal ?? 0,
       tax: tax ?? 0,
@@ -197,6 +206,16 @@ int? _asInt(dynamic value) {
   if (value is double) return value.round();
   return int.tryParse(value.toString()) ??
       double.tryParse(value.toString())?.round();
+}
+
+String? _objectIdFrom(dynamic value) {
+  if (value == null) return null;
+  if (value is Map) {
+    return _objectIdFrom(value['id'] ?? value['_id']);
+  }
+
+  final id = value.toString().trim();
+  return id.isEmpty ? null : id;
 }
 
 DateTime? _parseDateTime(dynamic value) {
