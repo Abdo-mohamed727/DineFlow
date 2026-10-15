@@ -309,8 +309,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i44.GetOrdersByStatusUseCase>(
       () => _i44.GetOrdersByStatusUseCase(gh<_i738.WaiterRepository>()),
     );
-    gh.lazySingleton<_i443.GetOrdersUseCase>(
-      () => _i443.GetOrdersUseCase(gh<_i738.WaiterRepository>()),
+    gh.lazySingleton<_i443.GetOrdersUseCaseWaiter>(
+      () => _i443.GetOrdersUseCaseWaiter(gh<_i738.WaiterRepository>()),
     );
     gh.lazySingleton<_i520.GetPendingRequestsUseCase>(
       () => _i520.GetPendingRequestsUseCase(gh<_i738.WaiterRepository>()),
@@ -414,18 +414,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i995.ProfileRepositoryInterface>(),
       ),
     );
-    gh.factory<_i1064.MenuCubit>(
-      () => _i1064.MenuCubit(
-        gh<_i492.GetCategoriesUseCase>(),
-        gh<_i1.GetProductsUseCase>(),
-        gh<_i1028.SearchProductsUseCase>(),
-      ),
-    );
     gh.factory<_i547.OrderCubit>(
       () => _i547.OrderCubit(
         gh<_i226.CreateDineOrderUseCase>(),
         gh<_i118.CreateTakeAwayOrderUseCase>(),
-        gh<_i612.GetOrdersUseCase>(),
+        gh<_i443.GetOrdersUseCaseWaiter>(),
         gh<_i44.GetOrdersByStatusUseCase>(),
         gh<_i300.GetOrderByIdUseCase>(),
         gh<_i817.UpdateOrderStatusUseCase>(),
@@ -435,7 +428,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i427.OrdersCubit(
         gh<_i612.GetOrdersUseCase>(),
         gh<_i1052.RealTimeService>(),
-        gh<_i930.RequestWaiterUseCase>(),
+      ),
+    );
+    gh.factory<_i1064.MenuCubit>(
+      () => _i1064.MenuCubit(
+        gh<_i492.GetCategoriesUseCase>(),
+        gh<_i1.GetProductsUseCase>(),
+        gh<_i1028.SearchProductsUseCase>(),
       ),
     );
     gh.lazySingleton<_i968.GetNotificationsUseCase>(
