@@ -19,4 +19,20 @@ void main() {
       });
     });
   });
+
+  group('OrderModel', () {
+    test('extracts the ID from a populated tableId object', () {
+      const tableId = '6aabb9dd0bc9e678caf651b8';
+      final order = OrderModel.fromJson({
+        'id': 'order_123',
+        'orderType': 'DINE_IN',
+        'status': 'PENDING',
+        'tableId': {'id': tableId, 'tableNumber': 5},
+      });
+
+      expect(order.tableId, tableId);
+      expect(order.tableNumber, '5');
+      expect(order.toEntity().tableId, tableId);
+    });
+  });
 }

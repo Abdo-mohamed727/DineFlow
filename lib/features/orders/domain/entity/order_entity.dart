@@ -21,6 +21,7 @@ class OrderEntity {
   final OrderType orderType;
   final String? tableId;
   final String? tableNumber;
+  final String? diningSessionId;
   final OrderStatus status;
   final int subtotal;
   final int tax;
@@ -35,6 +36,7 @@ class OrderEntity {
     required this.orderType,
     this.tableId,
     this.tableNumber,
+    this.diningSessionId,
     required this.status,
     this.subtotal = 0,
     this.tax = 0,
@@ -50,6 +52,7 @@ class OrderEntity {
     OrderType? orderType,
     String? tableId,
     String? tableNumber,
+    String? diningSessionId,
     OrderStatus? status,
     int? subtotal,
     int? tax,
@@ -64,6 +67,7 @@ class OrderEntity {
       orderType: orderType ?? this.orderType,
       tableId: tableId ?? this.tableId,
       tableNumber: tableNumber ?? this.tableNumber,
+      diningSessionId: diningSessionId ?? this.diningSessionId,
       status: status ?? this.status,
       subtotal: subtotal ?? this.subtotal,
       tax: tax ?? this.tax,

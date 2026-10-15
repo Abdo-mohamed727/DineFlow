@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'package:dineflow/core/di/router_module.dart' as _i1038;
 import 'package:dineflow/core/di/third_party_module.dart' as _i425;
 import 'package:dineflow/core/router/route_guard.dart' as _i696;
@@ -122,6 +123,8 @@ import 'package:dineflow/features/orders/domain/usecase/get_available_tables_use
     as _i181;
 import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart'
     as _i612;
+import 'package:dineflow/features/orders/domain/usecase/request_waiter_usecase.dart'
+    as _i930;
 import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart'
     as _i279;
 import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart'
@@ -340,6 +343,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i612.GetOrdersUseCase>(
       () => _i612.GetOrdersUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
+    gh.lazySingleton<_i930.RequestWaiterUseCase>(
+      () => _i930.RequestWaiterUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
     gh.lazySingleton<_i279.StartDiningUseCase>(
       () => _i279.StartDiningUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
@@ -408,12 +414,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i995.ProfileRepositoryInterface>(),
       ),
     );
-    gh.factory<_i427.OrdersCubit>(
-      () => _i427.OrdersCubit(
-        gh<_i612.GetOrdersUseCase>(),
-        gh<_i1052.RealTimeService>(),
-      ),
-    );
     gh.factory<_i1064.MenuCubit>(
       () => _i1064.MenuCubit(
         gh<_i492.GetCategoriesUseCase>(),
@@ -429,6 +429,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i44.GetOrdersByStatusUseCase>(),
         gh<_i300.GetOrderByIdUseCase>(),
         gh<_i817.UpdateOrderStatusUseCase>(),
+      ),
+    );
+    gh.factory<_i427.OrdersCubit>(
+      () => _i427.OrdersCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i1052.RealTimeService>(),
+        gh<_i930.RequestWaiterUseCase>(),
       ),
     );
     gh.lazySingleton<_i968.GetNotificationsUseCase>(
