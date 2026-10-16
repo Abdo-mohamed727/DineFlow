@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
 import 'package:dineflow/core/usecases/result.dart';
 import 'package:dineflow/features/waiter/domain/entity/create_dine_order_params.dart';
@@ -17,6 +16,8 @@ import 'package:dineflow/features/waiter/domain/use_case/update_order_status_par
 import 'package:dineflow/features/waiter/domain/use_case/update_order_status_use_case.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 part 'order_state.dart';
 part 'order_cubit.freezed.dart';
 
@@ -36,12 +37,16 @@ class OrderCubit extends Cubit<OrderState> {
     this._getOrderByIdUseCase,
     this._updateOrderStatusUseCase,
   ) : super(OrderState.initial());
+
   Future<void> createDineOrder(CreateDineOrderParams params) async {
     emit(const OrderState.loading());
+
     final result = await _createDineOrderUseCase(params);
+
     switch (result) {
       case Success(data: final data):
         emit(OrderState.orderCreated(data));
+        await getOrders();
       case FailureResult(failure: final failure):
         emit(OrderState.error(failure.message));
     }
@@ -49,10 +54,13 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> createTakeawayOrder(CreateTakeAwayOrderParams params) async {
     emit(const OrderState.loading());
+
     final result = await _createTakeawayOrderUseCase(params);
+
     switch (result) {
       case Success(data: final data):
         emit(OrderState.orderCreated(data));
+        await getOrders();
       case FailureResult(failure: final failure):
         emit(OrderState.error(failure.message));
     }
@@ -60,7 +68,9 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> getOrders() async {
     emit(const OrderState.loading());
+
     final result = await _getOrdersUseCase(const NoParams());
+
     switch (result) {
       case Success(data: final data):
         emit(OrderState.ordersLoaded(data));
@@ -71,9 +81,11 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> getOrdersByStatus(String status) async {
     emit(const OrderState.loading());
+
     final result = await _getOrdersByStatusUseCase(
       GetOrdersByStatusParams(status: status),
     );
+
     switch (result) {
       case Success(data: final data):
         emit(OrderState.ordersLoaded(data));
@@ -84,7 +96,9 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> getOrderById(String orderId) async {
     emit(const OrderState.loading());
+
     final result = await _getOrderByIdUseCase(OrderIdParams(orderId: orderId));
+
     switch (result) {
       case Success(data: final data):
         emit(OrderState.orderLoaded(data));
@@ -95,9 +109,11 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> updateOrderStatus(String orderId, String status) async {
     emit(const OrderState.loading());
+
     final result = await _updateOrderStatusUseCase(
       UpdateOrderStatusParams(orderId: orderId, status: status),
     );
+
     switch (result) {
       case Success(data: final data):
         emit(OrderState.orderStatusUpdated(data));

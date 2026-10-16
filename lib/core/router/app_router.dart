@@ -458,7 +458,10 @@ GoRouter createRouter({required RouterNotifier notifier}) {
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return _WaiterShell(navigationShell: navigationShell);
+          return BlocProvider(
+            create: (_) => sl<OrderCubit>(),
+            child: _WaiterShell(navigationShell: navigationShell),
+          );
         },
 
         branches: [
@@ -469,9 +472,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
 
                 name: AppRoutes.waiterDashboard,
 
-                builder: (context, state) => BlocProvider(create: (context) => sl<OrderCubit>(),
-                  child: const OrdersScreen(),
-                ),
+                builder: (context, state) => const OrdersScreen(),
               ),
             ],
           ),
@@ -517,10 +518,7 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 path: '${AppPaths.waiterShell}/${AppPaths.waiterCreateOrder}',
                 name: AppRoutes.waiterCreateOrder,
                 builder: (context, state) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider(create: (_) => sl<OrderCubit>()),
-                    BlocProvider(create: (_) => sl<TableCubit>()),
-                  ],
+                  providers: [BlocProvider(create: (_) => sl<TableCubit>())],
                   child: CreateOrderScreen(
                     getProductsUseCase: sl<GetProductsUseCase>(),
                     getCategoriesUseCase: sl<GetCategoriesUseCase>(),

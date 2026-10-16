@@ -147,12 +147,18 @@ import 'package:dineflow/features/profile/domain/usecase/upload_profile_image_us
     as _i833;
 import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
     as _i87;
+import 'package:dineflow/features/waiter/data/data_source/order_realtime_data_source.dart'
+    as _i89;
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_imp.dart'
     as _i523;
 import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart'
     as _i463;
+import 'package:dineflow/features/waiter/data/repo/order_realtime_repository_impl.dart'
+    as _i759;
 import 'package:dineflow/features/waiter/data/repo/waiter_repo_imp.dart'
     as _i120;
+import 'package:dineflow/features/waiter/domain/repo/order_realtime_repository.dart'
+    as _i929;
 import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart'
     as _i738;
 import 'package:dineflow/features/waiter/domain/use_case/accept_request_use_case.dart'
@@ -181,6 +187,8 @@ import 'package:dineflow/features/waiter/domain/use_case/update_order_status_use
     as _i817;
 import 'package:dineflow/features/waiter/domain/use_case/update_table_use_case.dart'
     as _i850;
+import 'package:dineflow/features/waiter/domain/use_case/watch_order_events_use_case.dart'
+    as _i268;
 import 'package:dineflow/features/waiter/presentation/view_model/cubit/order_cubit.dart'
     as _i547;
 import 'package:dineflow/features/waiter/presentation/view_model/request_cubit/request_cubit.dart'
@@ -208,6 +216,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i944.MenuRemoteDataSource>(
       () => _i853.MenuRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i89.OrderRealtimeDataSource>(
+      () => _i89.OrderRealtimeDataSource(gh<_i1052.RealTimeService>()),
     );
     gh.factory<_i463.WaiterDataSource>(
       () => _i523.WaiterDataSourceImpl(gh<_i361.Dio>()),
@@ -238,6 +249,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i652.CartRepositoryInterface>(
       () => _i729.CartRepositoryImpl(gh<_i692.CartRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i929.OrderRealtimeRepository>(
+      () =>
+          _i759.OrderRealtimeRepositoryImpl(gh<_i89.OrderRealtimeDataSource>()),
+    );
+    gh.factory<_i268.WatchOrderEventsUseCase>(
+      () => _i268.WatchOrderEventsUseCase(gh<_i929.OrderRealtimeRepository>()),
     );
     gh.lazySingleton<_i995.ProfileRepositoryInterface>(
       () => _i491.ProfileRepositoryImpl(
