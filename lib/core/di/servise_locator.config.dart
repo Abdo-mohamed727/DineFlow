@@ -442,17 +442,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i817.UpdateOrderStatusUseCase>(),
       ),
     );
-    gh.factory<_i427.OrdersCubit>(
-      () => _i427.OrdersCubit(
-        gh<_i612.GetOrdersUseCase>(),
-        gh<_i1052.RealTimeService>(),
-      ),
-    );
     gh.factory<_i1064.MenuCubit>(
       () => _i1064.MenuCubit(
         gh<_i492.GetCategoriesUseCase>(),
         gh<_i1.GetProductsUseCase>(),
         gh<_i1028.SearchProductsUseCase>(),
+      ),
+    );
+    gh.factory<_i427.OrdersCubit>(
+      () => _i427.OrdersCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i1052.RealTimeService>(),
+        gh<_i930.RequestWaiterUseCase>(),
       ),
     );
     gh.lazySingleton<_i968.GetNotificationsUseCase>(
