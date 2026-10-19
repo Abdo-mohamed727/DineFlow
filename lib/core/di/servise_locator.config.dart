@@ -115,10 +115,14 @@ import 'package:dineflow/features/orders/data/repo/order_repository_impl.dart'
     as _i971;
 import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart'
     as _i300;
+import 'package:dineflow/features/orders/domain/usecase/close_dining_session_usecase.dart'
+    as _i251;
 import 'package:dineflow/features/orders/domain/usecase/create_dine_in_order_usecase.dart'
     as _i440;
 import 'package:dineflow/features/orders/domain/usecase/create_take_away_order_usecase.dart'
     as _i173;
+import 'package:dineflow/features/orders/domain/usecase/get_active_dining_sessions_usecase.dart'
+    as _i451;
 import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart'
     as _i181;
 import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart'
@@ -345,12 +349,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i850.UpdateTableUseCase>(
       () => _i850.UpdateTableUseCase(gh<_i738.WaiterRepository>()),
     );
+    gh.lazySingleton<_i251.CloseDiningSessionUseCase>(
+      () =>
+          _i251.CloseDiningSessionUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
     gh.lazySingleton<_i440.CreateDineInOrderUsecase>(
       () =>
           _i440.CreateDineInOrderUsecase(gh<_i300.OrderRepositoryInterface>()),
     );
     gh.lazySingleton<_i173.CreateTakeAwayOrderUsecase>(
       () => _i173.CreateTakeAwayOrderUsecase(
+        gh<_i300.OrderRepositoryInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i451.GetActiveDiningSessionsUseCase>(
+      () => _i451.GetActiveDiningSessionsUseCase(
         gh<_i300.OrderRepositoryInterface>(),
       ),
     );
@@ -391,14 +404,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i194.StartPreparingUseCase>(),
         gh<_i918.MarkReadyUseCase>(),
         gh<_i1052.RealTimeService>(),
-      ),
-    );
-    gh.factory<_i886.TableCubit>(
-      () => _i886.TableCubit(
-        gh<_i280.GetTablesUseCase>(),
-        gh<_i181.GetAvailableTablesUseCase>(),
-        gh<_i813.GetTableByIdUseCase>(),
-        gh<_i850.UpdateTableUseCase>(),
       ),
     );
     gh.factory<_i23.RequestCubit>(
@@ -442,17 +447,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i817.UpdateOrderStatusUseCase>(),
       ),
     );
-    gh.factory<_i427.OrdersCubit>(
-      () => _i427.OrdersCubit(
-        gh<_i612.GetOrdersUseCase>(),
-        gh<_i1052.RealTimeService>(),
-      ),
-    );
     gh.factory<_i1064.MenuCubit>(
       () => _i1064.MenuCubit(
         gh<_i492.GetCategoriesUseCase>(),
         gh<_i1.GetProductsUseCase>(),
         gh<_i1028.SearchProductsUseCase>(),
+      ),
+    );
+    gh.factory<_i427.OrdersCubit>(
+      () => _i427.OrdersCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i1052.RealTimeService>(),
+        gh<_i930.RequestWaiterUseCase>(),
       ),
     );
     gh.lazySingleton<_i968.GetNotificationsUseCase>(
@@ -477,6 +483,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1016.UnregisterDeviceTokenUseCase>(
       () => _i1016.UnregisterDeviceTokenUseCase(
         gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.factory<_i886.TableCubit>(
+      () => _i886.TableCubit(
+        gh<_i280.GetTablesUseCase>(),
+        gh<_i181.GetAvailableTablesUseCase>(),
+        gh<_i813.GetTableByIdUseCase>(),
+        gh<_i850.UpdateTableUseCase>(),
+        gh<_i451.GetActiveDiningSessionsUseCase>(),
+        gh<_i251.CloseDiningSessionUseCase>(),
       ),
     );
     gh.factory<_i87.ProfileCubit>(

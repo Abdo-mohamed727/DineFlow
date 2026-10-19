@@ -9,10 +9,14 @@ class TableCard extends StatelessWidget {
     super.key,
     required this.table,
     this.onUpdateStatus,
+    this.onCloseSession,
+    this.isClosingSession = false,
     this.onView,
   });
   final TableEntity table;
   final VoidCallback? onUpdateStatus;
+  final VoidCallback? onCloseSession;
+  final bool isClosingSession;
   final VoidCallback? onView;
   @override
   Widget build(BuildContext context) {
@@ -129,6 +133,18 @@ class TableCard extends StatelessWidget {
                 );
               },
             ),
+          if (onCloseSession != null &&
+              table.status.toLowerCase() == 'occupied') ...[
+            const SizedBox(height: 10),
+            AppSecondaryButton(
+              text: 'Close Dining Session',
+              isLoading: isClosingSession,
+              fullWidth: true,
+              height: 44,
+              icon: const Icon(Icons.logout_rounded, size: 18),
+              onPressed: onCloseSession,
+            ),
+          ],
         ],
       ),
     );

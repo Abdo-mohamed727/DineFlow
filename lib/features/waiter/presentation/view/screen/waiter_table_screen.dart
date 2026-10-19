@@ -81,11 +81,28 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
         children: [
           _buildFilters(),
           Expanded(
-            child: BlocBuilder<TableCubit, TableState>(
+            child: BlocConsumer<TableCubit, TableState>(
+              listenWhen: (previous, current) =>
+                  (current.sessionClosed && !previous.sessionClosed) ||
+                  (current.errorMessage != null &&
+                      previous.errorMessage != current.errorMessage),
+              listener: (context, state) {
+                if (state.sessionClosed) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Dining session closed.')),
+                  );
+                } else if (state.errorMessage != null) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+                }
+              },
               builder: (context, state) {
                 if (state.status == TableStatus.loading ||
                     state.status == TableStatus.initial) {
-                  return const AppLoadingIndicator(message: 'Loading tables...');
+                  return const AppLoadingIndicator(
+                    message: 'Loading tables...',
+                  );
                 }
 
                 if (state.status == TableStatus.failure) {
@@ -98,9 +115,8 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
                 final allTables = state.tables.tables;
                 final tables = _showAvailableOnly
                     ? allTables
-                        .where((t) =>
-                            t.status.toLowerCase() == 'available')
-                        .toList()
+                          .where((t) => t.status.toLowerCase() == 'available')
+                          .toList()
                     : allTables;
 
                 if (tables.isEmpty) {
@@ -117,7 +133,10 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
                   );
                 }
 
-                return _buildTablesList(tables);
+                return _buildTablesList(
+                  tables,
+                  closingTableId: state.closingTableId,
+                );
               },
             ),
           ),
@@ -151,7 +170,10 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
     );
   }
 
-  Widget _buildTablesList(List<TableEntity> tables) {
+  Widget _buildTablesList(
+    List<TableEntity> tables, {
+    required String closingTableId,
+  }) {
     return RefreshIndicator(
       color: AppColors.waiterPrimary,
       backgroundColor: AppColors.surfaceContainer,
@@ -168,6 +190,10 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
             table: table,
             onView: () => _openTableDetails(table),
             onUpdateStatus: () => _showUpdateStatusSheet(table),
+            onCloseSession: table.status.toLowerCase() == 'occupied'
+                ? () => _confirmCloseDiningSession(table)
+                : null,
+            isClosingSession: closingTableId == table.id,
           );
         },
       ),
@@ -241,6 +267,32 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
       status,
       availableOnly: _showAvailableOnly,
     );
+  }
+
+  Future<void> _confirmCloseDiningSession(TableEntity table) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Close Table ${table.tableNumber} session?'),
+        content: const Text(
+          'The session can only close when its orders and bill allow it.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Close session'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await context.read<TableCubit>().closeDiningSession(table.id);
+    }
   }
 }
 

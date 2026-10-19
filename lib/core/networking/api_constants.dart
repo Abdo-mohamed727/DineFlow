@@ -1,7 +1,7 @@
 abstract class ApiConstants {
-  // static const String baseUrl = 'http://192.168.1.9:3000';
+  static const String baseUrl = 'http://192.168.1.9:3000';
   // static const String baseUrl = 'http://10.0.2.2:3000';
-  static const String baseUrl = 'http://192.168.1.12:3000';
+  // static const String baseUrl = 'http://192.168.1.12:3000';
   // static const String socketUrl = 'http://10.0.2.2:3000';
 
   static const String socketUrl = 'http://192.168.1.9:3000';
@@ -29,6 +29,8 @@ abstract class ApiConstants {
   static String updateOrder(String id) => '/api/orders/$id/status';
 
   static const String startDining = '/api/dining-sessions';
+  static String closeDiningSession(String sessionId) =>
+      '$startDining/$sessionId/close';
 
   // Table Endpoints
   static const String tables = '/api/tables';
