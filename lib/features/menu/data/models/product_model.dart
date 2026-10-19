@@ -55,12 +55,12 @@ class Data {
   }
 
   ProductsPageEntity toEntity() => ProductsPageEntity(
-        items: items?.map((e) => e.toEntity()).toList() ?? [],
-        total: total ?? 0,
-        page: page ?? 1,
-        limit: limit ?? 0,
-        totalPages: totalPages ?? 0,
-      );
+    items: items?.map((e) => e.toEntity()).toList() ?? [],
+    total: total ?? 0,
+    page: page ?? 1,
+    limit: limit ?? 0,
+    totalPages: totalPages ?? 0,
+  );
 }
 
 class Items {
@@ -90,16 +90,18 @@ class Items {
 
   Items.fromJson(Map<String, dynamic> json) {
     id = json['id']?.toString() ?? json['_id']?.toString();
-    name = json['name']?.toString() ??
+    name =
+        json['name']?.toString() ??
         json['title']?.toString() ??
         json['productName']?.toString();
     description = json['description']?.toString() ?? json['desc']?.toString();
     price = _asInt(json['price'] ?? json['unitPrice']);
-    image = json['image']?.toString() ??
+    image =
+        json['image']?.toString() ??
         json['imageUrl']?.toString() ??
         json['img']?.toString();
     imagePublicId = json['imagePublicId']?.toString();
-    
+
     final cat = json['category'] ?? json['categoryId'];
     if (cat is Map<String, dynamic>) {
       categoryId = CategoryId.fromJson(cat);
@@ -132,17 +134,17 @@ class Items {
   }
 
   ProductEntity toEntity() => ProductEntity(
-        id: id ?? '',
-        name: name ?? '',
-        description: description ?? '',
-        price: price ?? 0,
-        image: image ?? '',
-        imagePublicId: imagePublicId ?? '',
-        category: (categoryId ?? CategoryId()).toEntity(),
-        isAvailable: isAvailable ?? false,
-        createdAt: DateTime.tryParse(createdAt ?? ''),
-        updatedAt: DateTime.tryParse(updatedAt ?? ''),
-      );
+    id: id ?? '',
+    name: name ?? '',
+    description: description ?? '',
+    price: price ?? 0,
+    image: image ?? '',
+    imagePublicId: imagePublicId ?? '',
+    category: (categoryId ?? CategoryId()).toEntity(),
+    isAvailable: isAvailable ?? false,
+    createdAt: _parseDate(createdAt),
+    updatedAt: _parseDate(updatedAt),
+  );
 }
 
 class CategoryId {
@@ -163,10 +165,8 @@ class CategoryId {
     return map;
   }
 
-  ProductCategoryEntity toEntity() => ProductCategoryEntity(
-        id: id ?? '',
-        name: name ?? '',
-      );
+  ProductCategoryEntity toEntity() =>
+      ProductCategoryEntity(id: id ?? '', name: name ?? '');
 }
 
 int? _asInt(dynamic value) {
@@ -175,4 +175,9 @@ int? _asInt(dynamic value) {
   if (value is double) return value.round();
   return int.tryParse(value.toString()) ??
       double.tryParse(value.toString())?.round();
+}
+
+DateTime? _parseDate(String? s) {
+  if (s == null || s.trim().isEmpty) return null;
+  return DateTime.tryParse(s.trim());
 }

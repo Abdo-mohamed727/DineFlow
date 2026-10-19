@@ -6,12 +6,6 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 @lazySingleton
 class RealTimeService {
   io.Socket? _socket;
-  final Set<void Function(Map<String, dynamic>)> _orderCreatedListeners = {};
-  final Set<void Function(Map<String, dynamic>)> _orderUpdateListeners = {};
-  final Set<void Function(Map<String, dynamic>)>
-  _waiterRequestCreatedListeners = {};
-  final Set<void Function(Map<String, dynamic>)>
-  _waiterRequestUpdatedListeners = {};
 
   bool get isConnected => _socket?.connected ?? false;
 
@@ -40,89 +34,38 @@ class RealTimeService {
       })
       ..onError((error) {
         debugPrint('Socket error: $error');
-      })
-      ..on(RealtimeEvents.orderCreated, (data) {
-        if (data is! Map) return;
-
-        final payload = Map<String, dynamic>.from(data);
-        final order = payload['order'];
-        if (order is! Map) return;
-
-        final orderData = Map<String, dynamic>.from(order);
-        for (final listener in _orderCreatedListeners.toList()) {
-          listener(orderData);
-        }
-      })
-      ..on(RealtimeEvents.orderStatusChanged, (data) {
-        if (data is! Map) return;
-
-        final payload = Map<String, dynamic>.from(data);
-        for (final listener in _orderUpdateListeners.toList()) {
-          listener(payload);
-        }
-      })
-      ..on(RealtimeEvents.waiterRequestCreated, (data) {
-        if (data is! Map) return;
-
-        final payload = Map<String, dynamic>.from(data);
-        final request = payload['request'];
-        if (request is! Map) return;
-
-        final requestData = Map<String, dynamic>.from(request);
-        for (final listener in _waiterRequestCreatedListeners.toList()) {
-          listener(requestData);
-        }
-      })
-      ..on(RealtimeEvents.waiterRequestUpdated, (data) {
-        if (data is! Map) return;
-
-        final payload = Map<String, dynamic>.from(data);
-        for (final listener in _waiterRequestUpdatedListeners.toList()) {
-          listener(payload);
-        }
       });
 
     _socket!.connect();
   }
 
   void onOrderCreated(void Function(Map<String, dynamic> order) callback) {
-    _orderCreatedListeners.add(callback);
-  }
+    _socket?.off(RealtimeEvents.orderCreated);
 
-  void offOrderCreated(void Function(Map<String, dynamic> order) callback) {
-    _orderCreatedListeners.remove(callback);
+    _socket?.on(RealtimeEvents.orderCreated, (data) {
+      if (data is! Map) return;
+
+      final payload = Map<String, dynamic>.from(data);
+      final order = payload['order'];
+
+      if (order is Map) {
+        callback(Map<String, dynamic>.from(order));
+      }
+    });
   }
 
   void onOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
-    _orderUpdateListeners.add(callback);
+    _socket?.off(RealtimeEvents.orderStatusChanged);
+
+    _socket?.on(RealtimeEvents.orderStatusChanged, (data) {
+      if (data is Map) {
+        callback(Map<String, dynamic>.from(data));
+      }
+    });
   }
 
-  void offOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
-    _orderUpdateListeners.remove(callback);
-  }
-
-  void onWaiterRequestCreated(
-    void Function(Map<String, dynamic> request) callback,
-  ) {
-    _waiterRequestCreatedListeners.add(callback);
-  }
-
-  void offWaiterRequestCreated(
-    void Function(Map<String, dynamic> request) callback,
-  ) {
-    _waiterRequestCreatedListeners.remove(callback);
-  }
-
-  void onWaiterRequestUpdated(
-    void Function(Map<String, dynamic> payload) callback,
-  ) {
-    _waiterRequestUpdatedListeners.add(callback);
-  }
-
-  void offWaiterRequestUpdated(
-    void Function(Map<String, dynamic> payload) callback,
-  ) {
-    _waiterRequestUpdatedListeners.remove(callback);
+  void offWaiterRequestUpdated() {
+    _socket?.off(RealtimeEvents.waiterRequestUpdated);
   }
 
   void offOrderEvents() {
