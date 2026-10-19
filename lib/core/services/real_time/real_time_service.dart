@@ -6,6 +6,8 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 @lazySingleton
 class RealTimeService {
   io.Socket? _socket;
+  final Set<void Function(Map<String, dynamic>)> _orderCreatedListeners = {};
+  final Set<void Function(Map<String, dynamic>)> _orderUpdateListeners = {};
 
   bool get isConnected => _socket?.connected ?? false;
 
@@ -34,6 +36,26 @@ class RealTimeService {
       })
       ..onError((error) {
         debugPrint('Socket error: $error');
+      })
+      ..on(RealtimeEvents.orderCreated, (data) {
+        if (data is! Map) return;
+
+        final payload = Map<String, dynamic>.from(data);
+        final order = payload['order'];
+        if (order is! Map) return;
+
+        final orderData = Map<String, dynamic>.from(order);
+        for (final listener in _orderCreatedListeners.toList()) {
+          listener(orderData);
+        }
+      })
+      ..on(RealtimeEvents.orderStatusChanged, (data) {
+        if (data is! Map) return;
+
+        final payload = Map<String, dynamic>.from(data);
+        for (final listener in _orderUpdateListeners.toList()) {
+          listener(payload);
+        }
       });
 
     _socket!.connect();
@@ -48,20 +70,15 @@ class RealTimeService {
       final payload = Map<String, dynamic>.from(data);
       final order = payload['order'];
 
-      if (order is Map) {
-        callback(Map<String, dynamic>.from(order));
-      }
-    });
+  void offOrderCreated(void Function(Map<String, dynamic> order) callback) {
+    _orderCreatedListeners.remove(callback);
   }
 
   void onOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
     _socket?.off(RealtimeEvents.orderStatusChanged);
 
-    _socket?.on(RealtimeEvents.orderStatusChanged, (data) {
-      if (data is Map) {
-        callback(Map<String, dynamic>.from(data));
-      }
-    });
+  void offOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
+    _orderUpdateListeners.remove(callback);
   }
 
   void onWaiterRequestCreated(
@@ -101,8 +118,8 @@ class RealTimeService {
   }
 
   void offOrderEvents() {
-    _socket?.off(RealtimeEvents.orderCreated);
-    _socket?.off(RealtimeEvents.orderStatusChanged);
+    _orderCreatedListeners.clear();
+    _orderUpdateListeners.clear();
   }
 
   void disconnect() {

@@ -36,33 +36,37 @@ class KitchenCubit extends Cubit<KitchenState> {
 
   bool isProcessing(String orderId) => _processingOrders.contains(orderId);
 
-   Future<void> start() async {
-    await fetchOrders();
+  Future<void> start() async {
     _listenToRealTime();
+    await fetchOrders();
   }
 
   void _listenToRealTime() {
-    _realTimeService.onOrderCreated((data) {
-      if (isClosed) return;
-      final newOrder = OrderModel.fromJson(data).toEntity();
-      if (!_orders.any((o) => o.id == newOrder.id)) {
-        _orders = [newOrder, ..._orders];
-        emit(KitchenState.loaded(List.unmodifiable(_orders)));
-      }
-    });
+    _realTimeService.onOrderCreated(_handleOrderCreated);
+    _realTimeService.onOrderUpdate(_handleOrderUpdate);
+  }
 
-    _realTimeService.onOrderUpdate((data) {
-      if (isClosed) return;
-      final orderId = data['orderId'] as String;
-      final newStatusStr = data['newStatus'] as String;
-      
-      final index = _orders.indexWhere((o) => o.id == orderId);
-      if (index != -1) {
-        final parsedStatus = OrderModel(status: newStatusStr).parsedStatus;
-        final existing = _orders[index];
-        _updateOrder(existing.copyWith(status: parsedStatus));
-      }
-    });
+  void _handleOrderCreated(Map<String, dynamic> data) {
+    if (isClosed) return;
+    final newOrder = OrderModel.fromJson(data).toEntity();
+    if (!_orders.any((o) => o.id == newOrder.id)) {
+      _orders = [newOrder, ..._orders];
+      emit(KitchenState.loaded(List.unmodifiable(_orders)));
+    }
+  }
+
+  void _handleOrderUpdate(Map<String, dynamic> data) {
+    if (isClosed) return;
+    final orderId = data['orderId']?.toString();
+    final newStatusStr = data['newStatus']?.toString();
+    if (orderId == null || newStatusStr == null) return;
+
+    final index = _orders.indexWhere((o) => o.id == orderId);
+    if (index != -1) {
+      final parsedStatus = OrderModel(status: newStatusStr).parsedStatus;
+      final existing = _orders[index];
+      _updateOrder(existing.copyWith(status: parsedStatus));
+    }
   }
 
   Future<void> fetchOrders({bool silent = false}) async {
@@ -125,7 +129,8 @@ class KitchenCubit extends Cubit<KitchenState> {
 
   @override
   Future<void> close() {
-    _realTimeService.disconnect();
+    _realTimeService.offOrderCreated(_handleOrderCreated);
+    _realTimeService.offOrderUpdate(_handleOrderUpdate);
     return super.close();
   }
 }

@@ -30,7 +30,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   final List<Map<String, String>> _filters = const [
     {'label': 'All Orders', 'value': 'all'},
     {'label': 'Pending', 'value': 'pending'},
-    
+
     {'label': 'Preparing', 'value': 'preparing'},
     {'label': 'Ready', 'value': 'ready'},
     {'label': 'Completed', 'value': 'completed'},
@@ -58,6 +58,47 @@ class _OrdersScreenState extends State<OrdersScreen> {
       context.read<OrderCubit>().getOrders();
     } else {
       context.read<OrderCubit>().getOrdersByStatus(value);
+    }
+  }
+
+  OrderStatus _parseOrderStatus(String value) {
+    switch (_normalize(value)) {
+      case 'pending':
+        return OrderStatus.pending;
+      case 'accepted':
+        return OrderStatus.accepted;
+      case 'preparing':
+        return OrderStatus.preparing;
+      case 'ready':
+        return OrderStatus.ready;
+      case 'readyforpickup':
+        return OrderStatus.readyForPickup;
+      case 'served':
+        return OrderStatus.served;
+      case 'pickedup':
+        return OrderStatus.pickedUp;
+      case 'paymentpending':
+        return OrderStatus.paymentPending;
+      case 'paid':
+        return OrderStatus.paid;
+      case 'completed':
+        return OrderStatus.completed;
+      case 'cancelled':
+      case 'canceled':
+        return OrderStatus.cancelled;
+      default:
+        return OrderStatus.pending;
+    }
+  }
+
+  OrderType? _parseOrderType(String value) {
+    switch (_normalize(value)) {
+      case 'dinein':
+        return OrderType.dineIn;
+      case 'takeaway':
+        return OrderType.takeaway;
+      default:
+        return null;
     }
   }
 
@@ -421,6 +462,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   void _showOrderDetails(OrderWaiterEntity order) {
+    final orderCubit = context.read<OrderCubit>();
+    final parsedStatus = _parseOrderStatus(order.status);
+    final parsedType = _parseOrderType(order.type);
+
+    // Determine action button configuration based on order type + status
+    String? actionLabel;
+    String? targetStatus;
+    if (parsedType == OrderType.dineIn && parsedStatus == OrderStatus.ready) {
+      actionLabel = 'Mark as Served';
+      targetStatus = 'served';
+    } else if (parsedType == OrderType.takeaway &&
+        (parsedStatus == OrderStatus.ready ||
+            parsedStatus == OrderStatus.readyForPickup)) {
+      actionLabel = 'Mark as Served';
+      targetStatus = 'served';
+    }
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -428,132 +486,233 @@ class _OrdersScreenState extends State<OrdersScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 42,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.outlineVariant,
-                        borderRadius: BorderRadius.circular(8),
+      builder: (_) {
+        return BlocProvider.value(
+          value: orderCubit,
+          child: BlocConsumer<OrderCubit, OrderState>(
+            listener: (sheetCtx, state) {
+              state.maybeWhen(
+                orderStatusUpdated: (_) {
+                  Navigator.pop(sheetCtx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        actionLabel == 'Mark as Served'
+                            ? 'Order marked as served'
+                            : 'Order marked as picked up',
                       ),
+                      backgroundColor: AppColors.surfaceContainerHigh,
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          'Order Details',
-                          style: TextStyle(
-                            color: AppColors.onSurface,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
+                  );
+                  if (_selectedFilter == 'all') {
+                    orderCubit.getOrders();
+                  } else {
+                    orderCubit.getOrdersByStatus(_selectedFilter);
+                  }
+                },
+                error: (message) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(message),
+                      backgroundColor: AppColors.errorContainer,
+                    ),
+                  );
+                },
+                orElse: () {},
+              );
+            },
+            builder: (sheetCtx, state) {
+              final isUpdating = state.maybeWhen(
+                loading: () => true,
+                orElse: () => false,
+              );
+
+              return SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 42,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.outlineVariant,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.close_rounded,
-                          color: AppColors.onSurfaceVariant,
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Order Details',
+                                style: TextStyle(
+                                  color: AppColors.onSurface,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => Navigator.pop(sheetCtx),
+                              icon: const Icon(
+                                Icons.close_rounded,
+                                color: AppColors.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    order.orderNumber,
-                    style: const TextStyle(
-                      color: AppColors.waiterPrimary,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  _detailRow('Customer', order.customer.name),
-                  _detailRow('Order type', _typeLabel(order.type)),
-                  _detailRow(
-                    'Table',
-                    order.table == null
-                        ? 'No table assigned'
-                        : 'Table ${order.table!.tableNumber}',
-                  ),
-                  _detailRow('Created', _formatDate(order.createdAt)),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Items',
-                    style: TextStyle(
-                      color: AppColors.onSurface,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ...order.items.map(
-                    (item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
+                        const SizedBox(height: 8),
+                        Text(
+                          order.orderNumber,
+                          style: const TextStyle(
+                            color: AppColors.waiterPrimary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        _detailRow('Customer', order.customer.name),
+                        _detailRow('Order type', _typeLabel(order.type)),
+                        _detailRow(
+                          'Table',
+                          order.table == null
+                              ? 'No table assigned'
+                              : 'Table ${order.table!.tableNumber}',
+                        ),
+                        _detailRow('Created', _formatDate(order.createdAt)),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Items',
+                          style: TextStyle(
+                            color: AppColors.onSurface,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ...order.items.map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  item.productName,
-                                  style: const TextStyle(
-                                    color: AppColors.onSurface,
-                                    fontWeight: FontWeight.w600,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.productName,
+                                        style: const TextStyle(
+                                          color: AppColors.onSurface,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${item.quantity} × ${item.unitPrice.toStringAsFixed(2)}',
+                                        style: const TextStyle(
+                                          color: AppColors.onSurfaceVariant,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 4),
                                 Text(
-                                  '${item.quantity} × ${item.unitPrice.toStringAsFixed(2)}',
+                                  item.subtotal.toStringAsFixed(2),
                                   style: const TextStyle(
-                                    color: AppColors.onSurfaceVariant,
-                                    fontSize: 12,
+                                    color: AppColors.onSurface,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Text(
-                            item.subtotal.toStringAsFixed(2),
-                            style: const TextStyle(
-                              color: AppColors.onSurface,
-                              fontWeight: FontWeight.w700,
+                        ),
+                        if (order.notes != null &&
+                            order.notes!.trim().isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          _detailRow('Notes', order.notes!),
+                        ],
+                        const Divider(
+                          height: 28,
+                          color: AppColors.outlineVariant,
+                        ),
+                        _detailRow(
+                          'Subtotal',
+                          order.subtotal.toStringAsFixed(2),
+                        ),
+                        _detailRow('Tax', order.tax.toStringAsFixed(2)),
+                        const SizedBox(height: 8),
+                        _detailRow(
+                          'Total',
+                          order.total.toStringAsFixed(2),
+                          isTotal: true,
+                        ),
+                        // Conditional action button
+                        if (actionLabel != null && targetStatus != null) ...[
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton.icon(
+                              onPressed: isUpdating
+                                  ? null
+                                  : () {
+                                      orderCubit.updateOrderStatus(
+                                        order.id,
+                                        targetStatus!,
+                                      );
+                                    },
+                              icon: isUpdating
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Icon(
+                                      actionLabel == 'Mark as Served'
+                                          ? Icons.room_service_outlined
+                                          : Icons.check_circle_outline_rounded,
+                                      size: 20,
+                                    ),
+                              label: Text(
+                                isUpdating ? 'Updating...' : actionLabel,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.waiterPrimary,
+                                foregroundColor: Colors.white,
+                                disabledBackgroundColor: AppColors.waiterPrimary
+                                    .withValues(alpha: 0.5),
+                                disabledForegroundColor: Colors.white70,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
                             ),
                           ),
                         ],
-                      ),
+                      ],
                     ),
                   ),
-                  if (order.notes != null &&
-                      order.notes!.trim().isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    _detailRow('Notes', order.notes!),
-                  ],
-                  const Divider(height: 28, color: AppColors.outlineVariant),
-                  _detailRow('Subtotal', order.subtotal.toStringAsFixed(2)),
-                  _detailRow('Tax', order.tax.toStringAsFixed(2)),
-                  const SizedBox(height: 8),
-                  _detailRow(
-                    'Total',
-                    order.total.toStringAsFixed(2),
-                    isTotal: true,
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       },

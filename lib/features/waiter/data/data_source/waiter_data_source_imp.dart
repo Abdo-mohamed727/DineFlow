@@ -130,12 +130,19 @@ class WaiterDataSourceImpl implements WaiterDataSource {
 
   @override
   Future<OrderModel> updateOrderStatus(String orderId, String status) async {
-    final response = await dio.patch(
-      '${ApiConstants.orders}/$orderId/status',
-      data: {'status': status},
-    );
+    try {
+      final response = await dio.patch(
+        ApiConstants.updateOrder(orderId),
+        data: {'status': status},
+      );
 
-    return OrderModel.fromJson(response.data['data']['order']);
+      return OrderModel.fromJson(response.data['data']['order']);
+    } catch (error) {
+      ApiErrorHandler.throwAppException(
+        error,
+        fallback: 'Could not update the order status.',
+      );
+    }
   }
 
   @override
