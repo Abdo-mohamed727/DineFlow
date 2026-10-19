@@ -53,4 +53,6 @@ abstract class ApiConstants {
 class RealtimeEvents {
   static const orderCreated = 'order_created';
   static const orderStatusChanged = 'order_status_changed';
+  static const waiterRequestCreated = 'waiter_request_created';
+  static const waiterRequestUpdated = 'waiter_request_updated';
 }
