@@ -411,6 +411,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i520.GetPendingRequestsUseCase>(),
         gh<_i676.AcceptRequestUseCase>(),
         gh<_i882.CompleteRequestUseCase>(),
+        gh<_i1052.RealTimeService>(),
       ),
     );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(

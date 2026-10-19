@@ -19,7 +19,7 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
   @override
   void initState() {
     super.initState();
-    _loadRequests();
+    context.read<RequestCubit>().start();
   }
 
   void _loadRequests() {
