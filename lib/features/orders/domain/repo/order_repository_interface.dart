@@ -15,6 +15,10 @@ abstract interface class OrderRepositoryInterface {
 
   Future<Result<SessionId>> startDining(String tableId);
 
+  Future<Result<List<DiningSessionEntity>>> getActiveDiningSessions();
+
+  Future<Result<DiningSessionEntity>> closeDiningSession(String sessionId);
+
   Future<Result<RequestWaiterEntity>> requestWaiter(
     RequestWaiterEntity request, {
     required String diningSessionId,

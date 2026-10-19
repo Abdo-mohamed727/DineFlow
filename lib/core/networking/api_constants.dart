@@ -29,6 +29,8 @@ abstract class ApiConstants {
   static String updateOrder(String id) => '/api/orders/$id/status';
 
   static const String startDining = '/api/dining-sessions';
+  static String closeDiningSession(String sessionId) =>
+      '$startDining/$sessionId/close';
 
   // Table Endpoints
   static const String tables = '/api/tables';

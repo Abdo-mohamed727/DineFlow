@@ -84,8 +84,8 @@ class RequestCubit extends Cubit<RequestState> {
 
   @override
   Future<void> close() {
-    _realTimeService.offWaiterRequestCreated();
-    _realTimeService.offWaiterRequestUpdated();
+    _realTimeService.offWaiterRequestCreated(_onWaiterRequestCreated);
+    _realTimeService.offWaiterRequestUpdated(_onWaiterRequestUpdated);
     return super.close();
   }
 }

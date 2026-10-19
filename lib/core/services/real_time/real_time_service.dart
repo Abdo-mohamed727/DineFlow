@@ -8,6 +8,10 @@ class RealTimeService {
   io.Socket? _socket;
   final Set<void Function(Map<String, dynamic>)> _orderCreatedListeners = {};
   final Set<void Function(Map<String, dynamic>)> _orderUpdateListeners = {};
+  final Set<void Function(Map<String, dynamic>)>
+  _waiterRequestCreatedListeners = {};
+  final Set<void Function(Map<String, dynamic>)>
+  _waiterRequestUpdatedListeners = {};
 
   bool get isConnected => _socket?.connected ?? false;
 
@@ -56,20 +60,70 @@ class RealTimeService {
         for (final listener in _orderUpdateListeners.toList()) {
           listener(payload);
         }
+      })
+      ..on(RealtimeEvents.waiterRequestCreated, (data) {
+        if (data is! Map) return;
+
+        final payload = Map<String, dynamic>.from(data);
+        final request = payload['request'];
+        if (request is! Map) return;
+
+        final requestData = Map<String, dynamic>.from(request);
+        for (final listener in _waiterRequestCreatedListeners.toList()) {
+          listener(requestData);
+        }
+      })
+      ..on(RealtimeEvents.waiterRequestUpdated, (data) {
+        if (data is! Map) return;
+
+        final payload = Map<String, dynamic>.from(data);
+        for (final listener in _waiterRequestUpdatedListeners.toList()) {
+          listener(payload);
+        }
       });
 
     _socket!.connect();
   }
 
   void onOrderCreated(void Function(Map<String, dynamic> order) callback) {
+    _orderCreatedListeners.add(callback);
+  }
+
+  void offOrderCreated(void Function(Map<String, dynamic> order) callback) {
+    _orderCreatedListeners.remove(callback);
+  }
     _socket?.off(RealtimeEvents.orderCreated);
 
-    _socket?.on(RealtimeEvents.orderCreated, (data) {
-      if (data is! Map) return;
+  void onOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
+    _orderUpdateListeners.add(callback);
+  }
 
-      final payload = Map<String, dynamic>.from(data);
-      final order = payload['order'];
+  void offOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
+    _orderUpdateListeners.remove(callback);
+  }
 
+  void onWaiterRequestCreated(
+    void Function(Map<String, dynamic> request) callback,
+  ) {
+    _waiterRequestCreatedListeners.add(callback);
+  }
+
+  void offWaiterRequestCreated(
+    void Function(Map<String, dynamic> request) callback,
+  ) {
+    _waiterRequestCreatedListeners.remove(callback);
+  }
+
+  void onWaiterRequestUpdated(
+    void Function(Map<String, dynamic> payload) callback,
+  ) {
+    _waiterRequestUpdatedListeners.add(callback);
+  }
+
+  void offWaiterRequestUpdated(
+    void Function(Map<String, dynamic> payload) callback,
+  ) {
+    _waiterRequestUpdatedListeners.remove(callback);
   void offOrderCreated(void Function(Map<String, dynamic> order) callback) {
     _orderCreatedListeners.remove(callback);
   }
@@ -124,6 +178,8 @@ class RealTimeService {
 
   void disconnect() {
     offOrderEvents();
+    _waiterRequestCreatedListeners.clear();
+    _waiterRequestUpdatedListeners.clear();
     _socket?.dispose();
     _socket = null;
   }

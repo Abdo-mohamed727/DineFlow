@@ -4,6 +4,7 @@ import 'package:dineflow/core/networking/api_error_handler.dart';
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart';
 import 'package:dineflow/features/orders/data/models/order_model.dart';
 import 'package:dineflow/features/orders/data/models/request_waiter_model.dart';
+import 'package:dineflow/features/orders/data/models/dining_session_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -99,6 +100,38 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
       ApiErrorHandler.throwAppException(
         e,
         fallback: 'Could not start your dining session. Please try again.',
+      );
+    }
+  }
+
+  @override
+  Future<List<DiningSessionModel>> getActiveDiningSessions() async {
+    try {
+      final response = await _dio.get(ApiConstants.startDining);
+      return DiningSessionModel.listFromResponse(response.data);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      ApiErrorHandler.throwAppException(
+        e,
+        fallback: 'Could not load active dining sessions.',
+      );
+    }
+  }
+
+  @override
+  Future<DiningSessionModel> closeDiningSession(String sessionId) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.closeDiningSession(sessionId),
+      );
+      return DiningSessionModel.fromSessionResponse(response.data);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      ApiErrorHandler.throwAppException(
+        e,
+        fallback: 'Could not close the dining session.',
       );
     }
   }

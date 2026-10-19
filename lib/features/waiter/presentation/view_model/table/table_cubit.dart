@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
 import 'package:dineflow/core/usecases/result.dart';
+import 'package:dineflow/features/orders/domain/usecase/close_dining_session_usecase.dart';
+import 'package:dineflow/features/orders/domain/usecase/get_active_dining_sessions_usecase.dart';
 import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart';
 import 'package:dineflow/features/waiter/domain/use_case/get_table_by_id_use_case.dart';
 import 'package:dineflow/features/waiter/domain/use_case/get_tables_use_case.dart';
@@ -16,20 +18,32 @@ class TableCubit extends Cubit<TableState> {
   final GetAvailableTablesUseCase _getAvailableTablesUseCase;
   final GetTableByIdUseCase _getTableByIdUseCase;
   final UpdateTableUseCase _updateTableUseCase;
+  final GetActiveDiningSessionsUseCase _getActiveDiningSessionsUseCase;
+  final CloseDiningSessionUseCase _closeDiningSessionUseCase;
 
   TableCubit(
     this._getTablesUseCase,
     this._getAvailableTablesUseCase,
     this._getTableByIdUseCase,
     this._updateTableUseCase,
+    this._getActiveDiningSessionsUseCase,
+    this._closeDiningSessionUseCase,
   ) : super(const TableState());
 
-  Future<void> getTables() async {
-    emit(state.copyWith(status: TableStatus.loading, errorMessage: null));
+  Future<void> getTables({bool showLoading = true}) async {
+    if (showLoading) {
+      emit(state.copyWith(status: TableStatus.loading, errorMessage: null));
+    }
     final result = await _getTablesUseCase(const NoParams());
     switch (result) {
       case Success(data: final data):
-        emit(state.copyWith(status: TableStatus.success, tables: data));
+        emit(
+          state.copyWith(
+            status: TableStatus.success,
+            tables: data,
+            errorMessage: null,
+          ),
+        );
       case FailureResult(failure: final failure):
         emit(
           state.copyWith(
@@ -111,6 +125,87 @@ class TableCubit extends Cubit<TableState> {
             errorMessage: failure.message,
           ),
         );
+    }
+  }
+
+  Future<void> closeDiningSession(String tableId) async {
+    if (state.closingSession) return;
+
+    emit(
+      state.copyWith(
+        errorMessage: null,
+        updated: false,
+        closingSession: true,
+        closingTableId: tableId,
+        sessionClosed: false,
+      ),
+    );
+
+    final sessionsResult = await _getActiveDiningSessionsUseCase(
+      const NoParams(),
+    );
+    switch (sessionsResult) {
+      case FailureResult(failure: final failure):
+        emit(
+          state.copyWith(
+            closingSession: false,
+            closingTableId: '',
+            errorMessage: failure.message,
+          ),
+        );
+        return;
+      case Success(data: final sessions):
+        final matchingSessions = sessions.where(
+          (session) =>
+              session.tableId == tableId &&
+              session.status.toLowerCase() == 'active',
+        );
+        if (matchingSessions.isEmpty) {
+          emit(
+            state.copyWith(
+              closingSession: false,
+              closingTableId: '',
+              errorMessage: 'No active dining session exists for this table.',
+            ),
+          );
+          return;
+        }
+
+        final closeResult = await _closeDiningSessionUseCase(
+          matchingSessions.first.id,
+        );
+        switch (closeResult) {
+          case FailureResult(failure: final failure):
+            emit(
+              state.copyWith(
+                closingSession: false,
+                closingTableId: '',
+                errorMessage: failure.message,
+              ),
+            );
+          case Success(data: final session):
+            if (session.status.toLowerCase() != 'closed') {
+              emit(
+                state.copyWith(
+                  closingSession: false,
+                  closingTableId: '',
+                  errorMessage: 'The dining session was not closed.',
+                ),
+              );
+              return;
+            }
+            emit(
+              state.copyWith(
+                status: TableStatus.success,
+                closingSession: false,
+                closingTableId: '',
+                errorMessage: null,
+                updated: true,
+                sessionClosed: true,
+              ),
+            );
+            await getTables(showLoading: false);
+        }
     }
   }
 }

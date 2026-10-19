@@ -16,5 +16,8 @@ abstract class TableState with _$TableState {
     TableEntity? selectedTable,
     String? errorMessage,
     @Default(false) bool updated, // one-shot flag, consume in BlocListener
+    @Default(false) bool closingSession,
+    @Default('') String closingTableId,
+    @Default(false) bool sessionClosed,
   }) = _TableState;
 }
