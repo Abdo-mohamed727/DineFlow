@@ -33,12 +33,12 @@ class MenuCubit extends Cubit<MenuState> {
     emit(const MenuState.loading());
 
     final categoriesResult = await _getCategoriesUseCase(const NoParams());
-    final productsResult =
-        await _getProductsUseCase(const GetProductsParams());
+    final productsResult = await _getProductsUseCase(const GetProductsParams());
 
     if (categoriesResult is FailureResult) {
-      emit(MenuState.error(
-          (categoriesResult as FailureResult).failure.message));
+      emit(
+        MenuState.error((categoriesResult as FailureResult).failure.message),
+      );
       return;
     }
 
@@ -47,8 +47,7 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
-    _allCategories =
-        (categoriesResult as Success<List<CategoryEntity>>).data;
+    _allCategories = (categoriesResult as Success<List<CategoryEntity>>).data;
     _allProducts = (productsResult as Success<List<ProductEntity>>).data;
     _selectedCategoryId = null;
     _searchQuery = '';
@@ -85,15 +84,12 @@ class MenuCubit extends Cubit<MenuState> {
     }
 
     final searchResult = await _searchProductsUseCase(
-      SearchProductsParams(
-        query: _searchQuery,
-        products: categoryFiltered,
-      ),
+      SearchProductsParams(query: _searchQuery, products: categoryFiltered),
     );
 
     List<ProductEntity> finalProducts = categoryFiltered;
     if (searchResult is Success<List<ProductEntity>>) {
-      finalProducts = (searchResult as Success<List<ProductEntity>>).data;
+      finalProducts = searchResult.data;
     }
 
     if (finalProducts.isEmpty) {

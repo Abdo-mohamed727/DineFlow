@@ -1,5 +1,4 @@
 import 'package:dineflow/core/networking/api_error_handler.dart';
-import 'package:dineflow/core/networking/api_error_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 

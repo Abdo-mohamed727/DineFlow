@@ -1,6 +1,5 @@
 
 
-import 'package:dineflow/features/notification/data/model/notification_model.dart';
 import 'package:dineflow/features/notification/data/model/notification_page_model.dart';
 
 abstract interface class NotificationDataSourceInterface{
