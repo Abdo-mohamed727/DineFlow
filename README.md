@@ -155,16 +155,25 @@ The application provides a complete digital ordering experience for customers wh
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/waiter_home.png" width="220"/><br/>
+      <img width="720" height="1600" alt="WhatsApp Image 2026-10-19 at 17 21 50" src="https://github.com/user-attachments/assets/91d47c42-f114-49cc-9a5b-b80382d1c919" />
+  <br/>
       <strong>Waiter Home</strong>
     </td>
     <td align="center">
-      <img src="screenshots/waiter_orders.png" width="220"/><br/>
-      <strong>Orders</strong>
+     <img width="720" height="1600" alt="WhatsApp Image 2026-10-19 at 17 19 54" src="https://github.com/user-attachments/assets/b2667df5-230b-4ab6-9b4a-5a0cc6e71f40" />
+ <br/>
+      <strong>Tables</strong>
     </td>
     <td align="center">
-      <img src="screenshots/waiter_requests.png" width="220"/><br/>
+      <img width="720" height="1600" alt="WhatsApp Image 2026-10-19 at 17 17 54" src="https://github.com/user-attachments/assets/c94d5295-9233-4728-858a-54594a7e442c" />
+<br/>
       <strong>Requests</strong>
+    </td>
+    <td align="center">
+       <img width="720" height="1600" alt="Screenshot_1792152467" src="https://github.com/user-attachments/assets/3c444abb-2d72-43c3-9ab6-697cf7544ecd" />
+
+<br/>
+      <strong>Create Order</strong>
     </td>
   </tr>
 </table>
