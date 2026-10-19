@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:dineflow/core/services/real_time/real_time_service.dart';
@@ -31,10 +30,7 @@ class OrderRealtimeDataSource {
       if (orderId == null || newStatus == null) return;
 
       controller.add(
-        OrderStatusChangedRealtimeEvent(
-          orderId: orderId,
-          newStatus: newStatus,
-        ),
+        OrderStatusChangedRealtimeEvent(orderId: orderId, newStatus: newStatus),
       );
     }
 
@@ -44,7 +40,8 @@ class OrderRealtimeDataSource {
         _realTimeService.onOrderUpdate(onOrderStatusChanged);
       },
       onCancel: () {
-        _realTimeService.offOrderEvents();
+        _realTimeService.offOrderCreated(onOrderCreated);
+        _realTimeService.offOrderUpdate(onOrderStatusChanged);
       },
     );
 

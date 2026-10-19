@@ -20,10 +20,15 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
   void initState() {
     super.initState();
     context.read<RequestCubit>().start();
+    _startRequests();
   }
 
   void _loadRequests() {
     context.read<RequestCubit>().getPendingRequests();
+  }
+
+  void _startRequests() {
+    context.read<RequestCubit>().start();
   }
 
   @override

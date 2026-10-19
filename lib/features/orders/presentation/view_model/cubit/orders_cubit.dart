@@ -32,34 +32,38 @@ class OrdersCubit extends Cubit<OrdersState> {
   OrderStatus? get selectedStatus => _selectedStatus;
 
   Future<void> start() async {
-    await fetchOrders();
     _listenToRealTime();
+    await fetchOrders();
   }
 
   void _listenToRealTime() {
-    _realTimeService.onOrderCreated((data) {
-      if (isClosed) return;
-      final newOrder = OrderModel.fromJson(data).toEntity();
-      if (!_allOrders.any((o) => o.id == newOrder.id)) {
-        _allOrders = [newOrder, ..._allOrders];
-        _applyFilter();
-      }
-    });
+    _realTimeService.onOrderCreated(_handleOrderCreated);
+    _realTimeService.onOrderUpdate(_handleOrderUpdate);
+  }
 
-    _realTimeService.onOrderUpdate((data) {
-      if (isClosed) return;
-      final orderId = data['orderId'] as String;
-      final newStatusStr = data['newStatus'] as String;
+  void _handleOrderCreated(Map<String, dynamic> data) {
+    if (isClosed) return;
+    final newOrder = OrderModel.fromJson(data).toEntity();
+    if (!_allOrders.any((o) => o.id == newOrder.id)) {
+      _allOrders = [newOrder, ..._allOrders];
+      _applyFilter();
+    }
+  }
 
-      final index = _allOrders.indexWhere((o) => o.id == orderId);
-      if (index != -1) {
-        final parsedStatus = OrderModel(status: newStatusStr).parsedStatus;
-        final existing = _allOrders[index];
-        _allOrders = List.from(_allOrders)
-          ..[index] = existing.copyWith(status: parsedStatus);
-        _applyFilter();
-      }
-    });
+  void _handleOrderUpdate(Map<String, dynamic> data) {
+    if (isClosed) return;
+    final orderId = data['orderId']?.toString();
+    final newStatusStr = data['newStatus']?.toString();
+    if (orderId == null || newStatusStr == null) return;
+
+    final index = _allOrders.indexWhere((o) => o.id == orderId);
+    if (index != -1) {
+      final parsedStatus = OrderModel(status: newStatusStr).parsedStatus;
+      final existing = _allOrders[index];
+      _allOrders = List.from(_allOrders)
+        ..[index] = existing.copyWith(status: parsedStatus);
+      _applyFilter();
+    }
   }
 
   Future<void> fetchOrders({bool silent = false}) async {
@@ -188,7 +192,8 @@ class OrdersCubit extends Cubit<OrdersState> {
 
   @override
   Future<void> close() {
-    _realTimeService.disconnect();
+    _realTimeService.offOrderCreated(_handleOrderCreated);
+    _realTimeService.offOrderUpdate(_handleOrderUpdate);
     return super.close();
   }
 }
