@@ -81,4 +81,11 @@ class RequestCubit extends Cubit<RequestState> {
         emit(RequestState.error(failure.message));
     }
   }
+
+  @override
+  Future<void> close() {
+    _realTimeService.offWaiterRequestCreated(_onWaiterRequestCreated);
+    _realTimeService.offWaiterRequestUpdated(_onWaiterRequestUpdated);
+    return super.close();
+  }
 }

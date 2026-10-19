@@ -406,19 +406,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1052.RealTimeService>(),
       ),
     );
-    gh.factory<_i886.TableCubit>(
-      () => _i886.TableCubit(
-        gh<_i280.GetTablesUseCase>(),
-        gh<_i181.GetAvailableTablesUseCase>(),
-        gh<_i813.GetTableByIdUseCase>(),
-        gh<_i850.UpdateTableUseCase>(),
-      ),
-    );
     gh.factory<_i23.RequestCubit>(
       () => _i23.RequestCubit(
         gh<_i520.GetPendingRequestsUseCase>(),
         gh<_i676.AcceptRequestUseCase>(),
         gh<_i882.CompleteRequestUseCase>(),
+        gh<_i1052.RealTimeService>(),
       ),
     );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(

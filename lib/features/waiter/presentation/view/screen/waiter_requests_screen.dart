@@ -19,7 +19,7 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
   @override
   void initState() {
     super.initState();
-    _loadRequests();
+    _startRequests();
   }
 
   void _loadRequests() {
