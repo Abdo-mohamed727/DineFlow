@@ -320,8 +320,7 @@ class _StatusChip extends StatelessWidget {
       OrderStatus.accepted => ('● ACCEPTED', const Color(0xFF81C784)),
       OrderStatus.preparing => ('● PREPARING', const Color(0xFF42A5F5)),
       OrderStatus.ready ||
-      OrderStatus.readyForPickup =>
-        ('● READY', const Color(0xFF66BB6A)),
+      OrderStatus.readyForPickup => ('● READY', const Color(0xFF66BB6A)),
       _ => ('● ${status.name.toUpperCase()}', AppColors.onSurfaceVariant),
     };
     return Text(
@@ -372,114 +371,76 @@ class _ActionButtonState extends State<_ActionButton> {
   @override
   Widget build(BuildContext context) {
     // Read from both local state and cubit state to be perfectly safe across rebuilds
-    final isProcessing = _isProcessing || widget.cubit.isProcessing(widget.order.id);
+    final isProcessing =
+        _isProcessing || widget.cubit.isProcessing(widget.order.id);
 
     return switch (widget.order.status) {
       // ── Pending: confirm order only ───────────────────────────────────────
       OrderStatus.pending => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: SizedBox(
-            width: double.infinity,
-            child: _Btn(
-              label: isProcessing ? 'Confirming...' : 'Confirm Order',
-              icon: Icons.thumb_up_alt_rounded,
-              color: widget.green,
-              onTap: isProcessing ? null : () => _handleAction(() => widget.cubit.confirmOrder(widget.order.id)),
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: SizedBox(
+          width: double.infinity,
+          child: _Btn(
+            label: isProcessing ? 'Confirming...' : 'Confirm Order',
+            icon: Icons.thumb_up_alt_rounded,
+            color: widget.green,
+            onTap: isProcessing
+                ? null
+                : () => _handleAction(
+                    () => widget.cubit.confirmOrder(widget.order.id),
+                  ),
           ),
         ),
+      ),
       // ── Accepted: start preparing only ────────────────────────────────────
       OrderStatus.accepted => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: SizedBox(
-            width: double.infinity,
-            child: _Btn(
-              label: isProcessing ? 'Processing...' : 'Start Preparing',
-              icon: Icons.local_fire_department_rounded,
-              color: widget.amber,
-              onTap: isProcessing ? null : () => _handleAction(() => widget.cubit.startPreparing(widget.order.id)),
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: SizedBox(
+          width: double.infinity,
+          child: _Btn(
+            label: isProcessing ? 'Processing...' : 'Start Preparing',
+            icon: Icons.local_fire_department_rounded,
+            color: widget.amber,
+            onTap: isProcessing
+                ? null
+                : () => _handleAction(
+                    () => widget.cubit.startPreparing(widget.order.id),
+                  ),
           ),
         ),
+      ),
       // ── Preparing: mark ready ─────────────────────────────────────────────
       OrderStatus.preparing => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: SizedBox(
-            width: double.infinity,
-            child: _Btn(
-              label: isProcessing ? 'Processing...' : 'Mark as Ready ✓',
-              icon: Icons.check_circle_rounded,
-              color: widget.green,
-              onTap: isProcessing ? null : () => _handleAction(() => widget.cubit.markReady(widget.order.id)),
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: SizedBox(
+          width: double.infinity,
+          child: _Btn(
+            label: isProcessing ? 'Processing...' : 'Mark as Ready ✓',
+            icon: Icons.check_circle_rounded,
+            color: widget.green,
+            onTap: isProcessing
+                ? null
+                : () => _handleAction(
+                    () => widget.cubit.markReady(widget.order.id),
+                  ),
           ),
         ),
+      ),
       // ── Ready: hand off ───────────────────────────────────────────────────
       OrderStatus.ready || OrderStatus.readyForPickup => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: SizedBox(
-            width: double.infinity,
-            child: _Btn(
-              label: 'Complete / Hand Off ✓',
-              icon: Icons.handshake_rounded,
-              color: const Color(0xFF66BB6A),
-              onTap: () {},
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: SizedBox(
+          width: double.infinity,
+          child: _Btn(
+            label: 'Complete / Hand Off ✓',
+            icon: Icons.handshake_rounded,
+            color: const Color(0xFF66BB6A),
+            onTap: () {},
           ),
         ),
+      ),
       _ => const SizedBox.shrink(),
     };
-  }
-}
-
-/// Two equal-width buttons side by side.
-class _DualBtnRow extends StatelessWidget {
-  const _DualBtnRow({
-    required this.leftLabel,
-    required this.leftIcon,
-    required this.leftColor,
-    required this.onLeftTap,
-    required this.rightLabel,
-    required this.rightIcon,
-    required this.rightColor,
-    required this.onRightTap,
-  });
-
-  final String leftLabel;
-  final IconData leftIcon;
-  final Color leftColor;
-  final VoidCallback? onLeftTap;
-  final String rightLabel;
-  final IconData rightIcon;
-  final Color rightColor;
-  final VoidCallback? onRightTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          Expanded(
-            child: _Btn(
-              label: leftLabel,
-              icon: leftIcon,
-              color: leftColor,
-              onTap: onLeftTap,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _Btn(
-              label: rightLabel,
-              icon: rightIcon,
-              color: rightColor,
-              onTap: onRightTap,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
