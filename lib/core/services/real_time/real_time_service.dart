@@ -1,4 +1,3 @@
-
 import 'package:dineflow/core/networking/api_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
@@ -40,9 +39,7 @@ class RealTimeService {
     _socket!.connect();
   }
 
-  void onOrderCreated(
-    void Function(Map<String, dynamic> order) callback,
-  ) {
+  void onOrderCreated(void Function(Map<String, dynamic> order) callback) {
     _socket?.off(RealtimeEvents.orderCreated);
 
     _socket?.on(RealtimeEvents.orderCreated, (data) {
@@ -57,9 +54,7 @@ class RealTimeService {
     });
   }
 
-  void onOrderUpdate(
-    void Function(Map<String, dynamic> payload) callback,
-  ) {
+  void onOrderUpdate(void Function(Map<String, dynamic> payload) callback) {
     _socket?.off(RealtimeEvents.orderStatusChanged);
 
     _socket?.on(RealtimeEvents.orderStatusChanged, (data) {
@@ -67,6 +62,42 @@ class RealTimeService {
         callback(Map<String, dynamic>.from(data));
       }
     });
+  }
+
+  void onWaiterRequestCreated(
+    void Function(Map<String, dynamic> request) callback,
+  ) {
+    _socket?.off(RealtimeEvents.waiterRequestCreated);
+
+    _socket?.on(RealtimeEvents.waiterRequestCreated, (data) {
+      if (data is! Map) return;
+
+      final payload = Map<String, dynamic>.from(data);
+      final request = payload['request'];
+      if (request is Map) {
+        callback(Map<String, dynamic>.from(request));
+      }
+    });
+  }
+
+  void offWaiterRequestCreated() {
+    _socket?.off(RealtimeEvents.waiterRequestCreated);
+  }
+
+  void onWaiterRequestUpdated(
+    void Function(Map<String, dynamic> payload) callback,
+  ) {
+    _socket?.off(RealtimeEvents.waiterRequestUpdated);
+
+    _socket?.on(RealtimeEvents.waiterRequestUpdated, (data) {
+      if (data is Map) {
+        callback(Map<String, dynamic>.from(data));
+      }
+    });
+  }
+
+  void offWaiterRequestUpdated() {
+    _socket?.off(RealtimeEvents.waiterRequestUpdated);
   }
 
   void offOrderEvents() {

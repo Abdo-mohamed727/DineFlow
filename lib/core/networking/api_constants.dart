@@ -1,7 +1,7 @@
 abstract class ApiConstants {
-  // static const String baseUrl = 'http://192.168.1.9:3000';
+  static const String baseUrl = 'http://192.168.1.9:3000';
   // static const String baseUrl = 'http://10.0.2.2:3000';
-  static const String baseUrl = 'http://192.168.1.12:3000';
+  // static const String baseUrl = 'http://192.168.1.12:3000';
   // static const String socketUrl = 'http://10.0.2.2:3000';
 
   static const String socketUrl = 'http://192.168.1.9:3000';
@@ -53,4 +53,6 @@ abstract class ApiConstants {
 class RealtimeEvents {
   static const orderCreated = 'order_created';
   static const orderStatusChanged = 'order_status_changed';
+  static const waiterRequestCreated = 'waiter_request_created';
+  static const waiterRequestUpdated = 'waiter_request_updated';
 }
