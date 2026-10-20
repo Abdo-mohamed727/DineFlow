@@ -57,26 +57,23 @@ The application provides a complete digital ordering experience for customers wh
 
 ---
 
-# 📸 Screenshots
+# 📸 Previews
 
 ## 🔐 Authentication
 
 <table>
   <tr>
-    <td align="center">
-      <img width="1280" height="2856" alt="Screenshot_1786541509" src="https://github.com/user-attachments/assets/aed9178b-be99-4ac4-ae14-59877fd51635" />
- <br/>
-      <strong>Splash</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/aed9178b-be99-4ac4-ae14-59877fd51635" alt="Splash" width="220"/>
+      <br/><strong>Splash</strong>
     </td>
-    <td align="center">
-       <img width="1280" height="2856" alt="Screenshot_1789932423" src="https://github.com/user-attachments/assets/92384693-0549-4db7-a85a-ac0fd1798edd" />
- <br/>
-      <strong>Login</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/92384693-0549-4db7-a85a-ac0fd1798edd" alt="Login" width="220"/>
+      <br/><strong>Login</strong>
     </td>
-    <td align="center">
-    <img width="1280" height="2856" alt="Screenshot_1789932426" src="https://github.com/user-attachments/assets/1f8afaa8-db10-4e8f-a95b-aa90c9a429bf" />
-  <br/>
-      <strong>Register</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/1f8afaa8-db10-4e8f-a95b-aa90c9a429bf" alt="Register" width="220"/>
+      <br/><strong>Register</strong>
     </td>
   </tr>
 </table>
@@ -87,66 +84,54 @@ The application provides a complete digital ordering experience for customers wh
 
 <table>
   <tr>
-    <td align="center">
-      <img width="1280" height="2856" alt="Screenshot_1789989194" src="https://github.com/user-attachments/assets/fadd80b4-8d68-4df7-b4b1-e8f19bbd7a2e" />
-  <br/>
-      <strong>Menu</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/fadd80b4-8d68-4df7-b4b1-e8f19bbd7a2e" alt="Menu" width="220"/>
+      <br/><strong>Menu</strong>
     </td>
-    <td align="center">
-   <img width="1344" height="2992" alt="Screenshot_1790079069" src="https://github.com/user-attachments/assets/c8e2a419-2560-45fc-b92f-b063f1069d27" />
-  <br/>
-      <strong>Search</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/c8e2a419-2560-45fc-b92f-b063f1069d27" alt="Search" width="220"/>
+      <br/><strong>Search</strong>
     </td>
-    <td align="center">
-         <img width="1344" height="2992" alt="Screenshot_1790079061" src="https://github.com/user-attachments/assets/650e69e7-5120-4a26-81f0-64b42e802bc2" />
- <br/>
-      <strong>Product Details</strong>
-       </td>
-     <td align="center">
-        <img width="720" height="1600" alt="WhatsApp Image 2026-10-06 at 21 48 21 (1)" src="https://github.com/user-attachments/assets/64c32998-6c01-4da4-8e5a-c483de6afe42" />
- 
- <br/>
-      <strong> Profile</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/650e69e7-5120-4a26-81f0-64b42e802bc2" alt="Product Details" width="220"/>
+      <br/><strong>Product Details</strong>
     </td>
-         <td align="center">
-        <img width="720" height="1600" alt="WhatsApp Image 2026-10-06 at 21 48 21" src="https://github.com/user-attachments/assets/d163a7a6-3ec7-445d-a50e-46542626969a" />
- <br/>
-      <strong>Edit Profile</strong>
-    </td>
-   
   </tr>
-
   <tr>
-     </td>
-     <td align="center">
-       <img width="1280" height="2856" alt="Screenshot_1791294345" src="https://github.com/user-attachments/assets/d91ac952-28b4-4e3a-b652-fcc86842c18e" />
- <br/>
-      <strong>Order Tracker</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/bfb5fcce-7549-4bb5-a5da-6b6b89590e9b" alt="Cart" width="220"/>
+      <br/><strong>Cart</strong>
     </td>
-    <td align="center">
-     <img width="1280" height="2856" alt="Screenshot_1790248540" src="https://github.com/user-attachments/assets/bfb5fcce-7549-4bb5-a5da-6b6b89590e9b" />
-  
- <br/>
-      <strong>Cart</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/f25f1410-e0f0-4602-a64e-d8a57fc4c2d3" alt="Order Type" width="220"/>
+      <br/><strong>Order Type</strong>
     </td>
-    <td align="center">
-     <img width="1344" height="2992" alt="Screenshot_1790079045" src="https://github.com/user-attachments/assets/f25f1410-e0f0-4602-a64e-d8a57fc4c2d3" />
- <br/>
-      <strong>OrderType</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/900599b1-aeb0-49a7-ad50-c36fcc3236f7" alt="Order Details" width="220"/>
+      <br/><strong>Order Details</strong>
     </td>
-    <td align="center">
-        <img width="1280" height="2856" alt="Screenshot_1790248413" src="https://github.com/user-attachments/assets/900599b1-aeb0-49a7-ad50-c36fcc3236f7" />
-  <br/>
-      <strong>Order Details</strong>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/48fe3fdc-077f-4078-bc78-1e92104ae141" alt="Notification" width="220"/>
+      <br/><strong>Notification</strong>
     </td>
-    <td align="center">
-    <img width="1280" height="2856" alt="Screenshot_1791115326" src="https://github.com/user-attachments/assets/48fe3fdc-077f-4078-bc78-1e92104ae141" />
- 
- <br/>
-      <strong>Notification</strong>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/64c32998-6c01-4da4-8e5a-c483de6afe42" alt="Profile" width="220"/>
+      <br/><strong>Profile</strong>
+    </td>
+    <td align="center" width="33%">
+      <img src="https://github.com/user-attachments/assets/d163a7a6-3ec7-445d-a50e-46542626969a" alt="Edit Profile" width="220"/>
+      <br/><strong>Edit Profile</strong>
     </td>
   </tr>
 </table>
+
+### 📦 Order Tracker (Demo)
+
+<!-- Bare link on its own line: GitHub renders it as a video player -->
+
+https://github.com/user-attachments/assets/3a3331f5-689f-4ab6-882d-1e7516e87725
 
 ---
 
@@ -154,78 +139,45 @@ The application provides a complete digital ordering experience for customers wh
 
 <table>
   <tr>
-    <td align="center">
-      <img width="720" height="1600" alt="WhatsApp Image 2026-10-19 at 17 21 50" src="https://github.com/user-attachments/assets/91d47c42-f114-49cc-9a5b-b80382d1c919" />
-  <br/>
-      <strong>Waiter Home</strong>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/91d47c42-f114-49cc-9a5b-b80382d1c919" alt="Waiter Home" width="200"/>
+      <br/><strong>Waiter Home</strong>
     </td>
-    <td align="center">
-     <img width="720" height="1600" alt="WhatsApp Image 2026-10-19 at 17 19 54" src="https://github.com/user-attachments/assets/b2667df5-230b-4ab6-9b4a-5a0cc6e71f40" />
- <br/>
-      <strong>Tables</strong>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/b2667df5-230b-4ab6-9b4a-5a0cc6e71f40" alt="Tables" width="200"/>
+      <br/><strong>Tables</strong>
     </td>
-    <td align="center">
-      <img width="720" height="1600" alt="WhatsApp Image 2026-10-19 at 17 17 54" src="https://github.com/user-attachments/assets/c94d5295-9233-4728-858a-54594a7e442c" />
-<br/>
-      <strong>Requests</strong>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/c94d5295-9233-4728-858a-54594a7e442c" alt="Requests" width="200"/>
+      <br/><strong>Requests</strong>
     </td>
-    <td align="center">
-       <img width="720" height="1600" alt="Screenshot_1792152467" src="https://github.com/user-attachments/assets/3c444abb-2d72-43c3-9ab6-697cf7544ecd" />
-
-<br/>
-      <strong>Create Order</strong>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/3c444abb-2d72-43c3-9ab6-697cf7544ecd" alt="Create Order" width="200"/>
+      <br/><strong>Create Order</strong>
     </td>
   </tr>
 </table>
 
 ---
 
-## 👨‍🍳 Kitchen
-
+## 👨‍🍳 Kitchen (Demo)
 
 https://github.com/user-attachments/assets/06e6f735-2cfc-47d4-aab2-f9d3e59ad880
 
+---
 
 # 🛠️ Tech Stack
 
-<table>
-  <tr>
-    <td><strong>Technology</strong></td>
-    <td><strong>Purpose</strong></td>
-  </tr>
-  <tr>
-    <td>Flutter</td>
-    <td>Cross-platform mobile development</td>
-  </tr>
-  <tr>
-    <td>Dart</td>
-    <td>Programming language</td>
-  </tr>
-  <tr>
-    <td>Flutter BLoC / Cubit</td>
-    <td>State management</td>
-  </tr>
-  <tr>
-    <td>Dio</td>
-    <td>REST API communication</td>
-  </tr>
-  <tr>
-    <td>GoRouter</td>
-    <td>Navigation & route management</td>
-  </tr>
-  <tr>
-    <td>GetIt</td>
-    <td>Dependency injection</td>
-  </tr>
-  <tr>
-    <td>Freezed</td>
-    <td>Immutable models & states</td>
-  </tr>
-  <tr>
-    <td>JSON Serializable</td>
-    <td>JSON serialization</td>
-  </tr>
-</table>
+| Technology          | Purpose                            |
+| ------------------- | ---------------------------------- |
+| Flutter             | Cross-platform mobile development  |
+| Dart                | Programming language               |
+| Flutter BLoC / Cubit | State management                  |
+| Dio                 | REST API communication             |
+| GoRouter            | Navigation & route management      |
+| GetIt               | Dependency injection               |
+| Freezed             | Immutable models & states          |
+| JSON Serializable   | JSON serialization                 |
 
 ---
 
@@ -237,21 +189,21 @@ DineFlow follows **Clean Architecture** with a **feature-first** structure.
 ┌───────────────────────────────────────────┐
 │               Presentation                │
 │                                           │
-│   Screens • Widgets • Cubits • BLoCs     │
+│   Screens • Widgets • Cubits • BLoCs      │
 └─────────────────────┬─────────────────────┘
                       │
                       ▼
 ┌───────────────────────────────────────────┐
 │                  Domain                   │
 │                                           │
-│      Entities • Use Cases • Repos        │
+│      Entities • Use Cases • Repos         │
 └─────────────────────┬─────────────────────┘
                       │
                       ▼
 ┌───────────────────────────────────────────┐
 │                   Data                    │
 │                                           │
-│ Models • API • Data Sources • Repos      │
+│  Models • API • Data Sources • Repos      │
 └───────────────────────────────────────────┘
 ```
 
@@ -274,7 +226,7 @@ lib/
 │
 ├── core/
 │   ├── constants/
-|   ├── di/
+│   ├── di/
 │   ├── errors/
 │   ├── network/
 │   ├── router/
@@ -287,8 +239,8 @@ lib/
 │   ├── search/
 │   ├── cart/
 │   ├── orders/
-|   ├── notifications/
-|   ├── profile/
+│   ├── notifications/
+│   ├── profile/
 │   ├── waiter/
 │   └── kitchen/
 │
@@ -428,13 +380,13 @@ Additional technical documentation covers:
 
 # 🚀 Roadmap
 
-* [✅] Push notifications
-* [✅] Enhanced order tracking
-* [ ] Offline support
-* [ ] Expanded test coverage
-* [ ] Performance optimization
-* [ ] Localization
-* [ ] Payment integration
+- [x] Push notifications
+- [x] Enhanced order tracking
+- [ ] Offline support
+- [ ] Expanded test coverage
+- [ ] Performance optimization
+- [ ] Localization
+- [ ] Payment integration
 
 ---
 
