@@ -7,6 +7,7 @@ import 'package:dineflow/core/widgets/app_empty_state.dart';
 import 'package:dineflow/core/widgets/app_error_state.dart';
 import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/features/waiter/domain/entity/waiter_request_entity.dart';
+import 'package:dineflow/features/waiter/presentation/view/widget/waiter_notification_button.dart';
 
 class WaiterRequestsView extends StatefulWidget {
   const WaiterRequestsView({super.key});
@@ -46,6 +47,7 @@ class _WaiterRequestsViewState extends State<WaiterRequestsView> {
           ),
         ),
         actions: [
+          const WaiterNotificationButton(),
           IconButton(
             onPressed: _loadRequests,
             tooltip: 'Refresh requests',

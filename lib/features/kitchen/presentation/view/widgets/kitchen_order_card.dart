@@ -426,19 +426,8 @@ class _ActionButtonState extends State<_ActionButton> {
           ),
         ),
       ),
-      // ── Ready: hand off ───────────────────────────────────────────────────
-      OrderStatus.ready || OrderStatus.readyForPickup => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: SizedBox(
-          width: double.infinity,
-          child: _Btn(
-            label: 'Complete / Hand Off ✓',
-            icon: Icons.handshake_rounded,
-            color: const Color(0xFF66BB6A),
-            onTap: () {},
-          ),
-        ),
-      ),
+      OrderStatus.ready ||
+      OrderStatus.readyForPickup => const SizedBox.shrink(),
       _ => const SizedBox.shrink(),
     };
   }

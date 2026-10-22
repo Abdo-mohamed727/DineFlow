@@ -8,6 +8,7 @@ import 'package:dineflow/core/widgets/app_empty_state.dart';
 import 'package:dineflow/core/widgets/app_error_state.dart';
 import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
+import 'package:dineflow/features/waiter/presentation/view/widget/waiter_notification_button.dart';
 
 import 'package:dineflow/features/waiter/presentation/view_model/table/table_state.dart';
 
@@ -71,6 +72,7 @@ class _WaiterTablesViewState extends State<WaiterTablesView> {
           ),
         ),
         actions: [
+          const WaiterNotificationButton(),
           IconButton(
             onPressed: _getTables,
             icon: const Icon(Icons.refresh_rounded, color: AppColors.onSurface),

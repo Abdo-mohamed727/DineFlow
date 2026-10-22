@@ -13,6 +13,7 @@ import 'package:dineflow/core/widgets/app_empty_state.dart';
 
 import 'package:dineflow/features/waiter/domain/entity/order_waiter_entity.dart';
 import 'package:dineflow/features/waiter/domain/entity/orders_page_entity.dart';
+import 'package:dineflow/features/waiter/presentation/view/widget/waiter_notification_button.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -292,18 +293,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
             ],
           ),
         ),
-        AppIconButton(
-          iconData: Icons.refresh_rounded,
-          tooltip: 'Refresh orders',
-          backgroundColor: AppColors.surfaceContainer,
-          iconColor: AppColors.waiterPrimary,
-          onPressed: () {
-            if (_selectedFilter == 'all') {
-              context.read<OrderCubit>().getOrders();
-            } else {
-              context.read<OrderCubit>().getOrdersByStatus(_selectedFilter);
-            }
-          },
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const WaiterNotificationButton(),
+            AppIconButton(
+              iconData: Icons.refresh_rounded,
+              tooltip: 'Refresh orders',
+              backgroundColor: AppColors.surfaceContainer,
+              iconColor: AppColors.waiterPrimary,
+              onPressed: () {
+                if (_selectedFilter == 'all') {
+                  context.read<OrderCubit>().getOrders();
+                } else {
+                  context.read<OrderCubit>().getOrdersByStatus(_selectedFilter);
+                }
+              },
+            ),
+          ],
         ),
       ],
     );

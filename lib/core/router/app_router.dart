@@ -1,6 +1,8 @@
-import 'package:dineflow/core/di/servise_locator.dart';
+import 'dart:async';
 
+import 'package:dineflow/core/di/servise_locator.dart';
 import 'package:dineflow/core/widgets/floating_bottom_nav_bar.dart';
+import 'package:dineflow/core/services/real_time/real_time_service.dart';
 
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 
@@ -53,6 +55,7 @@ import 'package:dineflow/features/waiter/presentation/view/screen/waiter_order_s
 import 'package:dineflow/features/waiter/presentation/view/screen/waiter_table_screen.dart';
 
 import 'package:dineflow/features/waiter/presentation/view/screen/waiter_requests_screen.dart';
+import 'package:dineflow/features/waiter/presentation/view/screen/waiter_notifications_screen.dart';
 
 import 'package:dineflow/features/waiter/presentation/view/screen/create_order_screen.dart';
 
@@ -473,6 +476,14 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 name: AppRoutes.waiterDashboard,
 
                 builder: (context, state) => const OrdersScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppPaths.waiterNotifications,
+                    name: AppRoutes.waiterNotifications,
+                    builder: (context, state) =>
+                        const WaiterNotificationsScreen(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -732,10 +743,48 @@ class _CustomerShellState extends State<_CustomerShell> {
   }
 }
 
-class _WaiterShell extends StatelessWidget {
+class _WaiterShell extends StatefulWidget {
   const _WaiterShell({required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
+
+  @override
+  State<_WaiterShell> createState() => _WaiterShellState();
+}
+
+class _WaiterShellState extends State<_WaiterShell> {
+  late final NotificationCubit _notificationCubit;
+  final RealTimeService _realTimeService = sl<RealTimeService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationCubit = sl<NotificationCubit>()..fetchNotifications();
+    _realTimeService
+      ..onOrderUpdate(_onOrderUpdate)
+      ..onWaiterRequestCreated(_onWaiterRequestCreated);
+  }
+
+  void _onOrderUpdate(Map<String, dynamic> payload) {
+    _refreshNotifications();
+  }
+
+  void _onWaiterRequestCreated(Map<String, dynamic> request) {
+    _refreshNotifications();
+  }
+
+  void _refreshNotifications() {
+    _notificationCubit.fetchNotifications(silent: true);
+  }
+
+  @override
+  void dispose() {
+    _realTimeService
+      ..offOrderUpdate(_onOrderUpdate)
+      ..offWaiterRequestCreated(_onWaiterRequestCreated);
+    unawaited(_notificationCubit.close());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -750,40 +799,43 @@ class _WaiterShell extends StatelessWidget {
         ),
         progressIndicatorTheme: ProgressIndicatorThemeData(color: waiterAccent),
       ),
-      child: AppScaffold(
-        showAppBar: false,
-        body: navigationShell,
-        bottomNavigationBar: FloatingBottomNavBar(
-          currentIndex: navigationShell.currentIndex,
-          accentColor: waiterAccent,
-          onTap: (index) {
-            navigationShell.goBranch(
-              index,
-              initialLocation: index == navigationShell.currentIndex,
-            );
-          },
-          items: const [
-            FloatingNavItem(
-              icon: Icons.dashboard_outlined,
-              selectedIcon: Icons.dashboard,
-              label: 'Dashboard',
-            ),
-            FloatingNavItem(
-              icon: Icons.table_restaurant_outlined,
-              selectedIcon: Icons.table_restaurant,
-              label: 'Tables',
-            ),
-            FloatingNavItem(
-              icon: Icons.inbox_outlined,
-              selectedIcon: Icons.inbox,
-              label: 'Requests',
-            ),
-            FloatingNavItem(
-              icon: Icons.add_shopping_cart_outlined,
-              selectedIcon: Icons.add_shopping_cart,
-              label: 'Create Order',
-            ),
-          ],
+      child: BlocProvider.value(
+        value: _notificationCubit,
+        child: AppScaffold(
+          showAppBar: false,
+          body: widget.navigationShell,
+          bottomNavigationBar: FloatingBottomNavBar(
+            currentIndex: widget.navigationShell.currentIndex,
+            accentColor: waiterAccent,
+            onTap: (index) {
+              widget.navigationShell.goBranch(
+                index,
+                initialLocation: index == widget.navigationShell.currentIndex,
+              );
+            },
+            items: const [
+              FloatingNavItem(
+                icon: Icons.dashboard_outlined,
+                selectedIcon: Icons.dashboard,
+                label: 'Dashboard',
+              ),
+              FloatingNavItem(
+                icon: Icons.table_restaurant_outlined,
+                selectedIcon: Icons.table_restaurant,
+                label: 'Tables',
+              ),
+              FloatingNavItem(
+                icon: Icons.inbox_outlined,
+                selectedIcon: Icons.inbox,
+                label: 'Requests',
+              ),
+              FloatingNavItem(
+                icon: Icons.add_shopping_cart_outlined,
+                selectedIcon: Icons.add_shopping_cart,
+                label: 'Create Order',
+              ),
+            ],
+          ),
         ),
       ),
     );
