@@ -7,6 +7,7 @@ import 'package:dineflow/core/theme/app_colors.dart';
 import 'package:dineflow/core/widgets/app_error_state.dart';
 import 'package:dineflow/core/widgets/app_loading_indicator.dart';
 import 'package:dineflow/features/waiter/domain/entity/table_entity.dart';
+import 'package:dineflow/features/waiter/presentation/view/widget/waiter_notification_button.dart';
 
 class TableDetailsView extends StatefulWidget {
   const TableDetailsView({super.key, required this.tableId});
@@ -32,6 +33,7 @@ class _TableDetailsViewState extends State<TableDetailsView> {
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.onSurface,
         title: const Text('Table Details'),
+        actions: const [WaiterNotificationButton()],
       ),
       body: BlocBuilder<TableCubit, TableState>(
         builder: (context, state) {

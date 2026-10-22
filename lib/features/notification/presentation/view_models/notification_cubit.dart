@@ -23,9 +23,10 @@ class NotificationCubit extends Cubit<NotificationState> {
     this._markAllNotificationsAsReadUseCase,
   ) : super(const NotificationState.initial());
 
-  Future<void> fetchNotifications() async {
-    emit(const NotificationState.loading());
+  Future<void> fetchNotifications({bool silent = false}) async {
+    if (!silent) emit(const NotificationState.loading());
     final result = await _getNotificationsUseCase(const NoParams());
+    if (isClosed) return;
     switch (result) {
       case Success(data: final pageEntity):
         emit(NotificationState.loaded(

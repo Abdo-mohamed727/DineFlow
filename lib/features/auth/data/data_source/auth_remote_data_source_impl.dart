@@ -92,8 +92,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<User?> getCurrentUserData() async {
+    final prefs = sl<SharedPreferences>();
+    final token = prefs.getString('token');
+    if (token == null || token.trim().isEmpty) return null;
+
     try {
-      final response = await _dio.get(ApiConstants.me);
+      final response = await _dio.get(
+        ApiConstants.me,
+        options: Options(
+          validateStatus: (status) =>
+              status == 401 || (status != null && status < 400),
+        ),
+      );
+      if (response.statusCode == 401) {
+        await prefs.remove('token');
+        return null;
+      }
       if (response.data == null) return null;
 
       return User.fromJson(response.data as Map<String, dynamic>);

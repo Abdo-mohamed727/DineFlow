@@ -26,9 +26,11 @@ Map<String, dynamic> _decodePayload(String? payload) {
   return {};
 }
 
-
 const _typeNewOrder = 'NEW_ORDER';
 const _typeOrderUpdate = 'ORDER_STATUS_CHANGED';
+const _typeOrderReady = 'ORDER_READY';
+const _typeWaiterRequestCreated = 'WAITER_REQUEST_CREATED';
+const _typeWaiterRequest = 'WAITER_REQUEST';
 
 class NotificationHandler {
   NotificationHandler._();
@@ -66,6 +68,7 @@ class NotificationHandler {
       debugPrint('[NotificationHandler] handleForeground error: $e');
     }
   }
+
   static void handleBackgroundOpened(RemoteMessage message) {
     debugPrint('[NotificationHandler] bg-opened: ${message.messageId}');
     _handleNavigation(message.data);
@@ -80,7 +83,6 @@ class NotificationHandler {
     }
   }
 
-
   static void _handleNavigation(Map<String, dynamic> data) {
     final router = _router;
     if (router == null) {
@@ -90,21 +92,39 @@ class NotificationHandler {
     }
 
     try {
-      final type = (data['type'] ?? data['clickAction'] ?? '') as String;
+      final type = (data['type'] ?? data['clickAction'] ?? '')
+          .toString()
+          .toUpperCase();
       debugPrint('[NotificationHandler] navigating for type=$type data=$data');
 
       switch (type) {
         case _typeNewOrder:
           router.go('/kitchen/kds');
 
+        case _typeOrderReady:
+          router.go('/waiter/dashboard');
+
         case _typeOrderUpdate:
+          if (_isWaiterOrderReady(data)) {
+            router.go('/waiter/dashboard');
+            return;
+          }
           final orderId = data['orderId'] as String?;
           if (orderId == null || orderId.isEmpty) {
-            debugPrint('[NotificationHandler] ORDER_STATUS_CHANGED missing orderId');
+            debugPrint(
+              '[NotificationHandler] ORDER_STATUS_CHANGED missing orderId',
+            );
             router.go('/customer/orders');
             return;
           }
           router.go('/customer/orders/$orderId');
+
+        case _typeWaiterRequestCreated:
+        case _typeWaiterRequest:
+        case 'CALL_WAITER':
+        case 'REQUEST_BILL':
+        case 'REQUEST_HELP':
+          router.go('/waiter/requests');
 
         default:
           debugPrint('[NotificationHandler] unknown type: $type — ignoring');
@@ -112,5 +132,19 @@ class NotificationHandler {
     } catch (e) {
       debugPrint('[NotificationHandler] _handleNavigation error: $e');
     }
+  }
+
+  static bool _isWaiterOrderReady(Map<String, dynamic> data) {
+    final recipientRole =
+        (data['recipientRole'] ?? data['targetRole'] ?? data['role'])
+            ?.toString()
+            .toLowerCase();
+    final status = data['newStatus']?.toString().toLowerCase().replaceAll(
+      RegExp(r'[^a-z]'),
+      '',
+    );
+
+    return recipientRole == 'waiter' &&
+        (status == 'ready' || status == 'readyforpickup');
   }
 }

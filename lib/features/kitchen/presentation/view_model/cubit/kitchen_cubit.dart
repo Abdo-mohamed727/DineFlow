@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dineflow/core/enums/order_status.dart';
 import 'package:dineflow/core/error/failure.dart';
 import 'package:dineflow/core/services/real_time/real_time_service.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
@@ -49,6 +50,7 @@ class KitchenCubit extends Cubit<KitchenState> {
   void _handleOrderCreated(Map<String, dynamic> data) {
     if (isClosed) return;
     final newOrder = OrderModel.fromJson(data).toEntity();
+    if (_isReady(newOrder.status)) return;
     if (!_orders.any((o) => o.id == newOrder.id)) {
       _orders = [newOrder, ..._orders];
       emit(KitchenState.loaded(List.unmodifiable(_orders)));
@@ -64,6 +66,10 @@ class KitchenCubit extends Cubit<KitchenState> {
     final index = _orders.indexWhere((o) => o.id == orderId);
     if (index != -1) {
       final parsedStatus = OrderModel(status: newStatusStr).parsedStatus;
+      if (_isReady(parsedStatus)) {
+        _removeOrder(orderId);
+        return;
+      }
       final existing = _orders[index];
       _updateOrder(existing.copyWith(status: parsedStatus));
     }
@@ -77,7 +83,7 @@ class KitchenCubit extends Cubit<KitchenState> {
 
     switch (result) {
       case Success(data: final orders):
-        _orders = orders;
+        _orders = orders.where((order) => !_isReady(order.status)).toList();
         emit(KitchenState.loaded(List.unmodifiable(_orders)));
 
       case FailureResult(failure: final failure):
@@ -93,6 +99,14 @@ class KitchenCubit extends Cubit<KitchenState> {
 
     emit(KitchenState.loaded(List.unmodifiable(_orders)));
   }
+
+  void _removeOrder(String orderId) {
+    _orders = _orders.where((order) => order.id != orderId).toList();
+    emit(KitchenState.loaded(List.unmodifiable(_orders)));
+  }
+
+  bool _isReady(OrderStatus status) =>
+      status == OrderStatus.ready || status == OrderStatus.readyForPickup;
 
   Future<void> confirmOrder(String orderId) =>
       _runAction(orderId, _confirmOrderUseCase);
@@ -120,7 +134,11 @@ class KitchenCubit extends Cubit<KitchenState> {
 
     switch (result) {
       case Success(data: final updatedOrder):
-        _updateOrder(updatedOrder);
+        if (_isReady(updatedOrder.status)) {
+          _removeOrder(orderId);
+        } else {
+          _updateOrder(updatedOrder);
+        }
 
       case FailureResult(failure: final failure):
         emit(KitchenState.error(failure));
