@@ -539,6 +539,44 @@ GoRouter createRouter({required RouterNotifier notifier}) {
               ),
             ],
           ),
+
+          // Branch 4: Profile
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '${AppPaths.waiterShell}/${AppPaths.waiterProfile}',
+                name: AppRoutes.waiterProfile,
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<ProfileCubit>(),
+                  child: const ProfileView(
+                    role: AppRole.waiter,
+                    editProfileRoute: AppRoutes.waiterEditProfile,
+                  ),
+                ),
+                routes: [
+                  GoRoute(
+                    path: AppPaths.waiterEditProfile,
+                    name: AppRoutes.waiterEditProfile,
+                    builder: (context, state) {
+                      final user = state.extra as UserEntity?;
+                      return BlocProvider(
+                        create: (_) => sl<ProfileCubit>(),
+                        child: EditProfileView(
+                          user: user ?? const UserEntity(
+                            id: '',
+                            name: '',
+                            email: '',
+                            role: UserRole.waiter,
+                          ),
+                          role: AppRole.waiter,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -589,6 +627,44 @@ GoRouter createRouter({required RouterNotifier notifier}) {
                 name: AppRoutes.kitchenNotifications,
 
                 builder: (context, state) => const KitchenNotificationsScreen(),
+              ),
+            ],
+          ),
+
+          // Branch 2: Profile
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '${AppPaths.kitchenShell}/${AppPaths.kitchenProfile}',
+                name: AppRoutes.kitchenProfile,
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl<ProfileCubit>(),
+                  child: const ProfileView(
+                    role: AppRole.kitchen,
+                    editProfileRoute: AppRoutes.kitchenEditProfile,
+                  ),
+                ),
+                routes: [
+                  GoRoute(
+                    path: AppPaths.kitchenEditProfile,
+                    name: AppRoutes.kitchenEditProfile,
+                    builder: (context, state) {
+                      final user = state.extra as UserEntity?;
+                      return BlocProvider(
+                        create: (_) => sl<ProfileCubit>(),
+                        child: EditProfileView(
+                          user: user ?? const UserEntity(
+                            id: '',
+                            name: '',
+                            email: '',
+                            role: UserRole.kitchen,
+                          ),
+                          role: AppRole.kitchen,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -834,6 +910,11 @@ class _WaiterShellState extends State<_WaiterShell> {
                 selectedIcon: Icons.add_shopping_cart,
                 label: 'Create Order',
               ),
+              FloatingNavItem(
+                icon: Icons.person_outline_rounded,
+                selectedIcon: Icons.person_rounded,
+                label: 'Profile',
+              ),
             ],
           ),
         ),
@@ -899,6 +980,12 @@ class _KitchenShell extends StatelessWidget {
                           label: 'Notifications',
 
                           badgeCount: unreadCount > 0 ? unreadCount : null,
+                        ),
+
+                        const FloatingNavItem(
+                          icon: Icons.person_outline_rounded,
+                          selectedIcon: Icons.person_rounded,
+                          label: 'Profile',
                         ),
                       ],
                     );

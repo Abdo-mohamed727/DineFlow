@@ -1,12 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dineflow/core/theme/app_colors.dart';
+import 'package:dineflow/core/widgets/app_scaffold.dart';
 import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
 import 'package:flutter/material.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.user});
+  const ProfileHeader({
+    super.key,
+    required this.user,
+    this.role = AppRole.customer,
+  });
 
   final UserEntity user;
+  final AppRole role;
 
   String get _initials {
     final names = user.name.trim().split(RegExp(r'\s+'));
@@ -20,6 +26,11 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasProfileImage =
         user.profileImage != null && user.profileImage!.isNotEmpty;
+    final isCustomer = role == AppRole.customer;
+    final accent = role.accentColor;
+    final avatarForeground = isCustomer
+        ? AppColors.onPrimary
+        : AppColors.surface;
 
     return Column(
       children: [
@@ -28,14 +39,17 @@ class ProfileHeader extends StatelessWidget {
           height: 90,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: const LinearGradient(
-              colors: [AppColors.primaryContainer, AppColors.inversePrimary],
+            gradient: LinearGradient(
+              colors: isCustomer
+                  ? [AppColors.primaryContainer, AppColors.inversePrimary]
+                  : [accent, accent.withValues(alpha: 0.75)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryContainer.withValues(alpha: 0.35),
+                color: (isCustomer ? AppColors.primaryContainer : accent)
+                    .withValues(alpha: 0.35),
                 blurRadius: 20,
                 spreadRadius: 2,
               ),
@@ -49,20 +63,20 @@ class ProfileHeader extends StatelessWidget {
                   fit: BoxFit.cover,
                   width: 90,
                   height: 90,
-                  placeholder: (context, url) => const SizedBox(
+                  placeholder: (context, url) => SizedBox(
                     width: 90,
                     height: 90,
                     child: Center(
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.onPrimary,
+                        color: avatarForeground,
                       ),
                     ),
                   ),
                   errorWidget: (context, url, error) => Text(
                     _initials,
-                    style: const TextStyle(
-                      color: AppColors.onPrimary,
+                    style: TextStyle(
+                      color: avatarForeground,
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                     ),
@@ -70,8 +84,8 @@ class ProfileHeader extends StatelessWidget {
                 )
               : Text(
                   _initials,
-                  style: const TextStyle(
-                    color: AppColors.onPrimary,
+                  style: TextStyle(
+                    color: avatarForeground,
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
@@ -81,8 +95,8 @@ class ProfileHeader extends StatelessWidget {
         Text(
           user.name,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.onSurface,
+          style: TextStyle(
+            color: isCustomer ? AppColors.onSurface : accent,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -91,16 +105,14 @@ class ProfileHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
           decoration: BoxDecoration(
-            color: AppColors.primaryContainer.withValues(alpha: 0.12),
+            color: accent.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppColors.primaryContainer.withValues(alpha: 0.3),
-            ),
+            border: Border.all(color: accent.withValues(alpha: 0.3)),
           ),
           child: Text(
             '${user.role.name[0].toUpperCase()}${user.role.name.substring(1)} account',
-            style: const TextStyle(
-              color: AppColors.primaryContainer,
+            style: TextStyle(
+              color: accent,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),

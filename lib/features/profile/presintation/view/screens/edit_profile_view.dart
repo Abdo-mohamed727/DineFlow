@@ -8,15 +8,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Screen wrapper for edit-profile feedback and navigation.
 class EditProfileView extends StatelessWidget {
-  const EditProfileView({super.key, required this.user});
+  const EditProfileView({
+    super.key,
+    required this.user,
+    this.role = AppRole.customer,
+  });
 
   final UserEntity user;
+  final AppRole role;
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       title: 'Edit Profile',
-      role: AppRole.customer,
+      role: role,
       resizeToAvoidBottomInset: true,
       body: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
@@ -44,3 +49,4 @@ class EditProfileView extends StatelessWidget {
     );
   }
 }
+
