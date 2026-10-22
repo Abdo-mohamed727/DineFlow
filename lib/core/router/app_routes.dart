@@ -25,6 +25,8 @@ abstract final class AppRoutes {
   static const String waiterTables = 'waiter-tables';
   static const String waiterRequests = 'waiter-requests';
   static const String waiterNotifications = 'waiter-notifications';
+  static const String waiterProfile = 'waiter-profile';
+  static const String waiterEditProfile = 'waiter-edit-profile';
 
   static const String waiterCreateOrder = 'waiter-create-order';
   // ── Kitchen shell ────────────────────────────────────────────────────────
@@ -32,6 +34,8 @@ abstract final class AppRoutes {
   static const String kitchenKds = 'kitchen-kds';
   static const String kitchenOrderDetail = 'kitchen-order-detail';
   static const String kitchenNotifications = 'kitchen-notifications';
+  static const String kitchenProfile = 'kitchen-profile';
+  static const String kitchenEditProfile = 'kitchen-edit-profile';
 }
 
 /// Central registry of every route *path* (used by GoRouter internally).
@@ -64,6 +68,8 @@ abstract final class AppPaths {
   static const String waiterTables = 'tables';
   static const String waiterRequests = 'requests';
   static const String waiterNotifications = 'notifications';
+  static const String waiterProfile = 'profile';
+  static const String waiterEditProfile = 'edit';
 
   static const String waiterCreateOrder = 'create-order';
   // Kitchen
@@ -71,4 +77,6 @@ abstract final class AppPaths {
   static const String kitchenKds = 'kds';
   static const String kitchenOrderDetail = 'order/:orderId';
   static const String kitchenNotifications = 'notifications';
+  static const String kitchenProfile = 'profile';
+  static const String kitchenEditProfile = 'edit';
 }

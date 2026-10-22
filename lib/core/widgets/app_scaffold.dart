@@ -49,6 +49,7 @@ class AppScaffold extends StatelessWidget {
     this.extendBodyBehindAppBar = false,
     this.extendBody = true,
     this.showAppBar = true,
+    this.showAppBarDivider = true,
     this.centerTitle = true,
     this.titleWidget,
   });
@@ -76,6 +77,8 @@ class AppScaffold extends StatelessWidget {
   final bool extendBody;
 
   final bool showAppBar;
+
+  final bool showAppBarDivider;
 
   final bool centerTitle;
 
@@ -108,13 +111,14 @@ class AppScaffold extends StatelessWidget {
     final canPop = Navigator.of(context).canPop();
 
     return PreferredSize(
-      preferredSize: Size.fromHeight(56.h + 1.h),
+      preferredSize: Size.fromHeight(56.h + (showAppBarDivider ? 1.h : 0)),
       child: _FrostedAppBar(
         title: title,
         titleWidget: titleWidget,
         role: role,
         accent: accent,
         centerTitle: centerTitle,
+        showDivider: showAppBarDivider,
         leading: leading ??
             (canPop
                 ? _BackButton(accentColor: accent)
@@ -134,6 +138,7 @@ class _FrostedAppBar extends StatelessWidget {
     this.leading,
     this.actions,
     this.centerTitle = true,
+    this.showDivider = true,
   });
 
   final Color accent;
@@ -143,6 +148,7 @@ class _FrostedAppBar extends StatelessWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final bool centerTitle;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +163,7 @@ class _FrostedAppBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppBar(
+                toolbarHeight: 56.h,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 scrolledUnderElevation: 0,
@@ -178,18 +185,19 @@ class _FrostedAppBar extends StatelessWidget {
                       ]
                     : null,
               ),
-              Container(
-                height: 1.h,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      accent.withValues(alpha: 0.7),
-                      Colors.transparent,
-                    ],
+              if (showDivider)
+                Container(
+                  height: 1.h,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        accent.withValues(alpha: 0.7),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
