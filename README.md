@@ -390,12 +390,14 @@ Additional technical documentation covers:
 
 ---
 
-# 👨‍💻 Author
+
+# 👨‍💻 Authors
 
 <p align="center">
-  <strong>Abdelrahman Mohamed</strong><br/>
-  Flutter Developer
+  <strong>Abdelrahman Mohamed & Mohamed Waleed</strong><br/>
+  Flutter Developers
 </p>
+
 
 ---
 
