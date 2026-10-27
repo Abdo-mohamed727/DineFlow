@@ -1,0 +1,79 @@
+import 'package:dineflow/core/router/app_routes.dart';
+import 'package:dineflow/core/theme/app_colors.dart';
+import 'package:dineflow/core/widgets/app_loading_indicator.dart';
+import 'package:dineflow/core/widgets/app_scaffold.dart';
+import 'package:dineflow/features/auth/domain/entity/user_entity.dart';
+import 'package:dineflow/features/profile/presintation/view/widgets/profile_content.dart';
+import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+/// Profile screen: loads profile state and composes the profile widgets.
+///
+/// [role] controls the accent color / theming.
+/// [editProfileRoute] is the named route used to navigate to edit profile.
+class ProfileView extends StatefulWidget {
+  const ProfileView({
+    super.key,
+    this.role = AppRole.customer,
+    this.editProfileRoute = AppRoutes.customerEditProfile,
+  });
+
+  final AppRole role;
+  final String editProfileRoute;
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<ProfileCubit>().getProfile();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => AppScaffold(
+    title: 'Profile',
+    role: widget.role,
+    body: BlocConsumer<ProfileCubit, ProfileState>(
+      listener: (context, state) => state.whenOrNull(
+        error: (message, _, _) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.errorContainer,
+          ),
+        ),
+      ),
+      builder: (context, state) => state.when(
+        initial: () => const SizedBox.shrink(),
+        loading: (_, _) => const Center(child: AppLoadingIndicator()),
+        loaded: (user, _) => ProfileContent(
+          user: user,
+          role: widget.role,
+          editProfileRoute: widget.editProfileRoute,
+        ),
+        updateSuccess: (user) => ProfileContent(
+          user: user,
+          role: widget.role,
+          editProfileRoute: widget.editProfileRoute,
+        ),
+        error: (_, user, _) => ProfileContent(
+          user:
+              user ??
+              const UserEntity(
+                id: '',
+                name: 'Unavailable',
+                email: 'Unavailable',
+                role: UserRole.customer,
+              ),
+          role: widget.role,
+          editProfileRoute: widget.editProfileRoute,
+        ),
+      ),
+    ),
+  );
+}

@@ -1,0 +1,20 @@
+
+
+import 'package:dineflow/features/notification/data/model/notification_page_model.dart';
+
+abstract interface class NotificationDataSourceInterface{
+
+
+  
+   Future<NotificationsPageModel> getNotifications();
+
+  Future<void> markNotificationAsRead(String id);
+
+  Future<void> markAllNotificationsAsRead();
+
+  Future<NotificationsPageModel> getUnreadNotifications();
+  
+  Future<void> registerDeviceToken(String token);
+
+  Future<void> unregisterDeviceToken(String token);
+}

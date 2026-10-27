@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
+<<<<<<< HEAD
   runApp(const MyApp());
 }
 
@@ -60,6 +61,18 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
+=======
+  runApp(const MainApp());
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(body: Center(child: Text('Hello World!'))),
+>>>>>>> dev
     );
   }
 }

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -9,10 +10,13 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+   compileOptions {
+    isCoreLibraryDesugaringEnabled = true
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+ 
+
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -23,6 +27,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -32,6 +37,52 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+<<<<<<< HEAD
+=======
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "DineFlow Dev"
+            )
+        }
+
+        create("staging") {
+            dimension = "environment"
+
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "DineFlow Staging"
+            )
+        }
+
+        create("production") {
+            dimension = "environment"
+
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "DineFlow"
+            )
+        }
+    }
+>>>>>>> dev
+}
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 kotlin {

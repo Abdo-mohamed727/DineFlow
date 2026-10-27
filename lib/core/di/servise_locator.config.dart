@@ -1,0 +1,535 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
+
+// **************************************************************************
+// InjectableConfigGenerator
+// **************************************************************************
+
+// ignore_for_file: type=lint
+// coverage:ignore-file
+
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+
+import 'package:dineflow/core/di/router_module.dart' as _i1038;
+import 'package:dineflow/core/di/third_party_module.dart' as _i425;
+import 'package:dineflow/core/router/route_guard.dart' as _i696;
+import 'package:dineflow/core/services/notification/fcm_token_manager.dart'
+    as _i840;
+import 'package:dineflow/core/services/real_time/real_time_service.dart'
+    as _i1052;
+import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_impl.dart'
+    as _i784;
+import 'package:dineflow/features/auth/data/data_source/auth_remote_data_source_interface.dart'
+    as _i207;
+import 'package:dineflow/features/auth/data/repo/auth_repository_impl.dart'
+    as _i764;
+import 'package:dineflow/features/auth/domain/repo/auth_repository_interface.dart'
+    as _i821;
+import 'package:dineflow/features/auth/domain/usecase/get_current_user_data_usecase.dart'
+    as _i1047;
+import 'package:dineflow/features/auth/domain/usecase/login_usecase.dart'
+    as _i681;
+import 'package:dineflow/features/auth/domain/usecase/logout_usecase.dart'
+    as _i241;
+import 'package:dineflow/features/auth/domain/usecase/register_usecase.dart'
+    as _i1;
+import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart'
+    as _i87;
+import 'package:dineflow/features/cart/data/data_source/cart_remote_data_source_impl.dart'
+    as _i991;
+import 'package:dineflow/features/cart/data/data_source/cart_remote_data_source_interface.dart'
+    as _i692;
+import 'package:dineflow/features/cart/data/repo/cart_repository_impl.dart'
+    as _i729;
+import 'package:dineflow/features/cart/domain/repo/cart_repository_interface.dart'
+    as _i652;
+import 'package:dineflow/features/cart/domain/usecase/add_to_cart_usecase.dart'
+    as _i589;
+import 'package:dineflow/features/cart/domain/usecase/clear_cart_usecase.dart'
+    as _i534;
+import 'package:dineflow/features/cart/domain/usecase/get_cart_usecase.dart'
+    as _i453;
+import 'package:dineflow/features/cart/domain/usecase/remove_cart_item_usecase.dart'
+    as _i139;
+import 'package:dineflow/features/cart/domain/usecase/update_cart_item_usecase.dart'
+    as _i351;
+import 'package:dineflow/features/cart/presentation/view_model/cubit/cart_cubit.dart'
+    as _i137;
+import 'package:dineflow/features/kitchen/data/data_source/kitchen_remote_data_source_imp.dart'
+    as _i338;
+import 'package:dineflow/features/kitchen/data/data_source/kitchen_remote_data_source_interface.dart'
+    as _i136;
+import 'package:dineflow/features/kitchen/data/repo/kitchen_repo_imp.dart'
+    as _i336;
+import 'package:dineflow/features/kitchen/domain/repo/kitchen_repo_interface.dart'
+    as _i35;
+import 'package:dineflow/features/kitchen/domain/use_cases/confirm_order_usecase.dart'
+    as _i855;
+import 'package:dineflow/features/kitchen/domain/use_cases/mark_done_order_usecase.dart'
+    as _i918;
+import 'package:dineflow/features/kitchen/domain/use_cases/start_preparing_order_usecase.dart'
+    as _i194;
+import 'package:dineflow/features/kitchen/presentation/view_model/cubit/kitchen_cubit.dart'
+    as _i400;
+import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_impl.dart'
+    as _i853;
+import 'package:dineflow/features/menu/data/data_source/menu_remote_data_source_interface.dart'
+    as _i944;
+import 'package:dineflow/features/menu/data/repo/menu_repository_impl.dart'
+    as _i591;
+import 'package:dineflow/features/menu/domain/repo/menu_repository_interface.dart'
+    as _i1012;
+import 'package:dineflow/features/menu/domain/usecase/get_categories_usecase.dart'
+    as _i492;
+import 'package:dineflow/features/menu/domain/usecase/get_products_usecase.dart'
+    as _i1;
+import 'package:dineflow/features/menu/domain/usecase/search_products_usecase.dart'
+    as _i1028;
+import 'package:dineflow/features/menu/presentation/view_model/cubit/menu_cubit.dart'
+    as _i1064;
+import 'package:dineflow/features/notification/data/data_source/notification_data_source_imp.dart'
+    as _i1044;
+import 'package:dineflow/features/notification/data/data_source/notification_data_source_interface.dart'
+    as _i658;
+import 'package:dineflow/features/notification/data/repo/notification_repo_impl.dart'
+    as _i854;
+import 'package:dineflow/features/notification/domain/repo/notification_repo_interface.dart'
+    as _i472;
+import 'package:dineflow/features/notification/domain/usecases/get_notifications_usecase.dart'
+    as _i968;
+import 'package:dineflow/features/notification/domain/usecases/mark_all_notifications_as_read_usecase.dart'
+    as _i305;
+import 'package:dineflow/features/notification/domain/usecases/mark_notification_as_read_usecase.dart'
+    as _i788;
+import 'package:dineflow/features/notification/domain/usecases/register_device_token_usecase.dart'
+    as _i898;
+import 'package:dineflow/features/notification/domain/usecases/unregister_device_token_usecase.dart'
+    as _i1016;
+import 'package:dineflow/features/notification/presentation/view_models/notification_cubit.dart'
+    as _i304;
+import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_impl.dart'
+    as _i240;
+import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart'
+    as _i146;
+import 'package:dineflow/features/orders/data/repo/order_repository_impl.dart'
+    as _i971;
+import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart'
+    as _i300;
+import 'package:dineflow/features/orders/domain/usecase/close_dining_session_usecase.dart'
+    as _i251;
+import 'package:dineflow/features/orders/domain/usecase/create_dine_in_order_usecase.dart'
+    as _i440;
+import 'package:dineflow/features/orders/domain/usecase/create_take_away_order_usecase.dart'
+    as _i173;
+import 'package:dineflow/features/orders/domain/usecase/get_active_dining_sessions_usecase.dart'
+    as _i451;
+import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart'
+    as _i181;
+import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart'
+    as _i612;
+import 'package:dineflow/features/orders/domain/usecase/request_waiter_usecase.dart'
+    as _i930;
+import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart'
+    as _i279;
+import 'package:dineflow/features/orders/presentation/view_model/cubit/checkout_cubit.dart'
+    as _i713;
+import 'package:dineflow/features/orders/presentation/view_model/cubit/orders_cubit.dart'
+    as _i427;
+import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_impl.dart'
+    as _i485;
+import 'package:dineflow/features/profile/data/data_source/profile_remote_data_source_interface.dart'
+    as _i752;
+import 'package:dineflow/features/profile/data/repo/profile_repository_impl.dart'
+    as _i491;
+import 'package:dineflow/features/profile/domain/repo/profile_repository_interface.dart'
+    as _i995;
+import 'package:dineflow/features/profile/domain/usecase/get_profile_usecase.dart'
+    as _i831;
+import 'package:dineflow/features/profile/domain/usecase/update_profile_usecase.dart'
+    as _i922;
+import 'package:dineflow/features/profile/domain/usecase/upload_profile_image_usecase.dart'
+    as _i833;
+import 'package:dineflow/features/profile/presintation/view_model/cubit/profile_cubit.dart'
+    as _i87;
+import 'package:dineflow/features/waiter/data/data_source/order_realtime_data_source.dart'
+    as _i89;
+import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_imp.dart'
+    as _i523;
+import 'package:dineflow/features/waiter/data/data_source/waiter_data_source_interface.dart'
+    as _i463;
+import 'package:dineflow/features/waiter/data/repo/order_realtime_repository_impl.dart'
+    as _i759;
+import 'package:dineflow/features/waiter/data/repo/waiter_repo_imp.dart'
+    as _i120;
+import 'package:dineflow/features/waiter/domain/repo/order_realtime_repository.dart'
+    as _i929;
+import 'package:dineflow/features/waiter/domain/repo/waiter_repo_interface.dart'
+    as _i738;
+import 'package:dineflow/features/waiter/domain/use_case/accept_request_use_case.dart'
+    as _i676;
+import 'package:dineflow/features/waiter/domain/use_case/complete_request_use_case.dart'
+    as _i882;
+import 'package:dineflow/features/waiter/domain/use_case/create_dine_order_use_case.dart'
+    as _i226;
+import 'package:dineflow/features/waiter/domain/use_case/create_takeaway_order_use_case.dart'
+    as _i118;
+import 'package:dineflow/features/waiter/domain/use_case/get_avaliable_table_use_case.dart'
+    as _i572;
+import 'package:dineflow/features/waiter/domain/use_case/get_order_by_id_use_case.dart'
+    as _i300;
+import 'package:dineflow/features/waiter/domain/use_case/get_orders_by_status_use_case.dart'
+    as _i44;
+import 'package:dineflow/features/waiter/domain/use_case/get_orders_use_case.dart'
+    as _i443;
+import 'package:dineflow/features/waiter/domain/use_case/get_pending_requests_use_case.dart'
+    as _i520;
+import 'package:dineflow/features/waiter/domain/use_case/get_table_by_id_use_case.dart'
+    as _i813;
+import 'package:dineflow/features/waiter/domain/use_case/get_tables_use_case.dart'
+    as _i280;
+import 'package:dineflow/features/waiter/domain/use_case/update_order_status_use_case.dart'
+    as _i817;
+import 'package:dineflow/features/waiter/domain/use_case/update_table_use_case.dart'
+    as _i850;
+import 'package:dineflow/features/waiter/domain/use_case/watch_order_events_use_case.dart'
+    as _i268;
+import 'package:dineflow/features/waiter/presentation/view_model/cubit/order_cubit.dart'
+    as _i547;
+import 'package:dineflow/features/waiter/presentation/view_model/request_cubit/request_cubit.dart'
+    as _i23;
+import 'package:dineflow/features/waiter/presentation/view_model/table/table_cubit.dart'
+    as _i886;
+import 'package:dio/dio.dart' as _i361;
+import 'package:get_it/get_it.dart' as _i174;
+import 'package:injectable/injectable.dart' as _i526;
+
+extension GetItInjectableX on _i174.GetIt {
+  // initializes the registration of main-scope dependencies inside of GetIt
+  _i174.GetIt init({
+    String? environment,
+    _i526.EnvironmentFilter? environmentFilter,
+  }) {
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final routerModule = _$RouterModule();
+    final thirdPartyModule = _$ThirdPartyModule();
+    gh.singleton<_i696.RouterNotifier>(() => routerModule.routerNotifier);
+    gh.lazySingleton<_i361.Dio>(() => thirdPartyModule.dio);
+    gh.lazySingleton<_i1052.RealTimeService>(() => _i1052.RealTimeService());
+    gh.lazySingleton<_i136.KitchenRemoteDataSourceInterface>(
+      () => _i338.KitchenRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i944.MenuRemoteDataSource>(
+      () => _i853.MenuRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i89.OrderRealtimeDataSource>(
+      () => _i89.OrderRealtimeDataSource(gh<_i1052.RealTimeService>()),
+    );
+    gh.factory<_i463.WaiterDataSource>(
+      () => _i523.WaiterDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i207.AuthRemoteDataSource>(
+      () => _i784.AuthRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i752.ProfileRemoteDataSourceInterface>(
+      () => _i485.ProfileRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i35.KitchenRepoInterface>(
+      () => _i336.KitchenRepoImp(gh<_i136.KitchenRemoteDataSourceInterface>()),
+    );
+    gh.lazySingleton<_i658.NotificationDataSourceInterface>(
+      () => _i1044.NotificationDataSourceImp(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i146.OrderRemoteDataSource>(
+      () => _i240.OrderRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i692.CartRemoteDataSource>(
+      () => _i991.CartRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i1012.MenuRepositoryInterface>(
+      () => _i591.MenuRepositoryImpl(gh<_i944.MenuRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i300.OrderRepositoryInterface>(
+      () => _i971.OrderRepositoryImpl(gh<_i146.OrderRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i652.CartRepositoryInterface>(
+      () => _i729.CartRepositoryImpl(gh<_i692.CartRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i929.OrderRealtimeRepository>(
+      () =>
+          _i759.OrderRealtimeRepositoryImpl(gh<_i89.OrderRealtimeDataSource>()),
+    );
+    gh.factory<_i268.WatchOrderEventsUseCase>(
+      () => _i268.WatchOrderEventsUseCase(gh<_i929.OrderRealtimeRepository>()),
+    );
+    gh.lazySingleton<_i995.ProfileRepositoryInterface>(
+      () => _i491.ProfileRepositoryImpl(
+        gh<_i752.ProfileRemoteDataSourceInterface>(),
+      ),
+    );
+    gh.factory<_i738.WaiterRepository>(
+      () => _i120.WaiterRepositoryImpl(gh<_i463.WaiterDataSource>()),
+    );
+    gh.lazySingleton<_i589.AddToCartUseCase>(
+      () => _i589.AddToCartUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i534.ClearCartUseCase>(
+      () => _i534.ClearCartUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i453.GetCartUseCase>(
+      () => _i453.GetCartUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i139.RemoveCartItemUseCase>(
+      () => _i139.RemoveCartItemUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i351.UpdateCartItemUseCase>(
+      () => _i351.UpdateCartItemUseCase(gh<_i652.CartRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i821.AuthRepositoryInterface>(
+      () => _i764.AuthRepositoryImpl(gh<_i207.AuthRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i137.CartCubit>(
+      () => _i137.CartCubit(
+        gh<_i453.GetCartUseCase>(),
+        gh<_i589.AddToCartUseCase>(),
+        gh<_i351.UpdateCartItemUseCase>(),
+        gh<_i139.RemoveCartItemUseCase>(),
+        gh<_i534.ClearCartUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i492.GetCategoriesUseCase>(
+      () => _i492.GetCategoriesUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i1.GetProductsUseCase>(
+      () => _i1.GetProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i1028.SearchProductsUseCase>(
+      () => _i1028.SearchProductsUseCase(gh<_i1012.MenuRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i472.NotificationRepoInterface>(
+      () => _i854.NotificationRepoImpl(
+        gh<_i658.NotificationDataSourceInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i676.AcceptRequestUseCase>(
+      () => _i676.AcceptRequestUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i882.CompleteRequestUseCase>(
+      () => _i882.CompleteRequestUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i226.CreateDineOrderUseCase>(
+      () => _i226.CreateDineOrderUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i118.CreateTakeAwayOrderUseCase>(
+      () => _i118.CreateTakeAwayOrderUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i572.GetAvailableWaiterTablesUseCase>(
+      () => _i572.GetAvailableWaiterTablesUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i300.GetOrderByIdUseCase>(
+      () => _i300.GetOrderByIdUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i44.GetOrdersByStatusUseCase>(
+      () => _i44.GetOrdersByStatusUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i443.GetOrdersUseCaseWaiter>(
+      () => _i443.GetOrdersUseCaseWaiter(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i520.GetPendingRequestsUseCase>(
+      () => _i520.GetPendingRequestsUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i813.GetTableByIdUseCase>(
+      () => _i813.GetTableByIdUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i280.GetTablesUseCase>(
+      () => _i280.GetTablesUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i817.UpdateOrderStatusUseCase>(
+      () => _i817.UpdateOrderStatusUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i850.UpdateTableUseCase>(
+      () => _i850.UpdateTableUseCase(gh<_i738.WaiterRepository>()),
+    );
+    gh.lazySingleton<_i251.CloseDiningSessionUseCase>(
+      () =>
+          _i251.CloseDiningSessionUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i440.CreateDineInOrderUsecase>(
+      () =>
+          _i440.CreateDineInOrderUsecase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i173.CreateTakeAwayOrderUsecase>(
+      () => _i173.CreateTakeAwayOrderUsecase(
+        gh<_i300.OrderRepositoryInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i451.GetActiveDiningSessionsUseCase>(
+      () => _i451.GetActiveDiningSessionsUseCase(
+        gh<_i300.OrderRepositoryInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i181.GetAvailableTablesUseCase>(
+      () =>
+          _i181.GetAvailableTablesUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i612.GetOrdersUseCase>(
+      () => _i612.GetOrdersUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i930.RequestWaiterUseCase>(
+      () => _i930.RequestWaiterUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i279.StartDiningUseCase>(
+      () => _i279.StartDiningUseCase(gh<_i300.OrderRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i713.CheckoutCubit>(
+      () => _i713.CheckoutCubit(
+        gh<_i173.CreateTakeAwayOrderUsecase>(),
+        gh<_i440.CreateDineInOrderUsecase>(),
+        gh<_i181.GetAvailableTablesUseCase>(),
+        gh<_i279.StartDiningUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i855.ConfirmOrderUseCase>(
+      () => _i855.ConfirmOrderUseCase(gh<_i35.KitchenRepoInterface>()),
+    );
+    gh.lazySingleton<_i918.MarkReadyUseCase>(
+      () => _i918.MarkReadyUseCase(gh<_i35.KitchenRepoInterface>()),
+    );
+    gh.lazySingleton<_i194.StartPreparingUseCase>(
+      () => _i194.StartPreparingUseCase(gh<_i35.KitchenRepoInterface>()),
+    );
+    gh.factory<_i400.KitchenCubit>(
+      () => _i400.KitchenCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i855.ConfirmOrderUseCase>(),
+        gh<_i194.StartPreparingUseCase>(),
+        gh<_i918.MarkReadyUseCase>(),
+        gh<_i1052.RealTimeService>(),
+      ),
+    );
+    gh.factory<_i23.RequestCubit>(
+      () => _i23.RequestCubit(
+        gh<_i520.GetPendingRequestsUseCase>(),
+        gh<_i676.AcceptRequestUseCase>(),
+        gh<_i882.CompleteRequestUseCase>(),
+        gh<_i1052.RealTimeService>(),
+      ),
+    );
+    gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
+      () =>
+          _i1047.GetCurrentUserDataUseCase(gh<_i821.AuthRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i681.LoginUseCase>(
+      () => _i681.LoginUseCase(gh<_i821.AuthRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i241.LogoutUseCase>(
+      () => _i241.LogoutUseCase(gh<_i821.AuthRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i1.RegisterUseCase>(
+      () => _i1.RegisterUseCase(gh<_i821.AuthRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i831.GetProfileUseCase>(
+      () => _i831.GetProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i922.UpdateProfileUseCase>(
+      () => _i922.UpdateProfileUseCase(gh<_i995.ProfileRepositoryInterface>()),
+    );
+    gh.lazySingleton<_i833.UploadProfileImageUseCase>(
+      () => _i833.UploadProfileImageUseCase(
+        gh<_i995.ProfileRepositoryInterface>(),
+      ),
+    );
+    gh.factory<_i547.OrderCubit>(
+      () => _i547.OrderCubit(
+        gh<_i226.CreateDineOrderUseCase>(),
+        gh<_i118.CreateTakeAwayOrderUseCase>(),
+        gh<_i443.GetOrdersUseCaseWaiter>(),
+        gh<_i44.GetOrdersByStatusUseCase>(),
+        gh<_i300.GetOrderByIdUseCase>(),
+        gh<_i817.UpdateOrderStatusUseCase>(),
+      ),
+    );
+    gh.factory<_i1064.MenuCubit>(
+      () => _i1064.MenuCubit(
+        gh<_i492.GetCategoriesUseCase>(),
+        gh<_i1.GetProductsUseCase>(),
+        gh<_i1028.SearchProductsUseCase>(),
+      ),
+    );
+    gh.factory<_i427.OrdersCubit>(
+      () => _i427.OrdersCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i1052.RealTimeService>(),
+        gh<_i930.RequestWaiterUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i968.GetNotificationsUseCase>(
+      () =>
+          _i968.GetNotificationsUseCase(gh<_i472.NotificationRepoInterface>()),
+    );
+    gh.lazySingleton<_i305.MarkAllNotificationsAsReadUseCase>(
+      () => _i305.MarkAllNotificationsAsReadUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i788.MarkNotificationAsReadUseCase>(
+      () => _i788.MarkNotificationAsReadUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i898.RegisterDeviceTokenUseCase>(
+      () => _i898.RegisterDeviceTokenUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.lazySingleton<_i1016.UnregisterDeviceTokenUseCase>(
+      () => _i1016.UnregisterDeviceTokenUseCase(
+        gh<_i472.NotificationRepoInterface>(),
+      ),
+    );
+    gh.factory<_i886.TableCubit>(
+      () => _i886.TableCubit(
+        gh<_i280.GetTablesUseCase>(),
+        gh<_i181.GetAvailableTablesUseCase>(),
+        gh<_i813.GetTableByIdUseCase>(),
+        gh<_i850.UpdateTableUseCase>(),
+        gh<_i451.GetActiveDiningSessionsUseCase>(),
+        gh<_i251.CloseDiningSessionUseCase>(),
+      ),
+    );
+    gh.factory<_i87.ProfileCubit>(
+      () => _i87.ProfileCubit(
+        gh<_i831.GetProfileUseCase>(),
+        gh<_i922.UpdateProfileUseCase>(),
+        gh<_i833.UploadProfileImageUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i840.FcmTokenManager>(
+      () => _i840.FcmTokenManager(
+        gh<_i898.RegisterDeviceTokenUseCase>(),
+        gh<_i1016.UnregisterDeviceTokenUseCase>(),
+      ),
+    );
+    gh.factory<_i304.NotificationCubit>(
+      () => _i304.NotificationCubit(
+        gh<_i968.GetNotificationsUseCase>(),
+        gh<_i788.MarkNotificationAsReadUseCase>(),
+        gh<_i305.MarkAllNotificationsAsReadUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i87.AuthCubit>(
+      () => _i87.AuthCubit(
+        gh<_i681.LoginUseCase>(),
+        gh<_i1.RegisterUseCase>(),
+        gh<_i241.LogoutUseCase>(),
+        gh<_i1047.GetCurrentUserDataUseCase>(),
+        gh<_i840.FcmTokenManager>(),
+        gh<_i1052.RealTimeService>(),
+      ),
+    );
+    return this;
+  }
+}
+
+class _$RouterModule extends _i1038.RouterModule {}
+
+class _$ThirdPartyModule extends _i425.ThirdPartyModule {}
