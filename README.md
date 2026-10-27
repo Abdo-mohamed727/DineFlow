@@ -72,7 +72,7 @@ https://github.com/user-attachments/assets/b4a10db9-56dd-4ca9-9d66-4aed0c547713
 
 <p align="center">
     <img width="2082" height="1018" alt="DineFlow_preview_customer" src="https://github.com/user-attachments/assets/fdd3cdea-72c2-4db7-b452-9ab2f552e7f7" />
-   <img width="1690" height="1018" alt="DineFlow_preview_waiter" src="https://github.com/user-attachments/assets/d061d161-60c3-4350-8597-78e46b0f9f52" />
+    <img width="2082" height="1018" alt="DineFlow_preview_waiter" src="https://github.com/user-attachments/assets/4ec9fd6f-e1a8-40c6-85c7-6c8655a3ee74" />
     <img width="1298" height="1018" alt="DineFlow_preview_kitchen" src="https://github.com/user-attachments/assets/4f928d97-7bbe-4fdc-9248-cd01197bbe33" />
 </p>
 
