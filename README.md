@@ -206,7 +206,7 @@ Flutter handles navigation and route protection, while the backend remains respo
 ## Installation
 
 ```bash
-git clone <repository-url>
+git clone  (https://github.com/Abdo-mohamed727/DineFlow.git)
 
 cd dineflow
 
