@@ -4,6 +4,7 @@ import 'package:dineflow/core/router/auth_status_mapper.dart';
 import 'package:dineflow/core/services/notification/local_notification_service.dart';
 import 'package:dineflow/core/services/notification/notification_handler.dart';
 import 'package:dineflow/features/auth/presintation/view_mode/cubit/auth_cubit.dart';
+import 'package:dineflow/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,15 +14,12 @@ import 'package:dineflow/core/router/app_router.dart';
 import 'package:dineflow/core/router/route_guard.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:dineflow/firebase_options.dart';
 import 'package:dineflow/core/services/notification/fcm_token_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LocalNotificationService.initialize();
 
   AppConfig.instance = const AppConfig(

@@ -5,10 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-<<<<<<< HEAD
-
-func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-=======
 import cloud_firestore
 import file_selector_macos
 import firebase_auth
@@ -27,5 +23,4 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FlutterLocalNotificationsPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
->>>>>>> dev
 }

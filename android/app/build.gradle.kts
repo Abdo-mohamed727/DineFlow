@@ -14,9 +14,12 @@ android {
     isCoreLibraryDesugaringEnabled = true
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+   
 }
- 
-
+  
+    buildFeatures {
+    resValues = true
+}
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -37,8 +40,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-<<<<<<< HEAD
-=======
 
     flavorDimensions += "environment"
 
@@ -79,7 +80,6 @@ android {
             )
         }
     }
->>>>>>> dev
 }
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
