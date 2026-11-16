@@ -111,14 +111,24 @@ import 'package:dineflow/features/orders/data/data_source/order_remote_data_sour
     as _i240;
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart'
     as _i146;
+import 'package:dineflow/features/orders/data/data_source/pending_order_local_data_source_impl.dart'
+    as _i404;
+import 'package:dineflow/features/orders/data/data_source/pending_order_local_data_source_interface.dart'
+    as _i213;
+import 'package:dineflow/features/orders/data/database/dine_flow_database.dart'
+    as _i169;
 import 'package:dineflow/features/orders/data/repo/order_repository_impl.dart'
     as _i971;
+import 'package:dineflow/features/orders/data/services/order_sync_service.dart'
+    as _i768;
 import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart'
     as _i300;
 import 'package:dineflow/features/orders/domain/usecase/close_dining_session_usecase.dart'
     as _i251;
 import 'package:dineflow/features/orders/domain/usecase/create_dine_in_order_usecase.dart'
     as _i440;
+import 'package:dineflow/features/orders/domain/usecase/create_order_usecase.dart'
+    as _i394;
 import 'package:dineflow/features/orders/domain/usecase/create_take_away_order_usecase.dart'
     as _i173;
 import 'package:dineflow/features/orders/domain/usecase/get_active_dining_sessions_usecase.dart'
@@ -202,18 +212,26 @@ import 'package:dineflow/features/waiter/presentation/view_model/table/table_cub
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
+import 'package:uuid/uuid.dart' as _i706;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  _i174.GetIt init({
+  Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    final routerModule = _$RouterModule();
     final thirdPartyModule = _$ThirdPartyModule();
+    final routerModule = _$RouterModule();
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => thirdPartyModule.sharedPreferences,
+      preResolve: true,
+    );
     gh.singleton<_i696.RouterNotifier>(() => routerModule.routerNotifier);
     gh.lazySingleton<_i361.Dio>(() => thirdPartyModule.dio);
+    gh.lazySingleton<_i706.Uuid>(() => thirdPartyModule.uuid);
+    gh.lazySingleton<_i169.DineFlowDatabase>(() => thirdPartyModule.database);
     gh.lazySingleton<_i1052.RealTimeService>(() => _i1052.RealTimeService());
     gh.lazySingleton<_i136.KitchenRemoteDataSourceInterface>(
       () => _i338.KitchenRemoteDataSourceImpl(gh<_i361.Dio>()),
@@ -245,11 +263,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i692.CartRemoteDataSource>(
       () => _i991.CartRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i213.PendingOrderLocalDataSource>(
+      () => _i404.PendingOrderLocalDataSourceImpl(gh<_i169.DineFlowDatabase>()),
+    );
     gh.lazySingleton<_i1012.MenuRepositoryInterface>(
       () => _i591.MenuRepositoryImpl(gh<_i944.MenuRemoteDataSource>()),
-    );
-    gh.lazySingleton<_i300.OrderRepositoryInterface>(
-      () => _i971.OrderRepositoryImpl(gh<_i146.OrderRemoteDataSource>()),
     );
     gh.lazySingleton<_i652.CartRepositoryInterface>(
       () => _i729.CartRepositoryImpl(gh<_i692.CartRemoteDataSource>()),
@@ -294,6 +312,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i351.UpdateCartItemUseCase>(),
         gh<_i139.RemoveCartItemUseCase>(),
         gh<_i534.ClearCartUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i300.OrderRepositoryInterface>(
+      () => _i971.OrderRepositoryImpl(
+        gh<_i146.OrderRemoteDataSource>(),
+        gh<_i213.PendingOrderLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i492.GetCategoriesUseCase>(
@@ -380,14 +404,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i279.StartDiningUseCase>(
       () => _i279.StartDiningUseCase(gh<_i300.OrderRepositoryInterface>()),
     );
-    gh.lazySingleton<_i713.CheckoutCubit>(
-      () => _i713.CheckoutCubit(
-        gh<_i173.CreateTakeAwayOrderUsecase>(),
-        gh<_i440.CreateDineInOrderUsecase>(),
-        gh<_i181.GetAvailableTablesUseCase>(),
-        gh<_i279.StartDiningUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i855.ConfirmOrderUseCase>(
       () => _i855.ConfirmOrderUseCase(gh<_i35.KitchenRepoInterface>()),
     );
@@ -414,6 +430,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1052.RealTimeService>(),
       ),
     );
+    gh.lazySingleton<_i768.OrderSyncService>(
+      () => thirdPartyModule.orderSyncService(
+        gh<_i300.OrderRepositoryInterface>(),
+      ),
+    );
     gh.lazySingleton<_i1047.GetCurrentUserDataUseCase>(
       () =>
           _i1047.GetCurrentUserDataUseCase(gh<_i821.AuthRepositoryInterface>()),
@@ -438,6 +459,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i995.ProfileRepositoryInterface>(),
       ),
     );
+    gh.factory<_i427.OrdersCubit>(
+      () => _i427.OrdersCubit(
+        gh<_i612.GetOrdersUseCase>(),
+        gh<_i1052.RealTimeService>(),
+        gh<_i930.RequestWaiterUseCase>(),
+        gh<_i300.OrderRepositoryInterface>(),
+        gh<_i768.OrderSyncService>(),
+      ),
+    );
     gh.factory<_i547.OrderCubit>(
       () => _i547.OrderCubit(
         gh<_i226.CreateDineOrderUseCase>(),
@@ -448,18 +478,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i817.UpdateOrderStatusUseCase>(),
       ),
     );
+    gh.lazySingleton<_i394.CreateOrderUseCase>(
+      () => _i394.CreateOrderUseCase(
+        gh<_i300.OrderRepositoryInterface>(),
+        gh<_i706.Uuid>(),
+      ),
+    );
     gh.factory<_i1064.MenuCubit>(
       () => _i1064.MenuCubit(
         gh<_i492.GetCategoriesUseCase>(),
         gh<_i1.GetProductsUseCase>(),
         gh<_i1028.SearchProductsUseCase>(),
-      ),
-    );
-    gh.factory<_i427.OrdersCubit>(
-      () => _i427.OrdersCubit(
-        gh<_i612.GetOrdersUseCase>(),
-        gh<_i1052.RealTimeService>(),
-        gh<_i930.RequestWaiterUseCase>(),
       ),
     );
     gh.lazySingleton<_i968.GetNotificationsUseCase>(
@@ -503,6 +532,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i833.UploadProfileImageUseCase>(),
       ),
     );
+    gh.lazySingleton<_i713.CheckoutCubit>(
+      () => _i713.CheckoutCubit(
+        gh<_i394.CreateOrderUseCase>(),
+        gh<_i181.GetAvailableTablesUseCase>(),
+        gh<_i279.StartDiningUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i840.FcmTokenManager>(
       () => _i840.FcmTokenManager(
         gh<_i898.RegisterDeviceTokenUseCase>(),
@@ -530,6 +566,6 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$RouterModule extends _i1038.RouterModule {}
-
 class _$ThirdPartyModule extends _i425.ThirdPartyModule {}
+
+class _$RouterModule extends _i1038.RouterModule {}

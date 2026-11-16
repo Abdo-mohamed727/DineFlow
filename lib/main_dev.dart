@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:dineflow/app_config.dart';
 import 'package:dineflow/core/router/app_router.dart';
 import 'package:dineflow/core/router/route_guard.dart';
+import 'package:dineflow/features/orders/data/services/order_sync_service.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:dineflow/firebase_options.dart';
@@ -19,9 +20,7 @@ import 'package:dineflow/core/services/notification/fcm_token_manager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LocalNotificationService.initialize();
 
   AppConfig.instance = const AppConfig(
@@ -30,6 +29,7 @@ void main() async {
   );
 
   await configureDependencies();
+  await sl<OrderSyncService>().start();
   sl<FcmTokenManager>().init();
   runApp(const DineFlowApp());
 }

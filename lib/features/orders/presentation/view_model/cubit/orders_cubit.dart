@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:dineflow/core/enums/order_status.dart';
 import 'package:dineflow/core/services/real_time/real_time_service.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
 import 'package:dineflow/core/usecases/result.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/domain/entity/request_waiter_entity.dart';
+import 'package:dineflow/features/orders/domain/entity/pending_order.dart';
+import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart';
+import 'package:dineflow/features/orders/data/services/order_sync_service.dart';
 import 'package:dineflow/features/orders/domain/usecase/get_orders_usecase.dart';
 import 'package:dineflow/features/orders/domain/usecase/request_waiter_usecase.dart';
 import 'package:dineflow/features/orders/data/models/order_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -19,13 +25,19 @@ class OrdersCubit extends Cubit<OrdersState> {
   final GetOrdersUseCase _getOrdersUseCase;
   final RealTimeService _realTimeService;
   final RequestWaiterUseCase _requestWaiterUseCase;
+  final OrderRepositoryInterface _orderRepository;
+  final OrderSyncService _orderSyncService;
   List<OrderEntity> _allOrders = [];
+  final pendingOrders = ValueNotifier<List<PendingOrder>>([]);
   OrderStatus? _selectedStatus;
+  StreamSubscription<void>? _syncSubscription;
 
   OrdersCubit(
     this._getOrdersUseCase,
     this._realTimeService,
     this._requestWaiterUseCase,
+    this._orderRepository,
+    this._orderSyncService,
   ) : super(const OrdersState.initial());
 
   List<OrderEntity> get allOrders => List.unmodifiable(_allOrders);
@@ -33,7 +45,33 @@ class OrdersCubit extends Cubit<OrdersState> {
 
   Future<void> start() async {
     _listenToRealTime();
+    _syncSubscription = _orderSyncService.syncCompleted.listen((_) {
+      unawaited(refreshPendingOrders());
+    });
     await fetchOrders();
+    await refreshPendingOrders();
+  }
+
+  Future<void> refreshPendingOrders() async {
+    final orders = await _orderRepository.getPendingOrders();
+    if (!isClosed) pendingOrders.value = orders;
+  }
+
+  Future<void> retryPendingOrder(String clientOrderId) async {
+    await _orderRepository.updatePendingOrderStatus(
+      clientOrderId,
+      PendingOrderStatus.pending,
+      retryCount: 0,
+      clearLastError: true,
+    );
+    await refreshPendingOrders();
+    await _orderSyncService.syncPendingOrders();
+    await refreshPendingOrders();
+  }
+
+  Future<void> discardPendingOrder(String clientOrderId) async {
+    await _orderRepository.deletePendingOrder(clientOrderId);
+    await refreshPendingOrders();
   }
 
   void _listenToRealTime() {
@@ -191,10 +229,12 @@ class OrdersCubit extends Cubit<OrdersState> {
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     _realTimeService.offOrderCreated(_handleOrderCreated);
     _realTimeService.offOrderUpdate(_handleOrderUpdate);
-    return super.close();
+    await _syncSubscription?.cancel();
+    pendingOrders.dispose();
+    await super.close();
   }
 }
 
