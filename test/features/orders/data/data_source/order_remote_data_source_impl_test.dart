@@ -1,9 +1,62 @@
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_impl.dart';
+import 'package:dineflow/features/orders/data/models/order_request.dart';
 import 'package:dineflow/features/orders/data/models/request_waiter_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('sends clientOrderId in the create-order request body', () async {
+    const clientOrderId = '0d69fcb5-b792-48c6-a2fc-bbc6e6f4a8f3';
+    Map<String, dynamic>? sentBody;
+    final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          sentBody = Map<String, dynamic>.from(options.data as Map);
+          handler.resolve(
+            Response(
+              requestOptions: options,
+              data: {
+                'data': {'id': 'order-1', 'status': 'PENDING'},
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    await OrderRemoteDataSourceImpl(dio).createTakeAwayOrder(
+      const CreateOrderRequest.takeaway(clientOrderId: clientOrderId),
+    );
+
+    expect(sentBody, {'orderType': 'TAKEAWAY', 'clientOrderId': clientOrderId});
+  });
+
+  test('accepts a 201 response when creating an order', () async {
+    final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          handler.resolve(
+            Response(
+              requestOptions: options,
+              statusCode: 201,
+              data: {
+                'data': {'id': 'order-1', 'status': 'PENDING'},
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    final order = await OrderRemoteDataSourceImpl(
+      dio,
+    ).createTakeAwayOrder(const CreateOrderRequest.takeaway());
+
+    expect(order.id, 'order-1');
+  });
+
   test(
     'loads active dining sessions from the sessions list response',
     () async {

@@ -83,11 +83,7 @@ class ApiErrorHandler {
   }
 
   static ApiErrorModel _local(String message, DioException e) {
-    return ApiErrorModel(
-      success: false,
-      message: message,
-      error: e.message,
-    );
+    return ApiErrorModel(success: false, message: message, error: e.message);
   }
 
   /// Maps networking errors to [AppException] so UI never sees raw Dio text.
@@ -109,6 +105,7 @@ class ApiErrorHandler {
         case DioExceptionType.connectionTimeout:
         case DioExceptionType.sendTimeout:
         case DioExceptionType.receiveTimeout:
+        case DioExceptionType.transformTimeout:
         case DioExceptionType.connectionError:
           throw NetworkException(message);
         default:
@@ -117,10 +114,13 @@ class ApiErrorHandler {
 
       final code = error.response?.statusCode;
       if (code == 401 || code == 403) {
-        throw AuthException(message);
+        throw AuthException(message, statusCode: code);
       }
       if (code == 404) {
-        throw NotFoundException(message);
+        throw NotFoundException(message, statusCode: code);
+      }
+      if (code != null && code >= 400) {
+        throw ServerException(message, statusCode: code);
       }
     }
 

@@ -1,11 +1,15 @@
 import 'package:dineflow/core/error/exception.dart';
 import 'package:dineflow/core/error/failure.dart';
 import 'package:dineflow/core/usecases/result.dart';
+import 'package:dineflow/core/enums/order_type.dart';
 import 'package:dineflow/features/orders/data/data_source/order_remote_data_source_interface.dart';
 import 'package:dineflow/features/orders/data/models/order_request.dart';
 import 'package:dineflow/features/orders/data/models/request_waiter_model.dart';
+import 'package:dineflow/features/orders/data/data_source/pending_order_local_data_source_interface.dart';
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
+import 'package:dineflow/features/orders/domain/entity/create_order_params.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
+import 'package:dineflow/features/orders/domain/entity/pending_order.dart';
 import 'package:dineflow/features/orders/domain/entity/request_waiter_entity.dart';
 import 'package:dineflow/features/orders/domain/repo/order_repository_interface.dart';
 import 'package:injectable/injectable.dart';
@@ -13,8 +17,9 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: OrderRepositoryInterface)
 class OrderRepositoryImpl implements OrderRepositoryInterface {
   final OrderRemoteDataSource _remoteDataSource;
+  final PendingOrderLocalDataSource _pendingOrders;
 
-  OrderRepositoryImpl(this._remoteDataSource);
+  OrderRepositoryImpl(this._remoteDataSource, this._pendingOrders);
 
   @override
   Future<Result<List<OrderEntity>>> getOrders() async {
@@ -37,19 +42,22 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
 
   @override
   Future<Result<OrderEntity>> createTakeAwayOrder(
-    CreateOrderRequest request,
+    CreateOrderParams params,
   ) async {
     try {
+      final request = CreateOrderRequest.takeaway(tableId: params.tableId);
       final model = await _remoteDataSource.createTakeAwayOrder(request);
       return Success(model.toEntity());
     } on AuthException catch (e) {
-      return FailureResult(AuthFailure(e.message));
+      return FailureResult(AuthFailure(e.message, statusCode: e.statusCode));
     } on NetworkException catch (e) {
       return FailureResult(NetworkFailure(e.message));
     } on NotFoundException catch (e) {
-      return FailureResult(NotFoundFailure(e.message));
+      return FailureResult(
+        NotFoundFailure(e.message, statusCode: e.statusCode),
+      );
     } on ServerException catch (e) {
-      return FailureResult(ServerFailure(e.message));
+      return FailureResult(ServerFailure(e.message, statusCode: e.statusCode));
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
     }
@@ -57,6 +65,87 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
 
   @override
   Future<Result<OrderEntity>> createDineInOrder(
+    CreateOrderParams params,
+  ) async {
+    try {
+      final sessionId = params.diningSessionId;
+      if (sessionId == null || sessionId.isEmpty) {
+        return FailureResult(
+          ServerFailure('Dining session is required for dine-in orders.'),
+        );
+      }
+      final request = CreateOrderRequest.dineIn(
+        diningSessionId: sessionId,
+        tableId: params.tableId,
+      );
+      final model = await _remoteDataSource.createDineInOrder(
+        request,
+        diningSessionId: sessionId,
+      );
+      return Success(model.toEntity());
+    } on AuthException catch (e) {
+      return FailureResult(AuthFailure(e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return FailureResult(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return FailureResult(
+        NotFoundFailure(e.message, statusCode: e.statusCode),
+      );
+    } on ServerException catch (e) {
+      return FailureResult(ServerFailure(e.message, statusCode: e.statusCode));
+    } catch (e) {
+      return FailureResult(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Result<OrderEntity>> sendPendingOrder(PendingOrder order) async {
+    final payload = Map<String, dynamic>.from(order.payload);
+
+    final nestedRequest = payload.remove('request');
+
+    final requestPayload = nestedRequest is Map
+        ? Map<String, dynamic>.from(nestedRequest)
+        : payload;
+
+    final request = CreateOrderRequest.fromJson(requestPayload);
+
+    final result = request.orderType == OrderType.dineIn
+        ? await _sendDineInRequest(request)
+        : await _sendTakeAwayRequest(request);
+
+    if (result case Success(data: final remoteOrder)) {
+      await _pendingOrders.recordServerOrderId(
+        order.clientOrderId,
+        remoteOrder.id,
+      );
+    }
+
+    return result;
+  }
+
+  Future<Result<OrderEntity>> _sendTakeAwayRequest(
+    CreateOrderRequest request,
+  ) async {
+    try {
+      final model = await _remoteDataSource.createTakeAwayOrder(request);
+      return Success(model.toEntity());
+    } on AuthException catch (e) {
+      return FailureResult(AuthFailure(e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return FailureResult(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return FailureResult(
+        NotFoundFailure(e.message, statusCode: e.statusCode),
+      );
+    } on ServerException catch (e) {
+      return FailureResult(ServerFailure(e.message, statusCode: e.statusCode));
+    } catch (e) {
+      return FailureResult(ServerFailure(e.toString()));
+    }
+  }
+
+  Future<Result<OrderEntity>> _sendDineInRequest(
     CreateOrderRequest request,
   ) async {
     try {
@@ -72,17 +161,46 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
       );
       return Success(model.toEntity());
     } on AuthException catch (e) {
-      return FailureResult(AuthFailure(e.message));
+      return FailureResult(AuthFailure(e.message, statusCode: e.statusCode));
     } on NetworkException catch (e) {
       return FailureResult(NetworkFailure(e.message));
     } on NotFoundException catch (e) {
-      return FailureResult(NotFoundFailure(e.message));
+      return FailureResult(
+        NotFoundFailure(e.message, statusCode: e.statusCode),
+      );
     } on ServerException catch (e) {
-      return FailureResult(ServerFailure(e.message));
+      return FailureResult(ServerFailure(e.message, statusCode: e.statusCode));
     } catch (e) {
       return FailureResult(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<List<PendingOrder>> getPendingOrders() => _pendingOrders.getAll();
+
+  @override
+  Future<void> addPendingOrder(PendingOrder order) => _pendingOrders.add(order);
+
+  @override
+  Future<void> updatePendingOrderStatus(
+    String clientOrderId,
+    PendingOrderStatus status, {
+    int? retryCount,
+    String? lastError,
+    bool clearLastError = false,
+  }) {
+    return _pendingOrders.updateStatus(
+      clientOrderId,
+      status,
+      retryCount: retryCount,
+      lastError: lastError,
+      clearLastError: clearLastError,
+    );
+  }
+
+  @override
+  Future<void> deletePendingOrder(String clientOrderId) =>
+      _pendingOrders.delete(clientOrderId);
 
   @override
   Future<Result<List<RestaurantTableEntity>>> getAvailableTables() async {

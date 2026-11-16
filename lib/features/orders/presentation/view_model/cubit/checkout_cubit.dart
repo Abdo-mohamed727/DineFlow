@@ -1,14 +1,12 @@
-
 import 'package:dineflow/core/enums/order_type.dart';
-import 'package:dineflow/core/error/failure.dart';
 import 'package:dineflow/core/usecases/no_params.dart';
 import 'package:dineflow/core/usecases/result.dart';
-import 'package:dineflow/features/orders/data/models/order_request.dart';
+import 'package:dineflow/features/orders/domain/entity/create_order_outcome.dart';
+import 'package:dineflow/features/orders/domain/entity/create_order_params.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/domain/entity/dining_session.dart';
-import 'package:dineflow/features/orders/domain/usecase/create_dine_in_order_usecase.dart';
 import 'package:dineflow/features/orders/domain/usecase/get_available_tables_usecase.dart';
-import 'package:dineflow/features/orders/domain/usecase/create_take_away_order_usecase.dart';
+import 'package:dineflow/features/orders/domain/usecase/create_order_usecase.dart';
 import 'package:dineflow/features/orders/domain/usecase/start_dining_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,14 +17,14 @@ part 'checkout_cubit.freezed.dart';
 
 @LazySingleton()
 class CheckoutCubit extends Cubit<CheckoutState> {
-  final CreateTakeAwayOrderUsecase _createTakeAwayOrderUseCase;
-  final CreateDineInOrderUsecase _createDineInOrderUseCase;
+  final CreateOrderUseCase _createOrderUseCase;
   final GetAvailableTablesUseCase _getAvailableTablesUseCase;
   final StartDiningUseCase _startDiningUseCase;
+  String? _pendingClientOrderId;
+  String? _pendingRequestSignature;
 
   CheckoutCubit(
-    this._createTakeAwayOrderUseCase,
-    this._createDineInOrderUseCase,
+    this._createOrderUseCase,
     this._getAvailableTablesUseCase,
     this._startDiningUseCase,
   ) : super(const CheckoutState.initial());
@@ -101,7 +99,9 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   Future<void> placeOrder() async {
     final current = _selection;
 
-    if (current == null || state is! _CheckoutInitial) return;
+    if (current == null || state is _Loading || state is _CheckoutSuccess) {
+      return;
+    }
     if (current.isPlacingOrder) return;
 
     final orderType = current.orderType;
@@ -131,24 +131,62 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     emit(
       CheckoutState.initial(selection: current.copyWith(isPlacingOrder: true)),
     );
-    final request = orderType == OrderType.dineIn
-        ? CreateOrderRequest.dineIn(diningSessionId: sessionId!)
-        : CreateOrderRequest.takeaway();
-
-    final result = orderType == OrderType.dineIn
-        ? await _createDineInOrderUseCase(request)
-        : await _createTakeAwayOrderUseCase(request);
+    final params = CreateOrderParams(
+      orderType: orderType,
+      diningSessionId: sessionId,
+      tableId: current.selectedTableId,
+    );
+    final requestSignature =
+        '${params.orderType.apiValue}:${params.diningSessionId ?? ''}:${params.tableId ?? ''}';
+    if (_pendingRequestSignature != requestSignature) {
+      _pendingRequestSignature = requestSignature;
+      _pendingClientOrderId = null;
+    }
+    final result = await _createOrderUseCase(
+      CreateOrderParams(
+        orderType: params.orderType,
+        diningSessionId: params.diningSessionId,
+        tableId: params.tableId,
+        clientOrderId: _pendingClientOrderId,
+      ),
+    );
 
     switch (result) {
-      case Success(data: final order):
-        emit(CheckoutState.success(order));
+      case Success(data: final outcome)
+          when outcome.disposition == CreateOrderDisposition.synced:
+        _pendingClientOrderId = null;
+        _pendingRequestSignature = null;
+        emit(CheckoutState.success(outcome.order!));
+      case Success(data: final outcome)
+          when outcome.disposition == CreateOrderDisposition.pending:
+        _pendingClientOrderId = outcome.clientOrderId;
+        final latest = _selection;
+        if (latest != null) {
+          emit(
+            CheckoutState.error(
+              selection: latest.copyWith(isPlacingOrder: false),
+              message: 'Saved, will send when you\'re back online',
+            ),
+          );
+        }
+      case Success(data: final outcome):
+        _pendingClientOrderId = outcome.clientOrderId;
+        final latest = _selection;
+        if (latest != null) {
+          emit(
+            CheckoutState.error(
+              selection: latest.copyWith(isPlacingOrder: false),
+              message: outcome.message ?? 'Could not place the order.',
+            ),
+          );
+        }
       case FailureResult(failure: final failure):
         final latest = _selection;
         if (latest != null) {
           emit(
             CheckoutState.error(
               selection: latest.copyWith(isPlacingOrder: false),
-              message: _friendlyOrderError(failure),
+              message: failure.message,
             ),
           );
         }
@@ -265,16 +303,6 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       _Error(selection: final selection) => selection,
       _ => null,
     };
-  }
-
-  String _friendlyOrderError(Failure failure) {
-    if (failure is AuthFailure) {
-      return 'Please log in again to place your order.';
-    }
-    if (failure is NetworkFailure) {
-      return failure.message;
-    }
-    return failure.message;
   }
 }
 

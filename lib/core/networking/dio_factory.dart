@@ -14,10 +14,7 @@ Dio getdio() {
     baseUrl: ApiConstants.baseUrl,
     connectTimeout: duration,
     receiveTimeout: duration,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
   );
 
   _dio.interceptors.add(
@@ -39,6 +36,7 @@ Dio getdio() {
     PrettyDioLogger(
       request: true,
       requestBody: true,
+      requestHeader: false,
       responseBody: true,
       responseHeader: true,
       error: true,

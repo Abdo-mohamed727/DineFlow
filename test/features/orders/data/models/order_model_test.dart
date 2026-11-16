@@ -18,6 +18,17 @@ void main() {
         'diningSessionId': 'session_123',
       });
     });
+
+    test('serializes the optional client order id', () {
+      final request = CreateOrderRequest.takeaway(
+        clientOrderId: '0d69fcb5-b792-48c6-a2fc-bbc6e6f4a8f3',
+      );
+
+      expect(request.toJson(), {
+        'orderType': OrderType.takeaway.apiValue,
+        'clientOrderId': '0d69fcb5-b792-48c6-a2fc-bbc6e6f4a8f3',
+      });
+    });
   });
 
   group('OrderModel', () {

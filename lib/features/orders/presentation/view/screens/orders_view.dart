@@ -8,10 +8,12 @@ import 'package:dineflow/core/widgets/app_icon_button.dart';
 import 'package:dineflow/core/widgets/app_scaffold.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/no_active_orders_banner.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/orders_shimmer_loading.dart';
+import 'package:dineflow/features/orders/presentation/view/widgets/pending_orders_section.dart';
 import 'package:dineflow/features/orders/domain/entity/order_entity.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/active_order_card.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/order_history_section.dart';
 import 'package:dineflow/features/orders/presentation/view/widgets/waiter_assistance_section.dart';
+import 'package:dineflow/features/orders/domain/entity/pending_order.dart';
 import 'package:dineflow/features/orders/presentation/view_model/cubit/orders_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,20 +61,32 @@ class _OrdersViewBodyState extends State<_OrdersViewBody> {
       child: AppScaffold(
         showAppBar: false,
         body: SafeArea(
-          child: BlocBuilder<OrdersCubit, OrdersState>(
-            builder: (context, state) {
-              return state.map(
-                initial: (_) => const OrdersShimmerLoading(),
-                loading: (_) => const OrdersShimmerLoading(),
-                loaded: (state) {
-                  return _OrdersContent(allOrders: state.allOrders);
-                },
-                empty: (_) {
-                  return _OrdersContent(allOrders: const []);
-                },
-                error: (state) => _ErrorBody(message: state.message),
-              );
-            },
+          child: ValueListenableBuilder(
+            valueListenable: context.read<OrdersCubit>().pendingOrders,
+            builder: (context, pendingOrders, _) =>
+                BlocBuilder<OrdersCubit, OrdersState>(
+                  builder: (context, state) {
+                    return state.map(
+                      initial: (_) => const OrdersShimmerLoading(),
+                      loading: (_) => const OrdersShimmerLoading(),
+                      loaded: (state) => _OrdersContent(
+                        allOrders: state.allOrders,
+                        pendingOrders: pendingOrders,
+                      ),
+                      empty: (_) => _OrdersContent(
+                        allOrders: const [],
+                        pendingOrders: pendingOrders,
+                      ),
+                      error: (state) => pendingOrders.isEmpty
+                          ? _ErrorBody(message: state.message)
+                          : _OrdersContent(
+                              allOrders: const [],
+                              pendingOrders: pendingOrders,
+                              errorMessage: state.message,
+                            ),
+                    );
+                  },
+                ),
           ),
         ),
       ),
@@ -101,8 +115,14 @@ class _ErrorBody extends StatelessWidget {
 }
 
 class _OrdersContent extends StatelessWidget {
-  const _OrdersContent({required this.allOrders});
+  const _OrdersContent({
+    required this.allOrders,
+    required this.pendingOrders,
+    this.errorMessage,
+  });
   final List<OrderEntity> allOrders;
+  final List<PendingOrder> pendingOrders;
+  final String? errorMessage;
 
   static const _activeStatuses = {
     OrderStatus.pending,
@@ -149,6 +169,26 @@ class _OrdersContent extends StatelessWidget {
           // ── App Bar ────────────────────────────────────────────────────────
           SliverToBoxAdapter(child: _OrdersAppBar()),
 
+          if (errorMessage != null)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  errorMessage!,
+                  style: const TextStyle(color: AppColors.error),
+                ),
+              ),
+            ),
+
+          if (pendingOrders.isNotEmpty)
+            SliverToBoxAdapter(
+              child: PendingOrdersSection(
+                orders: pendingOrders,
+                onRetry: context.read<OrdersCubit>().retryPendingOrder,
+                onDiscard: context.read<OrdersCubit>().discardPendingOrder,
+              ),
+            ),
+
           // ── Active Orders ─────────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
@@ -185,14 +225,14 @@ class _OrdersContent extends StatelessWidget {
           const SliverToBoxAdapter(child: SizedBox(height: 8)),
 
           // ── Order History ─────────────────────────────────────────────────
-          if (allOrders.isEmpty)
+          if (allOrders.isEmpty && pendingOrders.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: _FirstTimeCustomerBody(
                 onBrowseMenu: () => context.goNamed(AppRoutes.customerMenu),
               ),
             )
-          else
+          else if (allOrders.isNotEmpty)
             SliverToBoxAdapter(
               child: OrderHistorySection(orders: historyOrders),
             ),
