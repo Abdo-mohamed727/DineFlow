@@ -295,7 +295,7 @@ Additional technical documentation covers:
 
 - [x] Push notifications
 - [x] Enhanced order tracking
-- [ ] Offline support
+- [x] Offline support
 - [ ] Expanded test coverage
 - [ ] Performance optimization
 - [ ] Localization
