@@ -148,46 +148,69 @@ void main() {
     expect((result as FailureResult).failure, isA<NetworkFailure>());
   });
 
-  test(
-    'records the remote order ID before returning a successful sync',
-    () async {
-      const clientOrderId = 'c0d8c8a9-241c-42d2-aed2-a8ff74aed215';
-      final localOrders = _PendingOrders();
-      final pendingOrder = PendingOrder(
-        clientOrderId: clientOrderId,
-        payload: const {'orderType': 'TAKEAWAY'},
-        createdAt: DateTime.utc(2026, 11, 15),
-      );
-      await localOrders.add(pendingOrder);
-      final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            expect(options.data, {
-              'orderType': 'TAKEAWAY',
-              'clientOrderId': clientOrderId,
-            });
-            handler.resolve(
-              Response(
-                requestOptions: options,
-                statusCode: 201,
-                data: {
-                  'data': {'id': 'server-order-1', 'status': 'PENDING'},
-                },
-              ),
-            );
-          },
-        ),
-      );
-      final repository = OrderRepositoryImpl(
-        OrderRemoteDataSourceImpl(dio),
-        localOrders,
-      );
+  for (final orderType in [OrderType.takeaway, OrderType.dineIn]) {
+    test(
+      'uses the pending order ID as the idempotency key for ${orderType.apiValue} retries',
+      () async {
+        const clientOrderId = 'c0d8c8a9-241c-42d2-aed2-a8ff74aed215';
+        final payload = <String, dynamic>{
+          'orderType': orderType.apiValue,
+          if (orderType == OrderType.dineIn)
+            'diningSessionId': 'dining-session-1',
+        };
+        final localOrders = _PendingOrders();
+        final pendingOrder = PendingOrder(
+          clientOrderId: clientOrderId,
+          payload: payload,
+          createdAt: DateTime.utc(2026, 11, 15),
+        );
+        await localOrders.add(pendingOrder);
+        final sentHeaders = <Map<String, dynamic>>[];
+        final sentBodies = <Map<String, dynamic>>[];
+        final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              sentHeaders.add(Map<String, dynamic>.from(options.headers));
+              sentBodies.add(Map<String, dynamic>.from(options.data as Map));
+              handler.resolve(
+                Response(
+                  requestOptions: options,
+                  statusCode: 201,
+                  data: {
+                    'data': {'id': 'server-order-1', 'status': 'PENDING'},
+                  },
+                ),
+              );
+            },
+          ),
+        );
+        final repository = OrderRepositoryImpl(
+          OrderRemoteDataSourceImpl(dio),
+          localOrders,
+        );
 
-      final result = await repository.sendPendingOrder(pendingOrder);
+        final firstResult = await repository.sendPendingOrder(pendingOrder);
+        final retryResult = await repository.sendPendingOrder(pendingOrder);
 
-      expect(result, isA<Success<OrderEntity>>());
-      expect(localOrders.orders.single.serverOrderId, 'server-order-1');
-    },
-  );
+        expect(firstResult, isA<Success<OrderEntity>>());
+        expect(retryResult, isA<Success<OrderEntity>>());
+        expect(sentHeaders.map((headers) => headers['Idempotency-Key']), [
+          clientOrderId,
+          clientOrderId,
+        ]);
+        expect(sentBodies, [payload, payload]);
+        expect(
+          sentBodies.every(
+            (body) =>
+                !body.containsKey('Idempotency-Key') &&
+                !body.containsKey('idempotencyKey') &&
+                !body.containsKey('clientOrderId'),
+          ),
+          isTrue,
+        );
+        expect(localOrders.orders.single.serverOrderId, 'server-order-1');
+      },
+    );
+  }
 }

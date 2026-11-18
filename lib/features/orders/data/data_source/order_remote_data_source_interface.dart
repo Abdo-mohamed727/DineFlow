@@ -5,11 +5,15 @@ import 'package:dineflow/features/orders/data/models/dining_session_model.dart';
 abstract interface class OrderRemoteDataSource {
   Future<List<OrderModel>> getOrders();
 
-  Future<OrderModel> createTakeAwayOrder(CreateOrderRequest request);
+  Future<OrderModel> createTakeAwayOrder(
+    CreateOrderRequest request, {
+    required String idempotencyKey,
+  });
 
   Future<OrderModel> createDineInOrder(
     CreateOrderRequest request, {
     required String diningSessionId,
+    required String idempotencyKey,
   });
   Future<List<RestaurantTableModel>> getTables();
 

@@ -5,14 +5,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('sends clientOrderId in the create-order request body', () async {
-    const clientOrderId = '0d69fcb5-b792-48c6-a2fc-bbc6e6f4a8f3';
+  test('sends the idempotency key as a header for takeaway orders', () async {
+    const idempotencyKey = '0d69fcb5-b792-48c6-a2fc-bbc6e6f4a8f3';
     Map<String, dynamic>? sentBody;
+    Map<String, dynamic>? sentHeaders;
     final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
           sentBody = Map<String, dynamic>.from(options.data as Map);
+          sentHeaders = Map<String, dynamic>.from(options.headers);
           handler.resolve(
             Response(
               requestOptions: options,
@@ -26,10 +28,57 @@ void main() {
     );
 
     await OrderRemoteDataSourceImpl(dio).createTakeAwayOrder(
-      const CreateOrderRequest.takeaway(clientOrderId: clientOrderId),
+      const CreateOrderRequest.takeaway(),
+      idempotencyKey: idempotencyKey,
     );
 
-    expect(sentBody, {'orderType': 'TAKEAWAY', 'clientOrderId': clientOrderId});
+    expect(sentHeaders!['Idempotency-Key'], idempotencyKey);
+    expect(sentBody, {'orderType': 'TAKEAWAY'});
+    expect(sentBody, isNot(contains('Idempotency-Key')));
+    expect(sentBody, isNot(contains('clientOrderId')));
+  });
+
+  test('sends the idempotency key as a header for dine-in orders', () async {
+    const idempotencyKey = 'dine-in-order-id';
+    const sessionId = '6ad0bdf2da8eb27d4bdd8d08';
+    const tableId = '6aabb9dd0bc9e678caf651b8';
+    Map<String, dynamic>? sentBody;
+    Map<String, dynamic>? sentHeaders;
+    final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          sentBody = Map<String, dynamic>.from(options.data as Map);
+          sentHeaders = Map<String, dynamic>.from(options.headers);
+          handler.resolve(
+            Response(
+              requestOptions: options,
+              data: {
+                'data': {'id': 'order-1', 'status': 'PENDING'},
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    await OrderRemoteDataSourceImpl(dio).createDineInOrder(
+      const CreateOrderRequest.dineIn(
+        diningSessionId: sessionId,
+        tableId: tableId,
+      ),
+      diningSessionId: sessionId,
+      idempotencyKey: idempotencyKey,
+    );
+
+    expect(sentHeaders!['Idempotency-Key'], idempotencyKey);
+    expect(sentBody, {
+      'orderType': 'DINE_IN',
+      'diningSessionId': sessionId,
+      'tableId': tableId,
+    });
+    expect(sentBody, isNot(contains('Idempotency-Key')));
+    expect(sentBody, isNot(contains('clientOrderId')));
   });
 
   test('accepts a 201 response when creating an order', () async {
@@ -50,9 +99,10 @@ void main() {
       ),
     );
 
-    final order = await OrderRemoteDataSourceImpl(
-      dio,
-    ).createTakeAwayOrder(const CreateOrderRequest.takeaway());
+    final order = await OrderRemoteDataSourceImpl(dio).createTakeAwayOrder(
+      const CreateOrderRequest.takeaway(),
+      idempotencyKey: 'takeaway-order-key',
+    );
 
     expect(order.id, 'order-1');
   });
