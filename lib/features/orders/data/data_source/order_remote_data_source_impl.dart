@@ -34,11 +34,15 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
   }
 
   @override
-  Future<OrderModel> createTakeAwayOrder(CreateOrderRequest request) async {
+  Future<OrderModel> createTakeAwayOrder(
+    CreateOrderRequest request, {
+    required String idempotencyKey,
+  }) async {
     try {
       final response = await _dio.post(
         ApiConstants.orders,
         data: request.toJson(),
+        options: Options(headers: {'Idempotency-Key': idempotencyKey}),
       );
       if (response.data == null) {
         throw const ServerException('Order was not created.');
@@ -196,10 +200,15 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
   Future<OrderModel> createDineInOrder(
     CreateOrderRequest request, {
     required String diningSessionId,
+    required String idempotencyKey,
   }) async {
     try {
       final payload = {...request.toJson(), 'diningSessionId': diningSessionId};
-      final response = await _dio.post(ApiConstants.orders, data: payload);
+      final response = await _dio.post(
+        ApiConstants.orders,
+        data: payload,
+        options: Options(headers: {'Idempotency-Key': idempotencyKey}),
+      );
       if (response.data == null) {
         throw const ServerException('Order was not created.');
       }

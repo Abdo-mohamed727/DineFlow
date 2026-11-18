@@ -45,8 +45,18 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
     CreateOrderParams params,
   ) async {
     try {
+      final clientOrderId = params.clientOrderId;
+
+      if (clientOrderId == null || clientOrderId.isEmpty) {
+        return FailureResult(
+          ServerFailure('Client order ID is required for idempotency.'),
+        );
+      }
       final request = CreateOrderRequest.takeaway(tableId: params.tableId);
-      final model = await _remoteDataSource.createTakeAwayOrder(request);
+      final model = await _remoteDataSource.createTakeAwayOrder(
+        request,
+        idempotencyKey: clientOrderId,
+      );
       return Success(model.toEntity());
     } on AuthException catch (e) {
       return FailureResult(AuthFailure(e.message, statusCode: e.statusCode));
@@ -78,9 +88,17 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
         diningSessionId: sessionId,
         tableId: params.tableId,
       );
+      final clientOrderId = params.clientOrderId;
+
+      if (clientOrderId == null || clientOrderId.isEmpty) {
+        return FailureResult(
+          ServerFailure('Client order ID is required for idempotency.'),
+        );
+      }
       final model = await _remoteDataSource.createDineInOrder(
         request,
         diningSessionId: sessionId,
+        idempotencyKey: clientOrderId,
       );
       return Success(model.toEntity());
     } on AuthException catch (e) {
@@ -111,8 +129,11 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
     final request = CreateOrderRequest.fromJson(requestPayload);
 
     final result = request.orderType == OrderType.dineIn
-        ? await _sendDineInRequest(request)
-        : await _sendTakeAwayRequest(request);
+        ? await _sendDineInRequest(request, idempotencyKey: order.clientOrderId)
+        : await _sendTakeAwayRequest(
+            request,
+            idempotencyKey: order.clientOrderId,
+          );
 
     if (result case Success(data: final remoteOrder)) {
       await _pendingOrders.recordServerOrderId(
@@ -125,10 +146,14 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
   }
 
   Future<Result<OrderEntity>> _sendTakeAwayRequest(
-    CreateOrderRequest request,
-  ) async {
+    CreateOrderRequest request, {
+    required String idempotencyKey,
+  }) async {
     try {
-      final model = await _remoteDataSource.createTakeAwayOrder(request);
+      final model = await _remoteDataSource.createTakeAwayOrder(
+        request,
+        idempotencyKey: idempotencyKey,
+      );
       return Success(model.toEntity());
     } on AuthException catch (e) {
       return FailureResult(AuthFailure(e.message, statusCode: e.statusCode));
@@ -146,8 +171,9 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
   }
 
   Future<Result<OrderEntity>> _sendDineInRequest(
-    CreateOrderRequest request,
-  ) async {
+    CreateOrderRequest request, {
+    required String idempotencyKey,
+  }) async {
     try {
       final sessionId = request.diningSessionId;
       if (sessionId == null || sessionId.isEmpty) {
@@ -158,6 +184,7 @@ class OrderRepositoryImpl implements OrderRepositoryInterface {
       final model = await _remoteDataSource.createDineInOrder(
         request,
         diningSessionId: sessionId,
+        idempotencyKey: idempotencyKey,
       );
       return Success(model.toEntity());
     } on AuthException catch (e) {
